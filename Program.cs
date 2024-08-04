@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using Rolled_metal_products.Data;
+
 namespace Rolled_metal_products
 {
     public class Program
@@ -8,6 +11,18 @@ namespace Rolled_metal_products
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            string connection = builder.Configuration.GetConnectionString("DefaultConnection");
+
+            builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connection));
+
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddSession(Options => 
+            {
+                Options.IdleTimeout = TimeSpan.FromMinutes(10);
+                Options.Cookie.HttpOnly = true;
+                Options.Cookie.IsEssential = true;
+            });
 
             var app = builder.Build();
 
@@ -25,6 +40,8 @@ namespace Rolled_metal_products
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseSession();
 
             app.MapControllerRoute(
                 name: "default",

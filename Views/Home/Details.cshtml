@@ -1,0 +1,77 @@
+﻿@model Rolled_metal_products.Models.ViewModels.DetailsVM
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<form>
+    <div class="container mt-4">
+        <!-- 1 Блок -->
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <h2>@Model.Product.Name</h2>
+            </div>
+            <div class="col-md-4 text-right">
+                <span class="text-info h4">@Model.Product.Price?.ToString("C")</span>
+                @if (Model.Product.OldPrice.HasValue)
+                {
+                    <span class="text-muted h5" style="text-decoration: line-through;">@Model.Product.OldPrice?.ToString("C")</span>
+                }
+            </div>
+        </div>
+
+        <!-- 2 Блок -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <img class="img-fluid" src="@($"{WC.ImagePath}{Model.Product.ImageName}")" alt="@Model.Product.Name" style="width: 100%; height: auto;" />
+            </div>
+            <div class="col-md-6">
+                @Html.Raw(Model.Product.Description)
+                <div style="font-size: 14px;">
+                    @if (Model.Product.Width.HasValue)
+                    {
+                        <div><strong>Ширина:</strong> @Model.Product.Width?.ToString()</div>
+                    }
+                    @if (Model.Product.Diameter.HasValue)
+                    {
+                        <div><strong>Диаметр:</strong> @Model.Product.Diameter?.ToString()</div>
+                    }
+                    @if (Model.Product.Thickness.HasValue)
+                    {
+                        <div><strong>Толщина:</strong> @Model.Product.Thickness?.ToString()</div>
+                    }
+                    @if (Model.Product.ExternalDiameter.HasValue)
+                    {
+                        <div><strong>Наружный диаметр:</strong> @Model.Product.ExternalDiameter?.ToString()</div>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.Product.Standard))
+                    {
+                        <div><strong>ГОСТ:</strong> @Model.Product.Standard</div>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.Product.TypeOfAlloy))
+                    {
+                        <div><strong>Тип сплава:</strong> @Model.Product.TypeOfAlloy</div>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.Product.Stamp))
+                    {
+                        <div><strong>Марка:</strong> @Model.Product.Stamp</div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- 3 Блок -->
+        <div class="row">
+            <div class="col-md-6 mb-2">
+                <a asp-action="Index" class="btn btn-secondary w-100">Назад к списку</a>
+            </div>
+            <div class="col-md-6 mb-2">
+                @if (Model.ExistsInCart)
+                {
+                    <a asp-action="RemoveFromCart" asp-route-id="@Model.Product.Id" class="btn btn-primary w-100">Удалить из корзины</a>
+                }
+                else
+                {
+                    <a asp-action="DetailsPost" asp-route-id="@Model.Product.Id" class="btn btn-primary w-100">Добавить в корзину</a>
+                }
+            </div>
+        </div>
+    </div>
+</form>

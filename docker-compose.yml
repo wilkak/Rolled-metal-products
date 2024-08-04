@@ -1,0 +1,24 @@
+version: "3.9"
+services:
+  app: 
+    container_name: RolledMetalProducts
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres_db
+  postgres_db:
+    container_name: RolledMetalProductsPostgresDb
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 4567890rtyui7
+      POSTGRES_DB: RolledMetalProductsPostgresDb
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+volumes:
+  postgres-data:

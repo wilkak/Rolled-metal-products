@@ -1,0 +1,101 @@
+﻿@model Rolled_metal_products.Models.Product
+
+@{
+    ViewData["Title"] = "Delete Product";
+}
+
+<style>
+    .form-group {
+        padding: 10px;
+    }
+</style>
+
+<form asp-action="DeletePost" enctype="multipart/form-data">
+    <input asp-for="Id" hidden></input>
+    <div class="border p-3">
+        <div class="form-group row">
+            <h2 class="text-info pl-3">Delete Product</h2>
+        </div>
+        <div class="row">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="col-8">
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Name"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="Name" disabled class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Price"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="Price" disabled class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="OldPrice"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="OldPrice" disabled class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Description"></label>
+                    </div>
+                    <div class="col-8">
+                        <textarea asp-for="Description" class="form-control summernote"></textarea>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="CategoryId"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="@Model.Category.Name" disabled class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-8 offset-4 row">
+                        <div class="col">
+                            <button type="submit" class="btn btn-danger w-100">Удалить</button>
+                        </div>
+                        <div class="col">
+                            <a asp-action="Index" class="btn btn-info w-100">Назад к списку</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3 offset-1 p-4">
+                @if (Model.ImageName == null)
+                {
+                    <img id="imagePreview" src="@WC.NoImagePath" width="100%" class="w-100" style="border-radius:5px; border: 1px solid #bbb" />
+                }
+                else
+                {
+                    <img id="imagePreview" src="@WC.ImagePath@Model.ImageName" class="w-100" width="100%" style="border-radius:5px; border: 1px solid #bbb" />
+                }
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        <partial name="_ValidationScriptsPartial"></partial>
+    }
+
+    <script>
+        $(document).ready(function () {
+            $('.summernote').summernote({
+                height: 250,
+                disable: true
+            });
+        });
+    </script>
+}
+
