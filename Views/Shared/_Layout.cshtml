@@ -23,6 +23,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <partial name="_LoginPartial" />
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
@@ -30,15 +31,19 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Менеджмент контента
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" asp-area="" asp-controller="Category" asp-action="Index">Категории</a></li>
-                                <li><a class="dropdown-item" asp-area="" asp-controller="Product" asp-action="Index">Товары</a></li>
-                            </ul>
-                        </li>
+                        @if (User.IsInRole(WC.AdminRole)) { 
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Менеджмент контента
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Category" asp-action="Index">Категории</a></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Product" asp-action="Index">Товары</a></li>
+                                    <div class="dropdown-devider"></div>
+                                    <a class="nav-link text-dark" asp-area="Identity" asp-pages="/Account/Register">Доб. админа</a>
+                                </ul>
+                            </li>
+                        }
                         <li class="nav-item">
                             @if (HttpContextAccessor.HttpContext.Session.Get<List<ShoppingCart>>(WC.SessionCart) != null)
                             {

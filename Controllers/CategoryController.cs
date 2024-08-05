@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Rolled_metal_products.Data;
 using Rolled_metal_products.Models;
 
 
 namespace Rolled_metal_products.Controllers
 {
+    [Authorize(Roles =  WC.AdminRole)]
     public class CategoryController : Controller
     {
         private readonly ApplicationDbContext _context;
