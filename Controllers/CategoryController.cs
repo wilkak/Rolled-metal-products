@@ -9,19 +9,24 @@ namespace Rolled_metal_products.Controllers
     [Authorize(Roles =  WC.AdminRole)]
     public class CategoryController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext _db;
 
-        public CategoryController(ApplicationDbContext context) 
+        public CategoryController(ApplicationDbContext db)
         {
-            _context = context;
+            _db = db;
         }
-
 
         public IActionResult Index()
         {
+            IEnumerable<Category> objList = _db.Categories;
+            return View(objList);
+        }
+
+        /*public IActionResult Index()
+        {
             IEnumerable<Category> categoryList = _context.Categories;
             return View(categoryList);
-        }
+        }*/
 
         //GET - CREATE
         public IActionResult Create()
@@ -36,8 +41,8 @@ namespace Rolled_metal_products.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Categories.Add(category);
-                _context.SaveChanges();
+                _db.Categories.Add(category);
+                _db.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View(category);
@@ -50,7 +55,7 @@ namespace Rolled_metal_products.Controllers
             {
                 return NotFound();
             }
-            var category = _context.Categories.Find(id);
+            var category = _db.Categories.Find(id);
             if (category == null) 
             {
                 return NotFound();
@@ -66,8 +71,8 @@ namespace Rolled_metal_products.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Categories.Update(category);
-                _context.SaveChanges();
+                _db.Categories.Update(category);
+                _db.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View(category);
@@ -82,7 +87,7 @@ namespace Rolled_metal_products.Controllers
                 return NotFound();
             }
 
-            var category = _context.Categories.Find(id);
+            var category = _db.Categories.Find(id);
 
             if (category == null)
             {
@@ -102,7 +107,7 @@ namespace Rolled_metal_products.Controllers
                 return NotFound();
             }
 
-            var category = _context.Categories.Find(id);
+            var category = _db.Categories.Find(id);
 
             if (category == null)
             {
@@ -111,8 +116,8 @@ namespace Rolled_metal_products.Controllers
 
             if (ModelState.IsValid)
             {
-                _context.Remove(category);
-                _context.SaveChanges();
+                _db.Remove(category);
+                _db.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View(category);

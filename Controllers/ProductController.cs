@@ -45,6 +45,11 @@ namespace Rolled_metal_products.Controllers
                 {
                     Text = x.Name,
                     Value = x.Id.ToString()
+                }),
+                ApplicationTypeSelectList = _context.ApplicationType.Select(i => new SelectListItem
+                {
+                    Text = i.Name,
+                    Value = i.Id.ToString()
                 })
             };
 
@@ -126,6 +131,12 @@ namespace Rolled_metal_products.Controllers
                 Text = x.Name,
                 Value = x.Id.ToString()
             });
+            productVM.ApplicationTypeSelectList = _context.ApplicationType.Select(i => new SelectListItem
+            {
+                Text = i.Name,
+                Value = i.Id.ToString()
+            });
+
             return View(productVM);
         }
 
@@ -146,7 +157,7 @@ namespace Rolled_metal_products.Controllers
         }
 
         //POST - DELETE
-        [HttpPost]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeletePost(int? id)
         {

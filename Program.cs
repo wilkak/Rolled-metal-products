@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Rolled_metal_products.Data;
-
+using Rolled_metal_products.Utility;
 namespace Rolled_metal_products
 {
     public class Program
@@ -14,10 +15,18 @@ namespace Rolled_metal_products
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
-            string connection = builder.Configuration.GetConnectionString("DefaultConnection");
+            var configuration = builder.Configuration;
 
-            builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connection));
+            // Добавление сервисов в контейнер.
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddDefaultTokenProviders()
+                .AddDefaultUI()
+                .AddEntityFrameworkStores<ApplicationDbContext>();
+            builder.Services.AddTransient<IEmailSender, EmailSender>();
 
+            builder.Services.AddDistributedMemoryCache();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddSession(Options => 
             {
@@ -25,10 +34,8 @@ namespace Rolled_metal_products
                 Options.Cookie.HttpOnly = true;
                 Options.Cookie.IsEssential = true;
             });
-
-            builder.Services.AddIdentity<IdentityUser,IdentityRole>()
-                .AddDefaultTokenProviders().AddDefaultUI()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+           
+           
 
             var app = builder.Build();
 
