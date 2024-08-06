@@ -16,7 +16,6 @@ namespace Rolled_metal_products.Controllers
 {
     public class CartController : Controller
     {
-        private readonly ApplicationDbContext _context;
         private readonly ApplicationDbContext _db;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IEmailSender _emailSender;

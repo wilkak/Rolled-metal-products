@@ -30,7 +30,7 @@ namespace Rolled_metal_products.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ApplicationType", x => x.Id);
+                    table.PrimaryKey("PK_", x => x.Id);
                 });
         }
 

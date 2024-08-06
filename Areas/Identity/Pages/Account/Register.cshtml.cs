@@ -148,6 +148,8 @@ namespace Rolled_metal_products.Areas.Identity.Pages.Account
                     else {
                         await _userManager.AddToRoleAsync(user, WC.CustomerRole);
                     }
+
+                    
                     _logger.LogInformation("User created a new account with password.");
 
                     var userId = await _userManager.GetUserIdAsync(user);
