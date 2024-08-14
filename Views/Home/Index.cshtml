@@ -2,6 +2,30 @@
 @{
     ViewData["Title"] = "Главная";
 }
+@*
+<form asp-controller="Callback" asp-action="OrderCallback" data-ajax="true" data-ajax-method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Phone"></label>
+        <input asp-for="Phone" class="form-control" />
+        <span asp-validation-for="Phone" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="ProductName"></label>
+        <input asp-for="ProductName" class="form-control" value="@Model.InterestingProduct.Name" readonly />
+    </div>
+    <div class="form-group">
+        <label asp-for="Comment"></label>
+        <textarea asp-for="Comment" class="form-control"></textarea>
+        <span asp-validation-for="Comment" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Заказать звонок</button>
+</form>*@
 
 <div class="container">
     <div class="row">
@@ -35,6 +59,23 @@
                     $(".filter").not('.' + value).hide('3000');
                     $('.filter').filter('.' + value).show("3000");
                 }
+            });
+        });
+        $(document).ready(function () {
+            $('form[data-ajax]').submit(function (e) {
+                e.preventDefault();
+                var form = $(this);
+                $.ajax({
+                    type: 'POST',
+                    url: form.attr('action'),
+                    data: form.serialize(),
+                    success: function (response) {
+                        $('#callback-result').html(response).fadeIn();
+                    },
+                    error: function (xhr, status, error) {
+                        $('#callback-result').html(`Ошибка: ${error}`).fadeIn();
+                    }
+                });
             });
         });
     </script>

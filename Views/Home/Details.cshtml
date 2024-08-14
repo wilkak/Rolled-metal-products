@@ -13,7 +13,7 @@
                         <h1 class="text-white">@Model.Product.Name</h1>
                     </div>
                     <div class="col-12 col-md-6 text-md-right">
-                        <h1 class="text-warning"> @Model.Product.Price?.ToString("C")</h1>
+                        <h1 class="text-warning"> @Model.Product.Price.ToString("C")</h1>
                     </div>
                 </div>
                 <div class="card-body">
@@ -58,7 +58,23 @@
                                             <p><strong>Марка:</strong> @Model.Product.Stamp</p>
                                         }
                                     </div>
-
+                                    @if (User.IsInRole(WC.AdminRole))
+                                    {
+                                        <div class="col-12">
+                                            SqFt:
+                                        </div>
+                                        <div class="col-12">
+                                            @if (Model.ExistsInCart)
+                                            {
+                                                <input asp-for="@Model.Product.TempSqFt" disabled class="form-control" />
+                                            }
+                                            else
+                                            {
+                                                <input asp-for="@Model.Product.TempSqFt" class="form-control" />
+                                            }
+                                            <span asp-validation-for="@Model.Product.TempSqFt" class="text-danger"></span>
+                                        </div>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -87,5 +103,7 @@
     </form>
 </div>
 
-
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
 

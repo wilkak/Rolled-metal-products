@@ -7,16 +7,25 @@ namespace Rolled_metal_products.Models
 {
     public class Product
     {
+        public Product()
+        {
+            TempSqFt = 1;
+        }
+
         [Key]
         public int Id { get; set; }
         [DisplayName("Название")]
         [Required(ErrorMessage = "Не указано имя")]
         public string Name { get; set; }
+
+       // public string ShortDesc { get; set; }
+
         [DisplayName("Описание")]
         [Required(ErrorMessage = "Не указано описание")]
         public string Description { get; set; }
         [DisplayName("Цена")]
-        public double? Price { get; set; }
+        [Range(1, int.MaxValue)]
+        public double Price { get; set; }
 
         [DisplayName("Прошлая цена")]
         public double? OldPrice { get; set; }
@@ -43,6 +52,10 @@ namespace Rolled_metal_products.Models
         public decimal? ExternalDiameter { get; set; }
 
         public string? ImageName { get; set; }
+
+        [NotMapped]
+        [Range(1, 10000, ErrorMessage = "Sqft must be greater than 0.")]
+        public int TempSqFt { get; set; }
         [Display(Name = "Тип категории")]
         public int CategoryId { get; set; }
 

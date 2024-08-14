@@ -24,8 +24,10 @@
         </div>
     </div>
     <br /><br />
-    <table class="table table-bordered table-striped" style="width:100%">
-        <thead>
+    @if (Model.Count() > 0)
+    {
+        <table class="table table-bordered table-striped" style="width:100%">
+            <thead>
             <tr>
                 <th>
                     @Html.DisplayNameFor(model => model.Name)
@@ -35,8 +37,8 @@
                 </th>
                 <th></th>
             </tr>
-        </thead>
-        <tbody>
+            </thead>
+            <tbody>
             @foreach (var item in Model)
             {
                 <tr>
@@ -58,6 +60,11 @@
                     </td>
                 </tr>
             }
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p> No product exists.</p>
+    }
 </div>

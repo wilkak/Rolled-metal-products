@@ -52,7 +52,7 @@
                     <strong>Цена:</strong>
                 </div>
                 <div class="col-6 text-right">
-                    <span class="text-info h5">@Model.Price?.ToString("C")</span>
+                    <span class="text-info h5">@Model.Price.ToString("C")</span>
                     @if (Model.OldPrice.HasValue)
                     {
                         <span class="text-muted h6" style="text-decoration: line-through;">@Model.OldPrice?.ToString("C")</span>
