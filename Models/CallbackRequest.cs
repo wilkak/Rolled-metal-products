@@ -8,7 +8,7 @@ namespace Rolled_metal_products.Models
     {
         [Key]
         public int Id { get; set; }
-
+        
         public string PhoneNumber { get; set; }
 
         public string Name { get; set; }
