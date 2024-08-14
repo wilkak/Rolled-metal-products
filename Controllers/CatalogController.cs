@@ -11,15 +11,6 @@ namespace Rolled_metal_products.Controllers
 {
     public class CatalogController : Controller
     {
-        /*private readonly ILogger<HomeController> _logger;
-        private readonly ApplicationDbContext _context;
-
-        public CatalogController(ILogger<HomeController> logger, ApplicationDbContext context)
-        {
-            _logger = logger;
-            _context = context;
-        }*/
-
         private readonly IProductRepository _prodRepo;
         private readonly ICategoryRepository _catRepo;
         private readonly IWebHostEnvironment _webHostEnvironment;

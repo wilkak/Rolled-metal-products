@@ -11,13 +11,6 @@ namespace Rolled_metal_products.Controllers
     [Authorize(Roles =  WC.AdminRole)]
     public class CategoryController : Controller
     {
-        /* private readonly ApplicationDbContext _db;
-
-         public CategoryController(ApplicationDbContext db)
-         {
-             _db = db;
-         }*/
-
         private readonly ICategoryRepository _catRepo;
         private readonly IProductRepository _prodRepo;
         private readonly IWebHostEnvironment _environment;
