@@ -1,0 +1,168 @@
+﻿@model Rolled_metal_products.Models.ViewModels.CategoryProductsVM
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    ViewData["Title"] = "CategoryProducts";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a asp-controller="Home" asp-action="Index">Главная</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a asp-controller="Catalog" asp-action="Index">Категории</a>
+            </li>
+            @foreach (var category in Model.BreadcrumbCategories)
+            {
+                if (category == Model.BreadcrumbCategories.Last())
+                {
+                    <li class="breadcrumb-item active" aria-current="page">@category.Name</li>
+                }
+                else
+                {
+                    <li class="breadcrumb-item">
+                        <a asp-route-parentId="@category.Id" asp-controller="Catalog" asp-action="Index">@category.Name</a>
+                    </li>
+                }
+            }
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Фильтрация</h4>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        @foreach (var parameter in Model.CategoryParameters)
+                        {
+                            <li class="list-group-item">
+                                <strong>@parameter.Key:</strong>
+                                <ul class="list-unstyled">
+                                    @foreach (var value in parameter.Value)
+                                    {
+                                        <li>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input parameter-checkbox" data-parameter="@parameter.Key" value="@value" id="@parameter.Key-@value" />
+                                                <label class="form-check-label" for="@parameter.Key-@value">@value</label>
+                                            </div>
+                                        </li>
+                                    }
+                                </ul>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <h2>@Model.Category.Name</h2>
+            <div class="mt-4" id="products-list-container" class="row">
+                <partial name="_IndividualProductCard" model="@Model.Products" />
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.parameter-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function () {
+                filterProducts();
+            });
+        });
+
+        function filterProducts() {
+            const selectedParameters = {};
+            document.querySelectorAll('.parameter-checkbox:checked').forEach(checkbox => {
+                const parameter = checkbox.getAttribute('data-parameter');
+                const value = checkbox.value;
+                if (!selectedParameters[parameter]) {
+                    selectedParameters[parameter] = [];
+                }
+                selectedParameters[parameter].push(value);
+            });
+
+            $.ajax({
+                url: '@Url.Action("FilterProducts", "Catalog")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(selectedParameters),
+                headers: {
+                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                },
+                success: function (data) {
+                    $('#products-list-container').html(data);
+                },
+                error: function (xhr, status, error) {
+                    console.error("Ошибка при запросе:", status, error);
+                }
+            });
+
+        }
+    </script>
+    <script>
+        function updateCartCount() {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetCartItemCount", "Cart")',
+                success: function (response) {
+                    $("#cart-count").text(response.count);
+                },
+                error: function () {
+                    alert("Произошла ошибка при обновлении количества товаров в корзине.");
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            $(document).on("click", ".add-to-cart", function () {
+                var productId = $(this).data("product-id");
+                var button = $(this);
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("AddToCartAjax", "Catalog")',
+                    data: { productId: productId },
+                    success: function (response) {
+                        if (response.success) {
+                            button.replaceWith('<button class="btn btn-danger remove-from-cart" data-product-id="' + productId + '" style="padding: 6px 40px;"><i class="fa-solid fa-trash-can"></i></button>');
+                            updateCartCount();
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function () {
+                        alert("Произошла ошибка при добавлении товара в корзину.");
+                    }
+                });
+            });
+
+            $(document).on("click", ".remove-from-cart", function () {
+                var productId = $(this).data("product-id");
+                var button = $(this);
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("RemoveFromCartAjax", "Catalog")',
+                    data: { productId: productId },
+                    success: function (response) {
+                        if (response.success) {
+                            button.replaceWith('<button class="btn btn-primary add-to-cart" data-product-id="' + productId + '" style="padding: 6px 40px;"><i class="fa-solid fa-cart-plus"></i></button>');
+                            updateCartCount();
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function () {
+                        alert("Произошла ошибка при удалении товара из корзины.");
+                    }
+                });
+            });
+        });
+    </script>
+}

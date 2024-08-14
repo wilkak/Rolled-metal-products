@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Rolled_metal_products.Data;
@@ -11,9 +12,11 @@ using Rolled_metal_products.Data;
 namespace Rolled_metal_products.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240814184129_updateproduct")]
+    partial class updateproduct
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -303,7 +306,7 @@ namespace Rolled_metal_products.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("CategoryParameters");
+                    b.ToTable("CategoryParameter");
                 });
 
             modelBuilder.Entity("Rolled_metal_products.Models.InquiryDetail", b =>
@@ -518,7 +521,7 @@ namespace Rolled_metal_products.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductParameters");
+                    b.ToTable("ProductParameter");
                 });
 
             modelBuilder.Entity("Rolled_metal_products.Models.ApplicationUser", b =>

@@ -101,6 +101,14 @@ namespace Rolled_metal_products.Controllers
                return View(prodList);
            }*/
 
+        [HttpPost]
+        public IActionResult GetCartItemCount()
+        {
+            var cart = HttpContext.Session.Get<List<ShoppingCart>>(WC.SessionCart);
+            int count = cart != null ? cart.Count : 0;
+            return Json(new { count = count });
+        }
+
         public IActionResult Index()
         {
 

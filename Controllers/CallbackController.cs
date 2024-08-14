@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Cors.Infrastructure;
+﻿/*using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -22,6 +22,7 @@ using Rolled_metal_products.Models.ViewModels;
 using System.Security.Claims;
 using System.Text;
 using Rolled_metal_products.Repository.IRepository;
+using Syncfusion.EJ2.Schedule;
 
 
 
@@ -33,7 +34,14 @@ namespace Rolled_metal_products.Controllers
     {
         private readonly ILogger<CallbackController> _logger;
         private readonly IEmailSender _emailSender;
-       // private readonly IEmailSender _emailService;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IApplicationUserRepository _userRepo;
+        private readonly IProductRepository _prodRepo;
+        private readonly IInquiryHeaderRepository _inqHRepo;
+        private readonly IInquiryDetailRepository _inqDRepo;
+        private readonly IOrderHeaderRepository _orderHRepo;
+        private readonly IOrderDetailRepository _orderDRepo;
+        // private readonly IEmailSender _emailService;
 
         public CallbackController(ILogger<CallbackController> logger, IEmailSender emailSender)
         {
@@ -41,13 +49,13 @@ namespace Rolled_metal_products.Controllers
             _emailSender = emailSender;
         }
 
-        [HttpGet]
+      /*  [HttpGet]
         public IActionResult RequestCallback()
         {
-            return View();
-        }
+            //return View();
+        }*/
 
-        [HttpPost]
+       /* [HttpPost]
         public async Task<IActionResult> RequestCallback(CallbackRequest request)
         {
             if (ModelState.IsValid)
@@ -55,32 +63,32 @@ namespace Rolled_metal_products.Controllers
                 var Date = DateTime.UtcNow;
                 // Логирование запроса
                 _logger.LogInformation("Received callback request from {Name}, {Email}, {PhoneNumber}, {Date}", request.Name, request.Email, request.PhoneNumber, Date);
-                    
+
                 // Отправка электронного письма
                 var subject = "Request for Callback";
-                
+
                 var message = $"Name: {request.Name}\nEmail: {request.Email}\nPhone Number: {request.PhoneNumber}\n\nMessage:\n{request.Text}\n Date:\n{Date}";
 
                 try
                 {
                     await _emailSender.SendEmailAsync(WC.EmailAdmin, subject, message);
                     // await _emailSender.SendEmailAsync("your-email@example.com", subject, message);
-                   // ViewData["Message"] = "Callback request received and email sent.";
-                    return View();
+                    // ViewData["Message"] = "Callback request received and email sent.";
+                    //return View();
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Error sending email.");
                     ModelState.AddModelError("", "Internal server error");
-                    return View(request);
+                    //return View(request);
                 }
             }
 
-            return View(request);
+            //return View(request);
         }
+       */
 
-
-        public IActionResult Summary()
+      /*  public IActionResult Summary()
         {
 
 
@@ -141,7 +149,7 @@ namespace Rolled_metal_products.Controllers
             List<int> prodInCart = shoppingCartList.Select(i => i.ProductId).ToList();
             IEnumerable<Product> prodList = _prodRepo.GetAll(u => prodInCart.Contains(u.Id));
 
-            ProductUserVM = new ProductUserVM()
+            ProductUserVM a = new ProductUserVM()
             {
                 ApplicationUser = applicationUser,
             };
@@ -151,13 +159,13 @@ namespace Rolled_metal_products.Controllers
             {
                 Product prodTemp = _prodRepo.FirstOrDefault(u => u.Id == cartObj.ProductId);
                 prodTemp.TempSqFt = cartObj.SqFt;
-                ProductUserVM.ProductList.Add(prodTemp);
+                a.ProductList.Add(prodTemp);
             }
 
 
             return View(ProductUserVM);
-        }
-
+        }*/
+      /*
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ActionName("Summary")]
@@ -231,7 +239,7 @@ namespace Rolled_metal_products.Controllers
                                else
                                {
                                    orderHeader.OrderStatus = WC.StatusCancelled;
-                               }*/
+                               }
                 _orderHRepo.Save();
                 return RedirectToAction(nameof(InquiryConfirmation), new { id = orderHeader.Id });
 
@@ -250,7 +258,7 @@ namespace Rolled_metal_products.Controllers
                 {
                     HtmlBody = sr.ReadToEnd();
                 }
-               
+
 
                 StringBuilder productListSB = new StringBuilder();
                 foreach (var prod in ProductUserVM.ProductList)
@@ -342,6 +350,11 @@ namespace Rolled_metal_products.Controllers
                       _logger.LogError(ex, "Ошибка при отправке заказа звонка");
                       return StatusCode(500, "Произошла ошибка. Пожалуйста, повторите попытку позднее.");
                   }
-              }*/
+              }
         }
-}
+
+        */
+      /*
+    }
+
+}*/

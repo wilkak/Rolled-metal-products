@@ -1,67 +1,60 @@
-﻿@model Rolled_metal_products.Models.Product
-﻿
-<style>
-    .card-img-top {
-        width: 100%;
-        height: 200px; 
-        object-fit: cover; 
-    }
-</style>
+﻿@model IEnumerable<Rolled_metal_products.Models.ViewModels.ProductVM>
 
-<div class="col-lg-4 col-md-6 pb-4 filter @Model.Category.Name.Replace(' ', '_')">
-    <div class="card bg-white rounded shadow-sm" style="border:1px solid #222;">
-        <div class="card-body px-3 pt-3 pb-1">
-            <div class="text-center">
-                <img class="card-img-top img-fluid d-block mx-auto mb-3" src="@($"{WC.ImagePath}{Model.ImageName}")" alt="Card" />
-                <label class="h5">@Model.Name</label>
-            </div>
-            <hr />
-            <div style="font-size: 13px; min-height: 70px;">
-                @if (Model.Width.HasValue)
-                {
-                    <div><strong>Ширина:</strong> @Model.Width?.ToString()</div>
-                }
-                @if (Model.Diameter.HasValue)
-                {
-                    <div><strong>Диаметр:</strong> @Model.Diameter?.ToString()</div>
-                }
-                @if (Model.Thickness.HasValue)
-                {
-                    <div><strong>Толщина:</strong> @Model.Thickness?.ToString()</div>
-                }
-                @if (Model.ExternalDiameter.HasValue)
-                {
-                    <div><strong>Наружный диаметр:</strong> @Model.ExternalDiameter?.ToString()</div>
-                }
-                @if (!string.IsNullOrEmpty(Model.Standard))
-                {
-                    <div><strong>ГОСТ:</strong> @Model.Standard</div>
-                }
-                @if (!string.IsNullOrEmpty(Model.TypeOfAlloy))
-                {
-                    <div><strong>Тип сплава:</strong> @Model.TypeOfAlloy</div>
-                }
-                @if (!string.IsNullOrEmpty(Model.Stamp))
-                {
-                    <div><strong>Марка:</strong> @Model.Stamp</div>
-                }
-            </div>
-            <hr />
-            <div class="row">
-                <div class="col-6">
-                    <strong>Цена:</strong>
+<div class="row" id="products-list">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-4 product-item mb-4" data-product-id="@item.Product.Id">
+            <div class="card h-100">
+                <div class="card-header p-0" style="height: 200px; overflow: hidden;">
+                    <a asp-action="ProductDetails" asp-controller="Catalog" asp-route-id="@item.Product.Id">
+                        <img src="@WC.ImagePath@item.Product.ImageName" class="card-img-top" alt="@item.Product.Name" style="height: 100%; width: 100%; object-fit: cover;">
+                    </a>
                 </div>
-                <div class="col-6 text-right">
-                    <span class="text-info h5">@Model.Price.ToString("C")</span>
-                    @if (Model.OldPrice.HasValue)
-                    {
-                        <span class="text-muted h6" style="text-decoration: line-through;">@Model.OldPrice?.ToString("C")</span>
-                    }
+                <div class="card-body">
+                    <div class="mb-2">
+                        <h6 class="card-title">@item.Product.Name</h6>
+                    </div>
+                    <hr>
+                    <div>
+                        <div class="row">
+                            @foreach (var characteristic in item.Product.ProductParameters)
+                            {
+                                <div class="col-6">
+                                    <p class="mb-1" style="font-size: 0.875rem;"><strong>@characteristic.Name:</strong></p>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <p class="mb-1" style="font-size: 0.875rem;">@characteristic.Value</p>
+                                </div>
+                            }
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="text-center mt-3">
-                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-dark form-control btn-sm p-2" style="height:40px">Подробнее</a>
+                <div class="card-footer">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="h5">@item.Product.Price.ToString("C")</span>
+                            @if (item.Product.OldPrice != null)
+                            {
+                                <span class="text-muted text-decoration-line-through">@item.Product.OldPrice?.ToString("C")</span>
+                            }
+                        </div>
+                        @if (item.ExistsInCart)
+                        {
+                            <button class="btn btn-danger remove-from-cart" data-product-id="@item.Product.Id" style="padding: 6px 40px;">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-primary add-to-cart" data-product-id="@item.Product.Id" style="padding: 6px 40px;">
+                                <i class="fa-solid fa-cart-plus"></i>
+                            </button>
+                        }
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
+    }
 </div>
+
+

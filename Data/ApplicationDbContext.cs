@@ -8,12 +8,15 @@ namespace Rolled_metal_products.Data
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) 
         {
-            
+           
         }
 
         public DbSet<Category> Categories { get; set; }
 
+        public DbSet<CategoryParameter> CategoryParameters { get; set; }
+
         public DbSet<Product> Products { get; set; }
+        public DbSet<ProductParameter> ProductParameters { get; set; }
 
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<InquiryHeader> InquiryHeader { get; set; }

@@ -47,14 +47,15 @@
     <link rel="stylesheet" href="~/Rolled_metal_products.styles.css" asp-append-version="true" />
      <script src="https://kit.fontawesome.com/8dbe653448.js" crossorigin="anonymous"></script>
     *@
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
-    <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" crossorigin="anonymous" />
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" />
-    <link href="~/FontAwesome/css/all.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.syncfusion.com/ej2/material.css" />
 
-    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Rolled_metal_products.styles.css" asp-append-version="true" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Roboto:wght@900&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/8dbe653448.js" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
 
 </head>
 <body>
@@ -67,13 +68,15 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <partial name="_LoginPartial" />
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Главная</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Конфиденциальность</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Catalog" asp-action="Index">Каталог</a>
                         </li>
                         @if (User.IsInRole(WC.AdminRole))
                         {
@@ -81,14 +84,13 @@
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Менеджмент контента
                                 </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-
-                                    <a class="dropdown-item" asp-area="" asp-controller="Category" asp-action="Index">Категории</a>
-                                    <a class="dropdown-item" asp-area="" asp-controller="Product" asp-action="Index">Товары</a>
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Register">Доб. админа</a>
-                            </div>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Category" asp-action="Index">Каталог</a></li>
+                                    <div class="dropdown-devider"></div>
+                                    <li><a class="dropdown-item" id="register" asp-area="Identity" asp-page="/Account/Register">Доб. админа</a></li>
+                                </ul>
                             </li>
+
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Order/Inquiry Management
@@ -99,24 +101,30 @@
                                 </div>
                             </li>
                         }
+
+
                         <li class="nav-item">
                             @if (HttpContextAccessor.HttpContext.Session.Get<List<ShoppingCart>>(WC.SessionCart) != null)
                             {
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Cart" asp-action="Index">
+                                <a asp-controller="Cart" asp-action="Index" id="cart-link" class="nav-link text-dark">
                                     @{
                                         var count = HttpContextAccessor.HttpContext.Session.Get<List<ShoppingCart>>(WC.SessionCart).Count;
                                     }
-                                    <i class="fa-solid fa-cart-shopping"></i> &nbsp; (@count)
+                                    <i class="fa-solid fa-cart-shopping"></i> &nbsp; (<span id="cart-count">@count</span>)
                                 </a>
                             }
                             else
                             {
-                                <a class="nav-link text-dark" href="#">
-                                    <i class="fa-solid fa-cart-shopping"></i> &nbsp; (0)
+                                <a asp-controller="Cart" asp-action="Index" id="cart-link" class="nav-link text-dark">
+                                    @{
+                                        var count = 0;
+                                    }
+                                    <i class="fa-solid fa-cart-shopping"></i> &nbsp; (<span id="cart-count">@count</span>)
                                 </a>
                             }
                         </li>
                     </ul>
+                    <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>

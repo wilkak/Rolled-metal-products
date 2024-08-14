@@ -4,66 +4,67 @@
     ViewData["Title"] = "Категории";
 }
 
-<style>
-    .btn-create{
-        text-align: center;
-        line-height: 30px;
-    }
-</style>
-
 <div class="container p-3">
     <div class="row pt-4">
         <div class="col-6">
-            <h2 class="text-primary">Список категорий</h2>
+            <h2 class="text-primary">Категории</h2>
         </div>
-        <div class="col-6 d-flex justify-content-end">
-            <a class="btn btn-primary btn-create" asp-action="Create" asp-controller="Category">
+        <div class="col-6 text-end">
+            <a class="btn btn-primary" asp-action="Create" asp-controller="Category">
                 <i class="fa-solid fa-plus"></i>&nbsp; Добавить категорию
             </a>
         </div>
     </div>
+
     <br /><br />
+
     @if (Model.Count() > 0)
     {
         <table class="table table-bordered table-striped" style="width:100%">
             <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Name)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.DisplayOrder)
-                </th>
-                <th></th>
-            </tr>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Name)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DisplayOrder)
+                    </th>
+                    <th></th>
+                </tr>
             </thead>
             <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td width="50%">
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </td>
-                    <td width="50%">
-                        @Html.DisplayFor(modelItem => item.DisplayOrder)
-                    </td>
-                    <td class="text-center">
-                        <div class="btn-group">
-                            <a class="btn btn-primary mx-2" asp-action="Edit" asp-controller="Category" asp-route-id="@item.Id">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                            </a>
-                            <a class="btn btn-danger mx-2" asp-action="Delete" asp-controller="Category" asp-route-id="@item.Id">
-                                <i class="fa-solid fa-trash"></i>
-                            </a>
-                        </div>
-                    </td>
-                </tr>
-            }
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td width="50%">@item.Name</td>
+                        <td width="30%">@item.DisplayOrder</td>
+                        <td class="text-center">
+                            <div class="btn-group">
+                                <a class="btn btn-primary mx-2" asp-action="Edit" asp-controller="Category" asp-route-id="@item.Id" data-bs-toggle="tooltip" data-bs-placement="top" title="Редактировать категорию">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </a>
+                                <a class="btn btn-danger mx-2" asp-action="Delete" asp-controller="Category" asp-route-id="@item.Id" data-bs-toggle="tooltip" data-bs-placement="top" title="Удалить категорию">
+                                    <i class="fa-solid fa-trash"></i>
+                                </a>
+                                <a class="btn btn-secondary mx-2" asp-action="Create" asp-controller="Category" asp-route-parentId="@item.Id" data-bs-toggle="tooltip" data-bs-placement="top" title="Добавить подкатегорию">
+                                    <i class="fa-solid fa-layer-group"></i>
+                                </a>
+                                <a class="btn btn-info mx-2" asp-action="Details" asp-controller="Category" asp-route-id="@item.Id" data-bs-toggle="tooltip" data-bs-placement="top" title="Подробнее">
+                                    <i class="fa-solid fa-info-circle"></i>
+                                </a>
+                                <a class="btn btn-success mx-2" asp-action="Create" asp-controller="Product" asp-route-categoryId="@item.Id" data-bs-toggle="tooltip" data-bs-placement="top" title="Добавить товар">
+                                    <i class="fa-solid fa-plus"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
             </tbody>
         </table>
     }
     else
     {
-        <p> No category exists.</p>
+        <p> Категорий нет.</p>
     }
+
 </div>

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Rolled_metal_products.Data;
@@ -11,9 +12,11 @@ using Rolled_metal_products.Data;
 namespace Rolled_metal_products.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240814152905_test2")]
+    partial class test2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -274,36 +277,9 @@ namespace Rolled_metal_products.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("ParentId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("ParentId");
 
                     b.ToTable("Categories");
-                });
-
-            modelBuilder.Entity("Rolled_metal_products.Models.CategoryParameter", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
-
-                    b.ToTable("CategoryParameters");
                 });
 
             modelBuilder.Entity("Rolled_metal_products.Models.InquiryDetail", b =>
@@ -475,6 +451,12 @@ namespace Rolled_metal_products.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<decimal?>("Diameter")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal?>("ExternalDiameter")
+                        .HasColumnType("numeric");
+
                     b.Property<string>("ImageName")
                         .HasColumnType("text");
 
@@ -488,37 +470,26 @@ namespace Rolled_metal_products.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("double precision");
 
+                    b.Property<string>("Stamp")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Standard")
+                        .HasColumnType("text");
+
+                    b.Property<decimal?>("Thickness")
+                        .HasColumnType("numeric");
+
+                    b.Property<string>("TypeOfAlloy")
+                        .HasColumnType("text");
+
+                    b.Property<decimal?>("Width")
+                        .HasColumnType("numeric");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Products");
-                });
-
-            modelBuilder.Entity("Rolled_metal_products.Models.ProductParameter", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("ProductParameters");
                 });
 
             modelBuilder.Entity("Rolled_metal_products.Models.ApplicationUser", b =>
@@ -581,26 +552,6 @@ namespace Rolled_metal_products.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Rolled_metal_products.Models.Category", b =>
-                {
-                    b.HasOne("Rolled_metal_products.Models.Category", "ParentCategory")
-                        .WithMany("SubCategories")
-                        .HasForeignKey("ParentId");
-
-                    b.Navigation("ParentCategory");
-                });
-
-            modelBuilder.Entity("Rolled_metal_products.Models.CategoryParameter", b =>
-                {
-                    b.HasOne("Rolled_metal_products.Models.Category", "Category")
-                        .WithMany("CategoryParameters")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("Rolled_metal_products.Models.InquiryDetail", b =>
@@ -672,29 +623,6 @@ namespace Rolled_metal_products.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("Rolled_metal_products.Models.ProductParameter", b =>
-                {
-                    b.HasOne("Rolled_metal_products.Models.Product", "Product")
-                        .WithMany("ProductParameters")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("Rolled_metal_products.Models.Category", b =>
-                {
-                    b.Navigation("CategoryParameters");
-
-                    b.Navigation("SubCategories");
-                });
-
-            modelBuilder.Entity("Rolled_metal_products.Models.Product", b =>
-                {
-                    b.Navigation("ProductParameters");
                 });
 #pragma warning restore 612, 618
         }

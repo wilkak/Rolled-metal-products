@@ -13,6 +13,6 @@ namespace Rolled_metal_products.Repository.IRepository
     {
         void Update(Product obj);
 
-        IEnumerable<SelectListItem> GetAllDropdownList(string obj);
+        void DeleteExistingParameters(int id);
     }
 }

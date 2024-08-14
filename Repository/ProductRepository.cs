@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Rolled_metal_products.Data;
 using Rolled_metal_products.Models;
+using Microsoft.EntityFrameworkCore;
+using Rolled_metal_products.Models.ViewModels;
 
 namespace Rolled_metal_products.Repository
 {
@@ -17,6 +19,27 @@ namespace Rolled_metal_products.Repository
         public ProductRepository(ApplicationDbContext db): base(db)
         {
             _db = db;
+        }
+
+        public Category GetCategory(int id)
+        {
+            var category = _db.Categories
+                .Include(c => c.CategoryParameters)
+                .FirstOrDefault(c => c.Id == id);
+
+            if (category == null)
+            {
+                return null;
+            }
+
+            return category;
+        }
+
+        public void DeleteExistingParameters(int id)
+        {
+            var existingParameters = _db.ProductParameters.Where(pp => pp.ProductId == id).ToList();
+            _db.ProductParameters.RemoveRange(existingParameters);
+            _db.SaveChanges();
         }
 
         public IEnumerable<SelectListItem> GetAllDropdownList(string obj)

@@ -18,6 +18,7 @@ namespace Rolled_metal_products.Initializer
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
+
         public DbInitializer(ApplicationDbContext db, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             _db = db;

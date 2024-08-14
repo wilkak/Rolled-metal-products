@@ -10,14 +10,14 @@
             <div class="container row">
                 <div class="col -8">
                     <div class="card mt-4">
-                        <div class="card-header bg-dark text-light ml-0 row container" style="margin-left: 0; ">
+                        <div class="card-header ml-0 row container" style="margin-left: 0; ">
                             <div class="col-6">
                                 <i class="fa fa-shopping-cart"></i> &nbsp;
                                 Корзина
                             </div>
-                            <div class="col-6 text-right">
-                                <a asp-action="Clear" class="btn btn-outline-warning btn-sm">Clear Cart</a>
-                                <a asp-action="Index" asp-controller="Home" class="btn btn-outline-info btn-sm">Продолжить покупки</a>
+                            <div class="col-6 text-end">
+                                <a asp-action="Clear" class="btn btn-warning btn-sm">Отчистить корзину</a>
+                                <a asp-action="Index" asp-controller="Home" class="btn btn-info btn-sm">Продолжить покупки</a>
                             </div>
                         </div>
                         <div class="card-body">
@@ -46,7 +46,7 @@
                                             Sqft
                                         </div>
                                         <div class="col-6 col-lg-2">
-                                            Total Price
+                                            Общая цена
                                         </div>
                                     }
                                     <div class="col-6 col-sm-4 col-lg-1">
@@ -70,28 +70,27 @@
 
                                         <div class="col-8 col-lg-3">
                                             <h5>@Model[i].Name</h5>
-                                            <div style="font-size:11px;">@Model[i].Description</div>
                                         </div>
                                     }
                                     else
                                     {
                                         <div class="col-8 col-lg-7">
                                             <h5>@Model[i].Name</h5>
-                                            <div style="font-size:11px;">@Model[i].Description</div>
                                         </div>
                                     }
                                     <div class="col-3 col-lg-2 pt-lg-4" style="font-size:11px;">
-                                        <span style="font-size:17px;"> $@Model[i].Price</span>/ sqft
+                                        <span style="font-size:17px;"> @Model[i].Price.ToString("C")</span>/ sqft
 
                                     </div>
                                     @if (User.IsInRole(WC.AdminRole))
                                     {
                                         <div class="col-4 col-lg-2 pt-lg-4" style="font-size:11px;">
                                             <input type="text" asp-for="@Model[i].TempSqFt" class="form-control" />
-                                            <span asp-validation-for="@Model[i].TempSqFt" class="text-danger"></span>
+                                            <span asp-validation-for="@Model[i].
+" class="text-danger"></span>
                                         </div>
                                         <div class="col-3 col-lg-2 pt-lg-4" style="font-size:11px;">
-                                            <span style="font-size:17px;"> $@(Model[i].Price* Model[i].TempSqFt)</span>
+                                            <span style="font-size:17px;">@(Model[i].Price * Model[i].TempSqFt) ₽</span>
                                             
 
                                         </div>
@@ -110,7 +109,7 @@
                             {
                                 <div class="row">
                                     <div class="col-12 text-right pr-4" style="color:#821f3d">
-                                        Order Total : @string.Format("{0:c}", orderTotal)
+                                        Общая сумма : @string.Format("{0:c}", orderTotal)
                                     </div>
                                 </div>
                             }
@@ -144,7 +143,7 @@
                                 <div class="col-6 col-md-3 offset-md-6">
                                     @if (User.IsInRole(WC.AdminRole))
                                     {
-                                        <input type="submit" asp-action="UpdateCart" formmethod="post" name="Update" value="Update Cart"
+                                        <input type="submit" asp-action="UpdateCart" formmethod="post" name="Update" value="Обновить корзину"
                                                class="btn btn-info form-control" />
                                     }
                                 </div>
