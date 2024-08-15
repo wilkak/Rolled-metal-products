@@ -26,10 +26,9 @@ using Rolled_metal_products.Repository.IRepository;
 
 
 
-
 namespace Rolled_metal_products.Controllers
 {
-    public class CallbackController : ControllerBase
+    public class CallbackController : Controller
     {
         private readonly ILogger<CallbackController> _logger;
         private readonly IEmailSender _emailSender;
@@ -558,7 +557,8 @@ namespace Rolled_metal_products.Controllers
                 _inqDRepo.Save();
                 TempData[WC.Success] = "Inquiry submitted successfully";
             }
-            return RedirectToAction(nameof(InquiryConfirmation), new { id = orderHeader.Id });
+            return RedirectToAction(nameof(InquiryConfirmation));
+
 
         }
 
@@ -599,7 +599,7 @@ namespace Rolled_metal_products.Controllers
             }
 
             HttpContext.Session.Set(WC.SessionCart, shoppingCartList);
-            return RedirectToAction(nameof(Sum));
+            return RedirectToAction(nameof(Summary));
         }
         public IActionResult InquiryConfirmation(int id = 0)
         {

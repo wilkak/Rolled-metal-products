@@ -1,0 +1,31 @@
+﻿@model IEnumerable<Rolled_metal_products.Models.CallbackRequest>
+
+@{
+    ViewData["Title"] = "Callback Requests";
+}
+
+<h2>Callback Requests</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone Number</th>
+            <th>Text</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var callback in Model)
+        {
+            <tr>
+                <td>@callback.Name</td>
+                <td>@callback.Email</td>
+                <td>@callback.PhoneNumber</td>
+                <td>@callback.Text</td>
+                <td>@callback.Date</td>
+            </tr>
+        }
+    </tbody>
+</table>
