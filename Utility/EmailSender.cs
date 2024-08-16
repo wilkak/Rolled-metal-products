@@ -32,7 +32,7 @@ namespace Rolled_metal_products.Utility
    emailMessage.Subject = subject;
    var bodyBuilder = new BodyBuilder { HtmlBody = body };
    emailMessage.Body = bodyBuilder.ToMessageBody();
-
+   
    using (var client = new SmtpClient())
    {
     await client.ConnectAsync(_smtpSettings.Server, _smtpSettings.Port,

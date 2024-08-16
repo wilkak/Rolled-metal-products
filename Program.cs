@@ -13,6 +13,7 @@ using Rolled_metal_products.Utility;
 using Rolled_metal_products.Repository;
 using Rolled_metal_products.Repository.IRepository;
 using AspNet.Security.OAuth.Yandex;
+using Rolled_metal_products.Models;
 
 namespace Rolled_metal_products
 {
@@ -51,9 +52,10 @@ namespace Rolled_metal_products
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<IInquiryHeaderRepository, InquiryHeaderRepository>();
             builder.Services.AddScoped<IInquiryDetailRepository, InquiryDetailRepository>();
-
+            builder.Services.AddScoped<IInquiryDetailRepository, InquiryDetailRepository>();
             builder.Services.AddScoped<IOrderHeaderRepository, OrderHeaderRepository>();
             builder.Services.AddScoped<IOrderDetailRepository, OrderDetailRepository>();
+            builder.Services.AddScoped<ICallbackRequestRepository, RequestCallbackRepository>();
             builder.Services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
             builder.Services.AddScoped<IDbInitializer, DbInitializer>();
             /* builder.Services.AddAuthentication().AddGoogle(googleOptions =>

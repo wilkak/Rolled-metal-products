@@ -55,7 +55,7 @@ namespace Rolled_metal_products.Controllers
             {
                 _catRepo.Add(model);
                 _catRepo.Save();
-                TempData[WC.Success] = "Category created successfully";
+                TempData[WC.Success] = "Категория успешно создана";
                 if (model.Category.ParentId == 0 || model.Category.ParentId == null)
                 {
                     return RedirectToAction(nameof(Index));
@@ -66,7 +66,7 @@ namespace Rolled_metal_products.Controllers
                 }
 
             }
-            TempData[WC.Error] = "Error while creating category";
+            TempData[WC.Error] = "Ошибка при создании категории";
             return View(model);
         }
 
@@ -95,7 +95,7 @@ namespace Rolled_metal_products.Controllers
             {
                 _catRepo.Update(viewModel);
                 _catRepo.Save();
-                TempData[WC.Success] = "Action completed successfully";
+                TempData[WC.Success] = "Изменение успешно завершено";
                 return RedirectToAction("Index");
             }
             return View(viewModel);

@@ -1,5 +1,16 @@
 ﻿@model IEnumerable<Rolled_metal_products.Models.ViewModels.ProductVM>
 
+<style>
+    .product-item .card {
+        border: none;
+        border-radius: 20px;
+        overflow: hidden;
+        -webkit-box-shadow: 0px 0px 26px 1px rgba(34, 60, 80, 0.2);
+        -moz-box-shadow: 0px 0px 26px 1px rgba(34, 60, 80, 0.2);
+        box-shadow: 0px 0px 26px 1px rgba(34, 60, 80, 0.2);
+    }
+</style>
+
 <div class="row" id="products-list">
     @foreach (var item in Model)
     {
@@ -28,26 +39,32 @@
                             }
                         </div>
                     </div>
-                </div>
-                <div class="card-footer">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <span class="h5">@item.Product.Price.ToString("C")</span>
-                            @if (item.Product.OldPrice != null)
-                            {
-                                <span class="text-muted text-decoration-line-through">@item.Product.OldPrice?.ToString("C")</span>
-                            }
+                    <hr>
+                    <div>
+                        <div class="row">
+                            <div class="col-6">
+                                <p class="mb-1" style="font-size: 0.875rem;"><strong>Цена</strong></p>
+                            </div>
+                            <div class="col-6 text-end">
+                                @if (item.Product.OldPrice != null)
+                                {
+                                    <span class="text-muted text-decoration-line-through">@item.Product.OldPrice?.ToString("C")</span>
+                                }
+                                <p class="mb-1" style="font-size: 0.875rem;">@item.Product.Price.ToString("C")</p>
+                            </div>
                         </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center" style="margin-top: 15px;">
                         @if (item.ExistsInCart)
                         {
-                            <button class="btn btn-danger remove-from-cart" data-product-id="@item.Product.Id" style="padding: 6px 40px;">
-                                <i class="fa-solid fa-trash-can"></i>
+                            <button class="btn btn-danger shadow remove-from-cart" data-product-id="@item.Product.Id" style="width: 100%;border-radius: 10px;">
+                                <i class="fa-solid fa-check"></i>  &nbsp; Добавлено
                             </button>
                         }
                         else
                         {
-                            <button class="btn btn-primary add-to-cart" data-product-id="@item.Product.Id" style="padding: 6px 40px;">
-                                <i class="fa-solid fa-cart-plus"></i>
+                            <button class="btn btn-primary shadow add-to-cart" data-product-id="@item.Product.Id" style="width: 100%;border-radius: 10px;">
+                                <i class="fa-solid fa-cart-plus"></i>  &nbsp; Купить
                             </button>
                         }
                     </div>
@@ -56,5 +73,3 @@
         </div>
     }
 </div>
-
-

@@ -59,6 +59,45 @@ namespace Rolled_metal_products.Controllers
         }
 
         // POST - CREATE
+        /* [HttpPost]
+         public IActionResult Create(CreateProductVM viewModel)
+         {
+             if (ModelState.IsValid)
+             {
+                 var files = HttpContext.Request.Form.Files;
+                 string webRootPath = _webHostEnvironment.WebRootPath;
+
+                 string upload = webRootPath + WC.ImagePath;
+                 string fileName = Guid.NewGuid().ToString();
+                 string extension = Path.GetExtension(files[0].FileName);
+
+                 using (var fileStream = new FileStream(Path.Combine(upload, fileName + extension), FileMode.Create))
+                 {
+                     files[0].CopyTo(fileStream);
+                 }
+
+                 viewModel.Product.ImageName = fileName + extension;
+
+                 var product = viewModel.Product;
+
+                 product.ProductParameters = viewModel.CategoryParameters.Select(pp => new ProductParameter
+                 {
+                     ProductId = viewModel.Product.Id,
+                     Name = pp.Name,
+                     Value = pp.Value
+                 }).ToList();
+
+                 _prodRepo.Add(product);
+                 _prodRepo.Save();
+
+                 return RedirectToAction("Details", "Category", new { id = product.CategoryId });
+                 //return RedirectToAction("","Index");
+             }
+
+             return View(viewModel);
+         }*/
+
+        // POST - CREATE
         [HttpPost]
         public IActionResult Create(CreateProductVM viewModel)
         {
@@ -66,12 +105,18 @@ namespace Rolled_metal_products.Controllers
             {
                 var files = HttpContext.Request.Form.Files;
                 string webRootPath = _webHostEnvironment.WebRootPath;
+                string uploadPath = Path.Combine(webRootPath, "images", "product");
 
-                string upload = webRootPath + WC.ImagePath;
+                // Проверка существования директории и создание при необходимости
+                if (!Directory.Exists(uploadPath))
+                {
+                    Directory.CreateDirectory(uploadPath);
+                }
+
                 string fileName = Guid.NewGuid().ToString();
                 string extension = Path.GetExtension(files[0].FileName);
 
-                using (var fileStream = new FileStream(Path.Combine(upload, fileName + extension), FileMode.Create))
+                using (var fileStream = new FileStream(Path.Combine(uploadPath, fileName + extension), FileMode.Create))
                 {
                     files[0].CopyTo(fileStream);
                 }
@@ -91,7 +136,6 @@ namespace Rolled_metal_products.Controllers
                 _prodRepo.Save();
 
                 return RedirectToAction("Details", "Category", new { id = product.CategoryId });
-                //return RedirectToAction("","Index");
             }
 
             return View(viewModel);
@@ -219,7 +263,7 @@ namespace Rolled_metal_products.Controllers
             {
                 _prodRepo.Remove(obj);
                 _prodRepo.Save();
-                TempData[WC.Success] = "Action completed successfully";
+                TempData[WC.Success] = "Успешно удалено";
                 return RedirectToAction("Details", "Category", new { id = obj.CategoryId });
             }
             return View(obj);

@@ -70,7 +70,7 @@ namespace Rolled_metal_products.Controllers
             _inqDRepo.RemoveRange(inquiryDetails);
             _inqHRepo.Remove(inquiryHeader);
             _inqHRepo.Save();
-            TempData[WC.Success] = "Action completed successfully";
+            TempData[WC.Success] = "Успешно удалено!";
             return RedirectToAction(nameof(Index));
         }
 

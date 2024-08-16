@@ -77,7 +77,7 @@ namespace Rolled_metal_products.Controllers
             OrderHeader orderHeader = _orderHRepo.FirstOrDefault(u => u.Id == OrderVM.OrderHeader.Id);
             orderHeader.OrderStatus = WC.StatusInProcess;
             _orderHRepo.Save();
-            TempData[WC.Success] = "Order is In Process";
+            TempData[WC.Success] = "Заказ находится в процессе оформления";
             return RedirectToAction(nameof(Index));
         }
 
@@ -88,7 +88,7 @@ namespace Rolled_metal_products.Controllers
             orderHeader.OrderStatus = WC.StatusShipped;
             orderHeader.ShippingDate = DateTime.Now;
             _orderHRepo.Save();
-            TempData[WC.Success] = "Order Shipped Successfully";
+            TempData[WC.Success] = "Заказ успешно отправлен";
             return RedirectToAction(nameof(Index));
         }
 
@@ -112,7 +112,7 @@ namespace Rolled_metal_products.Controllers
             }*/
             orderHeader.OrderStatus = WC.StatusRefunded;
             _orderHRepo.Save();
-            TempData[WC.Success] = "Order Cancelled Successfully";
+            TempData[WC.Success] = "Заказ успешно отменен";
             return RedirectToAction(nameof(Index));
         }
 
@@ -129,7 +129,7 @@ namespace Rolled_metal_products.Controllers
             orderHeaderFromDb.Email = OrderVM.OrderHeader.Email;
 
             _orderHRepo.Save();
-            TempData[WC.Success] = "Order Details Updated Successfully";
+            TempData[WC.Success] = "Информация о заказе успешно обновлена";
 
             return RedirectToAction("Details", "Order", new { id = orderHeaderFromDb.Id });
         }

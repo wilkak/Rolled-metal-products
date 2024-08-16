@@ -201,7 +201,7 @@ namespace Rolled_metal_products.Controllers
 
             shoppingCartList.Add(new ShoppingCart { ProductId = id, SqFt = detailsVM.Product.TempSqFt });
             HttpContext.Session.Set(WC.SessionCart, shoppingCartList);
-            TempData[WC.Success] = "Item add to cart successfully";
+            TempData[WC.Success] = "Товар успешно добавлен в корзину";
             return RedirectToAction("ProductDetails", new { id = id });
         }
 
@@ -221,7 +221,7 @@ namespace Rolled_metal_products.Controllers
             }
 
             HttpContext.Session.Set(WC.SessionCart, shoppingCartList);
-            TempData[WC.Success] = "Item removed from cart successfully";
+            TempData[WC.Success] = "Товар успешно удален из корзины";
             return RedirectToAction("ProductDetails", new { id = id });
         }
 

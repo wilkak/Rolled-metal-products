@@ -259,7 +259,7 @@ namespace Rolled_metal_products.Controllers
                                                                          + "templates" + Path.DirectorySeparatorChar
                                                                              .ToString() +
                                                                          "Inquiry.html";
-                var subject = "New Inquiry";
+                var subject = "Новый заказ";
                 string HtmlBody = "";
                 using (StreamReader sr = System.IO.File.OpenText(PathToTemplate))
                 {
@@ -270,7 +270,7 @@ namespace Rolled_metal_products.Controllers
                 foreach (var prod in ProductUserVM.ProductList)
                 {
                     productListSB.Append(
-                        $" - Name: {prod.Name} <span style='font-size:14px;'> (ID: {prod.Id})</span><br />");
+                        $" - Название: {prod.Name} <span style='font-size:14px;'> (ID: {prod.Id})</span><br />");
                 }
 
                 string messageBody = string.Format(HtmlBody,
@@ -283,6 +283,7 @@ namespace Rolled_metal_products.Controllers
 
                 InquiryHeader inquiryHeader = new InquiryHeader()
                 {
+                    ApplicationUserId = "anonymous",
                     FullName = ProductUserVM.ApplicationUser.FullName,
                     Email = ProductUserVM.ApplicationUser.Email,
                     PhoneNumber = ProductUserVM.ApplicationUser.PhoneNumber,
@@ -303,7 +304,7 @@ namespace Rolled_metal_products.Controllers
                 }
 
                 _inqDRepo.Save();
-                TempData[WC.Success] = "Inquiry submitted successfully";
+                TempData[WC.Success] = "Заказ успешно отправлен!";
 
                 return RedirectToAction(nameof(InquiryConfirmation));
             }
@@ -352,7 +353,7 @@ namespace Rolled_metal_products.Controllers
                                                                      + "templates" + Path.DirectorySeparatorChar
                                                                          .ToString() +
                                                                      "Inquiry.html";
-                var subject = "New Inquiry";
+                var subject = "Новый заказ";
                 string HtmlBody = "";
                 using (StreamReader sr = System.IO.File.OpenText(PathToTemplate))
                 {
@@ -364,7 +365,7 @@ namespace Rolled_metal_products.Controllers
                 foreach (var prod in ProductUserVM.ProductList)
                 {
                     productListSB.Append(
-                        $" - Name: {prod.Name} <span style='font-size:14px;'> (ID: {prod.Id})</span><br />");
+                        $" - Название: {prod.Name} <span style='font-size:14px;'> (ID: {prod.Id})</span><br />");
                 }
 
                 string messageBody = string.Format(HtmlBody,
@@ -402,7 +403,7 @@ namespace Rolled_metal_products.Controllers
                 }
 
                 _inqDRepo.Save();
-                TempData[WC.Success] = "Inquiry submitted successfully";
+                TempData[WC.Success] = "Заказ успешно отправлен!";
             }
             return RedirectToAction(nameof(InquiryConfirmation));
 
