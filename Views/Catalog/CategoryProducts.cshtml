@@ -70,8 +70,126 @@
         font-size: 14px;
     }
 
+    #filterButton{
+        width: 100%;
+    }
+
+    #closeFilterButton {
+        display:none;
+        width: 100%;
+    }
+
+    #closeFilterButton.active {
+        display: block;
+    }
+
 </style>
 
+<div class="container mt-4">
+    <div class="row">
+        <!-- Кнопка для фильтров в мобильной версии -->
+        <div class="d-md-none mb-3">
+            <button class="btn btn-primary shadow" id="filterButton"><i class="fa-solid fa-filter"></i> Фильтры</button>
+        </div>
+
+        <!-- Боковая панель с фильтрами -->
+        <div class="col-md-3 filter-sidebar">
+            <div class="card" style="border:none">
+                <div class="card-body">
+                    <ul class="list-group">
+                        @foreach (var parameter in Model.CategoryParameters)
+                        {
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-10" style="font-size: 20px;font-weight: 700 !important;">
+                                        @parameter.Key
+                                    </div>
+                                    <div class="col-2 text-end">
+                                        <button class="btn btn-transparent" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample_@parameter.Key" aria-expanded="false" aria-controls="collapseExample_@parameter.Key">
+                                            <i class="fa-solid fa-chevron-down"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="collapse show" id="collapseExample_@parameter.Key">
+                                    <ul class="list-group list-group-flush">
+                                        @foreach (var value in parameter.Value)
+                                        {
+                                            <li>
+                                                <div class="form-check" style="padding: 1em 1.5em 1em 1.5em;font-size: 15px;">
+                                                    <input type="checkbox" class="form-check-input parameter-checkbox" data-parameter="@parameter.Key" value="@value" id="@parameter.Key-@value" />
+                                                    <label class="form-check-label" for="@parameter.Key-@value">@value</label>
+                                                </div>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                            </li>
+                         
+                        }
+                    </ul>
+                    <button class="btn btn-primary shadow" id="closeFilterButton">Смотреть товары</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a asp-controller="Home" asp-action="Index" style="color:#1b6ec2;">Главная</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a asp-controller="Catalog" asp-action="Index" style="color:#1b6ec2;">Категории</a>
+                    </li>
+                    @if (Model.BreadcrumbCategories.Count > 3)
+                    {
+                        <li class="breadcrumb-item dropdown">
+                            <a class="dropdown-toggle" href="#" id="breadcrumbDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                ...
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="breadcrumbDropdown">
+                                @for (int i = 2; i < Model.BreadcrumbCategories.Count - 1; i++)
+                                {
+                                    <li>
+                                        <a class="dropdown-item" asp-route-parentId="@Model.BreadcrumbCategories[i].Id" asp-controller="Catalog" asp-action="Index">
+                                            @Model.BreadcrumbCategories[i].Name
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                            @Model.BreadcrumbCategories.Last().Name
+                        </li>
+                    }
+                    else
+                    {
+                        @foreach (var category in Model.BreadcrumbCategories)
+                        {
+                            if (category == Model.BreadcrumbCategories.Last())
+                            {
+                                <li class="breadcrumb-item active" aria-current="page">@category.Name</li>
+                            }
+                            else
+                            {
+                                <li class="breadcrumb-item">
+                                    <a asp-route-parentId="@category.Id" asp-controller="Catalog" asp-action="Index" style="color:#1b6ec2;">@category.Name</a>
+                                </li>
+                            }
+                        }
+                    }
+                </ol>
+            </nav>
+            <h2 style="font-weight: 700 !important;">@Model.Category.Name</h2>
+            <div class="mt-4" id="products-list-container" class="row">
+                <partial name="_IndividualProductCard" model="@Model.Products" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@*
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-3">
@@ -108,8 +226,6 @@
                             </li>
                         }
                     </ul>
-
-
                 </div>
             </div>
         </div>
@@ -145,9 +261,28 @@
         </div>
     </div>
 </div>
-
+*@
 
 @section Scripts {
+    <script>
+        $(document).ready(function () {
+            const filterButton = document.getElementById("filterButton");
+            const closeFilterButton = document.getElementById("closeFilterButton");
+            const filterSidebar = document.querySelector(".filter-sidebar");
+
+            filterButton.addEventListener("click", function () {
+                filterSidebar.classList.toggle("active");
+                closeFilterButton.classList.toggle("active");
+            });
+
+            closeFilterButton.addEventListener("click", function () {
+                filterSidebar.classList.remove("active");
+                closeFilterButton.classList.remove("active");
+            });
+        });
+    </script>
+
+
     <script>
         document.querySelectorAll('.parameter-checkbox').forEach(checkbox => {
             checkbox.addEventListener('change', function () {

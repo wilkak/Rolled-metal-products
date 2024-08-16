@@ -9,78 +9,85 @@
     .form-group {
         padding: 10px;
     }
+
+    .btn-delete-parametr {
+        border-radius: 0 1rem 1rem 0;
+    }
+
 </style>
 
 <form asp-action="Edit">
-    <input asp-for="Category.Id" hidden></input>
-    @if (Model.Category.ParentId != null)
-    {
-        title = "Редактирование подкатегории";
-        <input asp-for="Category.ParentId" hidden></input>
-    }
-    <div class="border p-3">
-        <div class="form-group row">
-            <h2 class="text-info pl-3">@title</h2>
-        </div>
-        <div class="row">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="col-8">
-                <div class="form-group row">
-                    <div class="col-4">
-                        <label asp-for="Category.Name"></label>
-                    </div>
-                    <div class="col-8">
-                        <input asp-for="Category.Name" class="form-control" />
-                        <span asp-validation-for="Category.Name" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-4">
-                        <label asp-for="Category.DisplayOrder"></label>
-                    </div>
-                    <div class="col-8">
-                        <input asp-for="Category.DisplayOrder" class="form-control" />
-                        <span asp-validation-for="Category.DisplayOrder" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-4">
-                        <label>Параметры категории</label>
-                    </div>
-                    <div class="col-8">
-                        <div id="parameters">
-                            @foreach (var parameter in Model.Parameters)
-                            {
-                                <div class="input-group mb-2">
-                                    <input type="text" name="Parameters" class="form-control param-input" value="@parameter" />
-                                    <div class="input-group-append">
-                                        <button type="button" class="btn btn-danger" onclick="removeParameter(this)">Удалить</button>
-                                    </div>
-                                </div>
-                            }
-                        </div>
-                        <button class="btn btn-primary" type="button" onclick="addParameter()">Добавить параметр</button>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-8 offset-4 row">
-                        <div class="col">
-                            <input type="submit" value="Редактировать" class="btn btn-success w-100" />
-                        </div>
-                        <div class="col">
-                            @if (Model.Category.ParentId != null)
-                            {
-                                <a class="btn btn-info w-100" asp-action="Details" asp-controller="Category" asp-route-id="@Model.Category.ParentId"><i class="fas fa-sign-out-alt"></i> Назад к списку</a>
-                            }
-                            else
-                            {
-                                <a asp-action="Index" class="btn btn-info w-100"><i class="fas fa-sign-out-alt"></i> Назад к списку</a>
-                            }
-                        </div>
-                    </div>
-                </div>
+    <div class="container py-5">
+        <input asp-for="Category.Id" hidden></input>
+        @if (Model.Category.ParentId != null)
+        {
+            title = "Редактирование подкатегории";
+            <input asp-for="Category.ParentId" hidden></input>
+        }
+        <div class="border p-3">
+            <div class="form-group row">
+                <h2 class="text-info pl-3">@title</h2>
             </div>
-            <div class="col-4">
+            <div class="row">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="col-8">
+                    <div class="form-group row">
+                        <div class="col-4">
+                            <label asp-for="Category.Name"></label>
+                        </div>
+                        <div class="col-8">
+                            <input asp-for="Category.Name" class="form-control" />
+                            <span asp-validation-for="Category.Name" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-4">
+                            <label asp-for="Category.DisplayOrder"></label>
+                        </div>
+                        <div class="col-8">
+                            <input asp-for="Category.DisplayOrder" class="form-control" />
+                            <span asp-validation-for="Category.DisplayOrder" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-4">
+                            <label>Параметры категории</label>
+                        </div>
+                        <div class="col-8">
+                            <div id="parameters">
+                                @foreach (var parameter in Model.Parameters)
+                                {
+                                    <div class="input-group mb-2">
+                                        <input type="text" name="Parameters" class="form-control param-input" value="@parameter" />
+                                        <div class="input-group-append">
+                                            <button type="button" class="btn btn-danger btn-delete-parametr" onclick="removeParameter(this)">Удалить</button>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <button class="btn btn-primary" type="button" onclick="addParameter()">Добавить параметр</button>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-8 offset-4 row">
+                            <div class="col">
+                                <input type="submit" value="Редактировать" class="btn btn-success w-100" />
+                            </div>
+                            <div class="col">
+                                @if (Model.Category.ParentId != null)
+                                {
+                                    <a class="btn btn-info w-100" asp-action="Details" asp-controller="Category" asp-route-id="@Model.Category.ParentId"><i class="fas fa-sign-out-alt"></i> Назад к списку</a>
+                                }
+                                else
+                                {
+                                    <a asp-action="Index" class="btn btn-info w-100"><i class="fas fa-sign-out-alt"></i> Назад к списку</a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                </div>
             </div>
         </div>
     </div>
@@ -108,7 +115,7 @@
 
                 var button = document.createElement("button");
                 button.type = "button";
-                button.className = "btn btn-danger";
+                button.className = "btn btn-danger btn-delete-parametr";
                 button.innerText = "Удалить";
                 button.onclick = function () { removeParameter(button); };
 

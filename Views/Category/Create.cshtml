@@ -14,70 +14,75 @@
     .param-input {
         margin-bottom: 20px;
     }
-</style>
 
-<form asp-action="Create" method="post">
-    @if (Model.Category.ParentId != null)
-    {
-        title = "Добавление подкатегории";
-        <input asp-for="Category.ParentId" hidden></input>
+    .btn-delete-parametr {
+        border-radius: 0 1rem 1rem 0;
     }
-    <div class="border p-3">
-        <div class="form-group row">
-            <h2 class="text-info pl-3">@title</h2>
-        </div>
-        <div class="row">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="col-8">
-                <div class="form-group row">
-                    <div class="col-4">
-                        <label asp-for="Category.Name"></label>
+</style>
+<form asp-action="Create" method="post">
+    <div class="container py-5">
+        @if (Model.Category.ParentId != null)
+        {
+            title = "Добавление подкатегории";
+            <input asp-for="Category.ParentId" hidden></input>
+        }
+        <div class="border p-3">
+            <div class="form-group row">
+                <h2 class="text-info pl-3">@title</h2>
+            </div>
+            <div class="row">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="col-8">
+                    <div class="form-group row">
+                        <div class="col-4">
+                            <label asp-for="Category.Name"></label>
+                        </div>
+                        <div class="col-8">
+                            <input asp-for="Category.Name" class="form-control" />
+                            <span asp-validation-for="Category.Name" class="text-danger"></span>
+                        </div>
                     </div>
-                    <div class="col-8">
-                        <input asp-for="Category.Name" class="form-control" />
-                        <span asp-validation-for="Category.Name" class="text-danger"></span>
+                    <div class="form-group row">
+                        <div class="col-4">
+                            <label asp-for="Category.DisplayOrder"></label>
+                        </div>
+                        <div class="col-8">
+                            <input asp-for="Category.DisplayOrder" class="form-control" />
+                            <span asp-validation-for="Category.DisplayOrder" class="text-danger"></span>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-4">
-                        <label asp-for="Category.DisplayOrder"></label>
+                    <div class="form-group row">
+                        <div class="col-4">
+                            <label>Параметры категории</label>
+                        </div>
+                        <div class="col-8">
+                            <div id="parameters">
+                                <div class="input-group mb-2">
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" type="button" onclick="addParameter()">Добавить параметр</button>
+                        </div>
                     </div>
-                    <div class="col-8">
-                        <input asp-for="Category.DisplayOrder" class="form-control" />
-                        <span asp-validation-for="Category.DisplayOrder" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-4">
-                        <label>Параметры категории</label>
-                    </div>
-                    <div class="col-8">
-                        <div id="parameters">
-                            <div class="input-group mb-2">
+                    <div class="form-group row">
+                        <div class="col-8 offset-4 row">
+                            <div class="col">
+                                <input type="submit" value="Добавить" class="btn btn-success w-100" />
+                            </div>
+                            <div class="col">
+                                @if (Model.Category.ParentId != null)
+                                {
+                                    <a class="btn btn-info w-100" asp-action="Details" asp-controller="Category" asp-route-id="@Model.Category.ParentId"><i class="fas fa-sign-out-alt"></i> Назад к списку</a>
+                                }
+                                else
+                                {
+                                    <a asp-action="Index" class="btn btn-info w-100"><i class="fas fa-sign-out-alt"></i> Назад к списку</a>
+                                }
                             </div>
                         </div>
-                        <button class="btn btn-primary" type="button" onclick="addParameter()">Добавить параметр</button>
                     </div>
                 </div>
-                <div class="form-group row">
-                    <div class="col-8 offset-4 row">
-                        <div class="col">
-                            <input type="submit" value="Добавить" class="btn btn-success w-100" />
-                        </div>
-                        <div class="col">
-                            @if (Model.Category.ParentId != null)
-                            {
-                                <a class="btn btn-info w-100" asp-action="Details" asp-controller="Category" asp-route-id="@Model.Category.ParentId"><i class="fas fa-sign-out-alt"></i> Назад к списку</a>
-                            }
-                            else
-                            {
-                                <a asp-action="Index" class="btn btn-info w-100"><i class="fas fa-sign-out-alt"></i> Назад к списку</a>
-                            }
-                        </div>
-                    </div>
+                <div class="col-4">
                 </div>
-            </div>
-            <div class="col-4">
             </div>
         </div>
     </div>
@@ -105,7 +110,7 @@
 
                 var button = document.createElement("button");
                 button.type = "button";
-                button.className = "btn btn-danger";
+                button.className = "btn btn-danger btn-delete-parametr";
                 button.innerText = "Удалить";
                 button.onclick = function () { removeParameter(button); };
 

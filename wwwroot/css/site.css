@@ -238,3 +238,45 @@ body {
   width: 210px !important;
   margin: 0 auto;
 }
+
+
+/* Скрыть фильтры на мобильных устройствах */
+@media (max-width: 767.98px) {
+    .filter-sidebar {
+        /*display: none;*/
+        position: fixed;
+        top: 0;
+        left: -100%; /* Начальная позиция за пределами экрана слева */
+        height: 100%;
+        width: 100%;
+        background-color: white;
+        z-index: 1050;
+        transition: left 0.3s ease-in-out; /* Анимация для плавного выдвижения */
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+    }
+
+        .filter-sidebar.active {
+            left: 0; /* Когда активен, занимает весь экран */
+            /* display: block;*/ /* Убедитесь, что боковая панель отображается, когда активна */
+        }
+
+        .filter-sidebar.active {
+            left: 0; /* Когда активен, занимает весь экран */
+        }
+
+        .filter-sidebar .card {
+            height: 100%; /* Занимает всю высоту экрана */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-sidebar .card-body {
+            flex: 1;
+            overflow-y: auto; /* Добавляем прокрутку, если контент превышает высоту */
+        }
+
+        .filter-sidebar .btn-primary {
+            margin-top: auto; /* Размещаем кнопку внизу */
+            width: 100%;
+        }
+}
