@@ -5,6 +5,9 @@ namespace Rolled_metal_products
     public static class WC
     {
         public const string ImagePath = @"\images\product\";
+
+        public const string ImagePathCategory = @"\images\category\";
+
         public const string SessionInquiryId = "InquirySession";
 
         public const string NoImagePath = @"\images\no_image.png";

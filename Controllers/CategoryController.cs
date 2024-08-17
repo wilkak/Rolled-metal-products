@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Rolled_metal_products.Data;
 using Rolled_metal_products.Models;
@@ -53,9 +54,31 @@ namespace Rolled_metal_products.Controllers
         {
             if (ModelState.IsValid)
             {
+                var files = HttpContext.Request.Form.Files;
+                string webRootPath = _environment.WebRootPath;
+                string uploadPath = Path.Combine(webRootPath, "images", "category");
+
+                // Проверка существования директории и создание при необходимости
+                if (!Directory.Exists(uploadPath))
+                {
+                    Directory.CreateDirectory(uploadPath);
+                }
+
+                string fileName = Guid.NewGuid().ToString();
+                string extension = Path.GetExtension(files[0].FileName);
+
+                using (var fileStream = new FileStream(Path.Combine(uploadPath, fileName + extension), FileMode.Create))
+                {
+                    files[0].CopyTo(fileStream);
+                }
+
+                model.Category.ImageName = fileName + extension;
+
                 _catRepo.Add(model);
                 _catRepo.Save();
                 TempData[WC.Success] = "Категория успешно создана";
+
+
                 if (model.Category.ParentId == 0 || model.Category.ParentId == null)
                 {
                     return RedirectToAction(nameof(Index));
@@ -93,6 +116,37 @@ namespace Rolled_metal_products.Controllers
         {
             if (ModelState.IsValid)
             {
+                var catFromDb = _catRepo.FirstOrDefault(u => u.Id == viewModel.Category.Id, isTracking: false);
+
+                var files = HttpContext.Request.Form.Files;
+                string webRootPath = _environment.WebRootPath;
+
+                if (files.Count > 0)
+                {
+                    string upload = webRootPath + WC.ImagePath;
+                    string fileName = Guid.NewGuid().ToString();
+                    string extension = Path.GetExtension(files[0].FileName);
+
+                    var oldFile = Path.Combine(upload, catFromDb.ImageName);
+
+                    if (System.IO.File.Exists(oldFile))
+                    {
+                        System.IO.File.Delete(oldFile);
+                    }
+
+                    using (var fileStream = new FileStream(Path.Combine(upload, fileName + extension), FileMode.Create))
+                    {
+                        files[0].CopyTo(fileStream);
+                    }
+
+                    viewModel.Category.ImageName = fileName + extension;
+                }
+                else
+                {
+                    viewModel.Category.ImageName =catFromDb.ImageName;
+                }
+
+
                 _catRepo.Update(viewModel);
                 _catRepo.Save();
                 TempData[WC.Success] = "Изменение успешно завершено";

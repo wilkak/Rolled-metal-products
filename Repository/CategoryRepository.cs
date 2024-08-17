@@ -42,6 +42,7 @@ namespace Rolled_metal_products.Repository
             {
                 categoryFromDb.Name = viewModel.Category.Name;
                 categoryFromDb.DisplayOrder = viewModel.Category.DisplayOrder;
+                categoryFromDb.ImageName = viewModel.Category.ImageName;
                 categoryFromDb.CategoryParameters = viewModel.Parameters.Select(p => new CategoryParameter
                 {
                     Name = p

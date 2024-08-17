@@ -28,8 +28,7 @@
         margin-bottom: 1rem;
     }
 
-    .btn-secondary {
-        padding: 0.375rem 0.75rem;
+    .btn-back { 
         font-size: 0.875rem;
     }
 
@@ -69,6 +68,71 @@
         font-size: 14px;
     }
 
+    .catalog-item-head {
+        display: flex;
+        align-items: center;
+    }
+
+    .image-container {
+        display: flex;
+        align-items: center;
+    }
+
+
+    .catalog-item {
+        /*margin-bottom: 20px;*/
+        display: flex;
+        align-items: center;
+        height: 50px;
+    }
+
+    .image-container {
+        width: 50px; 
+        height: 50px; 
+        margin-right: 10px; 
+    }
+
+    .category-image {
+        width: 100%;
+        height: 100%;
+        border-radius: 5px;
+        border: 1px solid #bbb;
+        object-fit: cover;
+    }
+
+    .name-container {
+        display: flex;
+        align-items: center;
+        height: 80px; 
+    }
+
+    .custom-link {
+        text-decoration: none;
+        color: inherit;
+        font-size: 1.2em; 
+    }
+
+    .custom-link.main-parent-category {
+        font-size: 1.0em; 
+    }
+
+    .catalog-item-body {
+        /*margin-top: 10px;*/
+    }
+
+    .list-group-item {
+        padding: 0;
+    }
+
+    .sub-category {
+        margin-left: 62px;
+        font-size: 14px;
+    }
+
+    .show-more, .show-less {
+        cursor: pointer;
+    }
+
 </style>
 
 
@@ -76,15 +140,15 @@
     <div class="row">
         <div class="col-lg-3">
             <div class="mb-3">
-                <a class="btn btn-secondary btn-sm" asp-controller="Home" asp-action="Index">Назад</a>
+                <a class="btn btn-primary shadow btn-sm btn-back" asp-controller="Home" asp-action="Index">Назад</a>
             </div>
-            <div>
+            <div class="sidebar-categories">
                 <ul class="list-group">
                     @foreach (var item in Model.ParentCategories)
                     {
-                        <li class="list-group-item">
+                        <li class="list-group-item" style="padding: 10px 0px;">
                             <div class="row">
-                                <div class="col-10">
+                                <div class="col-10" style="font-weight: 700;width: 70%;">
                                     <a class="custom-link sidebar-parent-category" asp-route-parentId="@item.Id" asp-controller="Catalog" asp-action="Index">@item.Name</a>
                                 </div>
                                 <div class="col-2 text-end">
@@ -95,10 +159,10 @@
                             </div>
 
                             <div class="collapse" id="collapseExample_@item.Id">
-                                <ul class="list-group list-group-flush">
+                                <ul class="list-group list-group-flush" style="padding-top: 10px">
                                     @foreach (var subcat in item.SubCategories)
                                     {
-                                        <li class="list-group-item">
+                                        <li class="list-group-item" style="padding: 5px 0px 5px 0px; font-size: 12px;">
                                             <a class="custom-link sidebar-child-category" asp-route-parentId="@subcat.Id" asp-controller="Catalog" asp-action="Index">@subcat.Name</a>
                                         </li>
                                     }
@@ -113,10 +177,10 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a asp-controller="Home" asp-action="Index">Главная</a>
+                        <a asp-controller="Home" style="color: #1b6ec2;" asp-action="Index">Главная</a>
                     </li>
                     <li class="breadcrumb-item">
-                        <a asp-controller="Catalog" asp-action="Index">Категории</a>
+                        <a asp-controller="Catalog" style="color: #1b6ec2;" asp-action="Index">Категории</a>
                     </li>
                     @foreach (var category in Model.BreadcrumbCategories)
                     {
@@ -127,29 +191,40 @@
                         else
                         {
                             <li class="breadcrumb-item">
-                                <a asp-route-parentId="@category.Id" asp-controller="Catalog" asp-action="Index">@category.Name</a>
+                                <a asp-route-parentId="@category.Id" style="color: #1b6ec2;" asp-controller="Catalog" asp-action="Index">@category.Name</a>
                             </li>
                         }
                     }
                 </ol>
             </nav>
-            <h1 class="title title_page" style="margin-bottom: 30px;">
+            <h1 class="title title_page fw-bold" style="margin-bottom: 30px;">
                 @Model.ParentCategoryName
             </h1>
-
-            <div class="row row-cols-3">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3">
                 @foreach (var item in Model.ChildCategories)
                 {
-                    <div class="col">
-                        <div class="catalog-item-head">
-                            <a class="custom-link main-parent-category" asp-route-parentId="@item.Id" asp-controller="Catalog" asp-action="Index">@item.Name</a>
+                    <div class="col mb-4">
+                        <div class="catalog-item d-flex align-items-center">
+                            <div class="image-container">
+                                @if (item.ImageName == null)
+                                {
+                                    <img id="imagePreview" src="@WC.NoImagePath" class="category-image" />
+                                }
+                                else
+                                {
+                                    <img id="imagePreview" src="@WC.ImagePathCategory@item.ImageName" class="category-image" />
+                                }
+                            </div>
+                            <div class="name-container d-flex align-items-center">
+                                <a class="custom-link main-parent-category fw-bold mb-0s" asp-route-parentId="@item.Id" asp-controller="Catalog" asp-action="Index">@item.Name</a>
+                            </div>
                         </div>
                         <div class="catalog-item-body">
                             <ul class="list-group list-group-flush" id="subcat-list-@item.Id">
                                 @foreach (var subcat in item.SubCategories.Take(3))
                                 {
                                     <li class="list-group-item">
-                                        <a class="custom-link main-parent-category" asp-route-parentId="@subcat.Id" asp-controller="Catalog" asp-action="Index">@subcat.Name</a>
+                                        <a class="custom-link sub-category text-muted mb-0" asp-route-parentId="@subcat.Id" asp-controller="Catalog" asp-action="Index">@subcat.Name</a>
                                     </li>
                                 }
                                 @if (item.SubCategories.Count() > 3)
@@ -162,7 +237,9 @@
                             <ul class="list-group list-group-flush d-none" id="subcat-list-full-@item.Id">
                                 @foreach (var subcat in item.SubCategories)
                                 {
-                                    <a class="custom-link main-parent-category" asp-route-parentId="@subcat.Id" asp-controller="Catalog" asp-action="Index">@subcat.Name</a>
+                                    <li class="list-group-item">
+                                        <a class="custom-link sub-category text-muted mb-0" asp-route-parentId="@subcat.Id" asp-controller="Catalog" asp-action="Index">@subcat.Name</a>
+                                    </li>
                                 }
                                 <li class="list-group-item">
                                     <a href="javascript:void(0);" class="custom-link show-less text-primary" data-item-id="@item.Id">Скрыть</a>
@@ -172,7 +249,6 @@
                     </div>
                 }
             </div>
-
         </div>
     </div>
 </div>

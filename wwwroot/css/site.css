@@ -280,3 +280,35 @@ body {
             width: 100%;
         }
 }
+
+
+
+
+
+
+
+
+
+@media (max-width: 990px) {
+    .sidebar-categories {
+        display: none;
+    }
+
+    .row-cols-sm-2 > * {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+}
+
+@media (max-width: 768px) {
+    .row-cols-1 > * {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 575px) {
+    .catalog-item-body {
+        display: none;
+    }
+}

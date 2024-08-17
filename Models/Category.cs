@@ -17,6 +17,7 @@ namespace Rolled_metal_products.Models
         [Required(ErrorMessage = "Порядок не указан")]
         [Range(1, int.MaxValue, ErrorMessage = "Параметр должен быть больше нуля")]
         public int DisplayOrder { get; set; }
+        public string? ImageName { get; set; }
 
         public int? ParentId { get; set; }
 
