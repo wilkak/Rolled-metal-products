@@ -211,8 +211,6 @@ namespace Rolled_metal_products.Controllers
 
             // Удаляем все товары, связанные с категорией
             var products = _prodRepo.GetAll(x => x.CategoryId == categoryId, includeProperties: "ProductParameters");
-
-
             foreach (var product in products)
             {
                 var oldFile = Path.Combine(upload, product.ImageName);
@@ -229,6 +227,14 @@ namespace Rolled_metal_products.Controllers
                 {
                     DeleteCategoryAndSubCategories(subCategory.Id);
                 }
+            }
+
+            // Удаляем изображения для категории
+            string uploadCategory = webRootPath + WC.ImagePathCategory;
+            var oldFileCategory = Path.Combine(uploadCategory, category.ImageName);
+            if (System.IO.File.Exists(oldFileCategory))
+            {
+                System.IO.File.Delete(oldFileCategory);
             }
 
             _catRepo.Remove(category);
