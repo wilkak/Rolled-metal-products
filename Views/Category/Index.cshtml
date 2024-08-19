@@ -2,65 +2,155 @@
 
 @{
     ViewData["Title"] = "Категории";
+    int index = 1;
+    string currentSearch = ViewData["CurrentFilter"] as string;
+    string currentSort = ViewData["CurrentSort"] as string;
+
+    var sortDescriptions = new Dictionary<string, string>
+    {
+        { "name", "Название (по возрастанию)" },
+        { "name_desc", "Название (по убыванию)" },
+        { "displayOrder", "По порядку отображения (по возрастанию)" },
+        { "displayOrder_desc", "По порядку отображения (по убыванию)" },
+        { "date", "По дате добавления (по возрастанию)" },
+        { "date_desc", "По дате добавления (по убыванию)" },
+        { "", "Название (по возрастанию)" } 
+    };
 }
 
+<style>
+    .mod-btn {
+        padding: 12px 22px 12px 22px;
+    }
+</style>
+
+
 <div class="container p-3">
-    <div class="row pt-4">
+    <div class="row">
         <div class="col-6">
-            <h2 class="text-primary">Категории</h2>
+            <h2 class="text-primary fw-bold">Категории</h2>
         </div>
         <div class="col-6 text-end">
-            <a class="btn btn-primary" asp-action="Create" asp-controller="Category">
+            <a class="btn btn-primary shadow" asp-action="Create" asp-controller="Category">
                 <i class="fa-solid fa-plus"></i>&nbsp; Добавить категорию
             </a>
         </div>
     </div>
 
-    <br /><br />
+    <div class="row pt-4">
+        <div class="col-md-8">
+            <form asp-action="Index" method="get">
+                <div class="input-group">
+                    <input type="text" class="form-control" name="searchString" value="@currentSearch" placeholder="Поиск категории..." />
+                    <button class="btn btn-primary" type="submit" style="border-radius: 1rem; border-top-left-radius: 0px; border-bottom-left-radius: 0px;">Найти</button>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-4 text-end">
+            <form asp-action="Index" method="get">
+                <input type="hidden" name="searchString" value="@currentSearch" />
+                <select class="form-select" name="sortOrder" onchange="this.form.submit()">
+                    <option value="name" selected="@(currentSort == "name")">Сортировать по названию</option>
+                    <option value="name_desc" selected="@(currentSort == "name_desc")">Сортировать по названию (убыв.)</option>
+                    <option value="displayOrder" selected="@(currentSort == "displayOrder")">Сортировать по порядку отображения</option>
+                    <option value="displayOrder_desc" selected="@(currentSort == "displayOrder_desc")">Сортировать по порядку отображения (убыв.)</option>
+                    <option value="date" selected="@(currentSort == "date")">Сортировать по дате</option>
+                    <option value="date_desc" selected="@(currentSort == "date_desc")">Сортировать по дате (убыв.)</option>
+                </select>
+            </form>
+        </div>
+    </div>
 
+    @if (!String.IsNullOrEmpty(currentSearch) || !String.IsNullOrEmpty(currentSort))
+    {
+
+        <div class="row pt-4">
+            <div class="col-12 d-flex">
+                @if (!String.IsNullOrEmpty(currentSearch))
+                {
+                    <div class="alert alert-info me-2" style="max-width: fit-content;">
+                        <span>Поиск: @currentSearch <a href="@Url.Action("Index", new { searchString = "", sortOrder = currentSort })" class="text-danger">&times;</a></span>
+                    </div>
+                }
+                @if (!String.IsNullOrEmpty(currentSort))
+                {
+                    var currentSortDescription = sortDescriptions.ContainsKey(currentSort) ? sortDescriptions[currentSort] : currentSort;
+                    
+                    <div class="alert alert-info" style="max-width: fit-content;">
+                        <span>Сортировка: @currentSortDescription <a href="@Url.Action("Index", new { searchString = currentSearch, sortOrder = "" })" class="text-danger">&times;</a></span>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+   <br></br>
     @if (Model.Count() > 0)
     {
-        <table class="table table-bordered table-striped" style="width:100%">
-            <thead>
-                <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Name)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.DisplayOrder)
-                    </th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
+        <div class="table-responsive shadow">
+            <table class="table table-borderless table-striped table-hover table-reflow" style="margin-bottom: 0px;">
+                <thead class="table-dark">
                     <tr>
-                        <td width="50%">@item.Name</td>
-                        <td width="30%">@item.DisplayOrder</td>
-                        <td class="text-center">
-                            <div class="btn-group">
-                                <a class="btn btn-primary mx-2" asp-action="Edit" asp-controller="Category" asp-route-id="@item.Id" data-bs-toggle="tooltip" data-bs-placement="top" title="Редактировать категорию">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </a>
-                                <a class="btn btn-danger mx-2" asp-action="Delete" asp-controller="Category" asp-route-id="@item.Id" data-bs-toggle="tooltip" data-bs-placement="top" title="Удалить категорию">
-                                    <i class="fa-solid fa-trash"></i>
-                                </a>
-                                <a class="btn btn-secondary mx-2" asp-action="Create" asp-controller="Category" asp-route-parentId="@item.Id" data-bs-toggle="tooltip" data-bs-placement="top" title="Добавить подкатегорию">
-                                    <i class="fa-solid fa-layer-group"></i>
-                                </a>
-                                <a class="btn btn-info mx-2" asp-action="Details" asp-controller="Category" asp-route-id="@item.Id" data-bs-toggle="tooltip" data-bs-placement="top" title="Подробнее">
-                                    <i class="fa-solid fa-info-circle"></i>
-                                </a>
-                                <a class="btn btn-success mx-2" asp-action="Create" asp-controller="Product" asp-route-categoryId="@item.Id" data-bs-toggle="tooltip" data-bs-placement="top" title="Добавить товар">
-                                    <i class="fa-solid fa-plus"></i>
-                                </a>
-                            </div>
-                        </td>
+                        <th scope="col" style="text-align:center">#</th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Name)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.DisplayOrder)
+                        </th>
+                        <th></th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <th scope="row" style="text-align:center" width="5%">@index</th>
+                            <td width="50%">@item.Name</td>
+                            <td width="10%">@item.DisplayOrder</td>
+                            <td class="text-center">
+                                <div class="btn-group">
+                                    <a class="btn btn-primary mx-2 mod-btn" asp-action="Edit" asp-controller="Category" asp-route-id="@item.Id" data-bs-toggle="tooltip" data-bs-placement="top" title="Редактировать категорию">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </a>
+                                    <a class="btn btn-danger mx-2 mod-btn" asp-action="Delete" asp-controller="Category" asp-route-id="@item.Id" data-bs-toggle="tooltip" data-bs-placement="top" title="Удалить категорию">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </a>
+                                    @if (!item.Products.Any())
+                                    {
+                                        <a class="btn btn-secondary mx-2 mod-btn" asp-action="Create" asp-controller="Category" asp-route-parentId="@item.Id" data-bs-toggle="tooltip" data-bs-placement="top" title="Добавить подкатегорию">
+                                            <i class="fa-solid fa-layer-group"></i>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-secondary mx-2 mod-btn" type="button" data-bs-placement="top" title="Добавить товар" onclick="return validateCategory()">
+                                            <i class="fa-solid fa-layer-group"></i>
+                                        </button>
+                                    }
+                                    <a class="btn btn-info mx-2 mod-btn" asp-action="Details" asp-controller="Category" asp-route-id="@item.Id" data-bs-toggle="tooltip" data-bs-placement="top" title="Подробнее">
+                                        <i class="fa-solid fa-info-circle"></i>
+                                    </a>
+                                    @if (!item.SubCategories.Any())
+                                    {
+                                        <a class="btn btn-success mx-2 mod-btn" asp-action="Create" asp-controller="Product" asp-route-categoryId="@item.Id" data-bs-toggle="tooltip" data-bs-placement="top" title="Добавить товар">
+                                            <i class="fa-solid fa-plus"></i>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-success mx-2 mod-btn" type="button" data-bs-placement="top" data-bs-toggle="tooltip" title="Добавить товар" onclick="return validateProduct()">
+                                            <i class="fa-solid fa-plus"></i>
+                                        </button>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                        index++;
+                    }
+                </tbody>
+            </table>
+        </div>
     }
     else
     {
@@ -68,3 +158,38 @@
     }
 
 </div>
+
+
+@section Scripts {
+    @{
+        <partial name="_ValidationScriptsPartial"></partial>
+    }
+
+    <script>
+        $(document).ready(function () {
+            $('.summernote').summernote({
+                height: 250
+            });
+        });
+    </script>
+    <script>
+        function validateProduct() {
+            Swal.fire({
+                title: "Ошибка!",
+                text: "У данной категории есть подкатегории! Добавьте товары к одной из подкатегорий!",
+                icon: "error"
+            });
+            return false;
+        }
+
+        function validateCategory() {
+            Swal.fire({
+                title: "Ошибка!",
+                text: "У данной категории есть товары!",
+                icon: "error"
+            });
+            return false;
+        }
+    </script>
+}
+

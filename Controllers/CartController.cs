@@ -675,7 +675,7 @@ namespace Rolled_metal_products.Controllers
         public IActionResult Clear()
         {
             HttpContext.Session.Clear();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Cart");
         }
         /*
         [HttpPost]

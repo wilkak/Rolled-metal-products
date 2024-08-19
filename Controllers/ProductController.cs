@@ -25,9 +25,38 @@ namespace Rolled_metal_products.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string? searchString, string? sortOrder)
         {
+            // Устанавливаем значения для ViewData
+            ViewData["CurrentFilter"] = searchString;
+            ViewData["CurrentSort"] = sortOrder;
+
             IEnumerable<Product> objList = _prodRepo.GetAll(includeProperties: "Category");
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                objList = objList.Where(c => c.Name.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    objList = objList.OrderByDescending(c => c.Name);
+                    break;
+                case "date":
+                    objList = objList;
+                    break;
+                case "date_desc":
+                    objList = objList.Reverse();
+                    break;
+                case "category":
+                    objList = objList.OrderBy(c => c.Category.Name);
+                    break;
+                default:
+                    objList = objList.OrderBy(c => c.Name);
+                    break;
+            }
+
 
             return View(objList);
         }

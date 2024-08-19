@@ -6,11 +6,16 @@
         <div class="row d-flex justify-content-center my-4">
             <div class="col-md-8">
                 <div class="card mb-4">
-                    <div class="card-header py-3" style="background: transparent;">
-                        <h2 class="mb-0">Корзина </h2>
-            
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <h2 class="mb-0">Корзина </h2>
+                        </div>
+                        <div class="col-6 text-end">
+                            <a asp-action="Index" asp-controller="Home" class="btn btn-primary btn-sm shadow" style="font-size: 0.875rem;">Продолжить покупки</a>
+                        </div>
                     </div>
-                    <div class="card-body">
+
+                    <div class="card-body" style="min-height:400px">
                         @{
                             var orderTotal = 0.0;
                         }
@@ -19,9 +24,8 @@
                             @for (int i = 0; i < Model.Count(); i++)
                             {
                                 <input hidden asp-for="@Model[i].Id" />
-                                <div class="row">
-                                    <div class="col-lg-3 col-md-12 mb-4 mb-lg-0">
-                                        <!-- Image -->
+                                <div class="row mb-3">
+                                    <div class="col-lg-3 col-md-12 mb-lg-0">
                                         <div class="bg-image hover-overlay hover-zoom ripple rounded" data-mdb-ripple-color="light">
                                             <img src="@WC.ImagePath@Model[i].ImageName"
                                                  class="w-100" alt="@Model[i].Name" style="border-radius: 15px;" />
@@ -29,24 +33,15 @@
                                                 <div class="mask" style="background-color: rgba(251, 251, 251, 0.2)"></div>
                                             </a>
                                         </div>
-                                        <!-- Image -->
                                     </div>
 
                                     <div class="col-lg-5 col-md-6 mb-4 mb-lg-0">
-                                        <!-- Data -->
                                         <p><strong>@Model[i].Name</strong></p>
                                         <p>Цена: @Model[i].Price.ToString("C")</p>
-                                        <!--  
-                                        <p>Size: M</p>-->
                                         <a asp-action="Remove" asp-route-id="@Model[i].Id" class="btn btn-danger btn-sm me-1 mb-2">
                                             <i class="fas fa-trash"></i>
                                         </a>
- 
-                                        <!--   <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-danger btn-sm mb-2" data-mdb-tooltip-init
-                                        title="Move to the wish list">
-                                            <i class="fas fa-heart"></i>
-                                        </button>-->
-                                        <!-- Data -->
+
                                     </div>
 
                                     @if (User.IsInRole(WC.AdminRole))
@@ -54,17 +49,17 @@
                                         <div class="col-lg-4 col-md-6 mb-4 mb-lg-0 text-center">
                                             <!-- Quantity -->
                                             <div class="d-flex mb-4">
-                                                <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary" style="padding: 10px 20px 10px 20px; height: 46px; border-radius: 15px 0px 0px 15px;"
+                                                <button type="submit" asp-action="UpdateCart" formmethod="post" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary" style="padding: 10px 20px 10px 20px; height: 46px; border-radius: 15px 0px 0px 15px;"
                                                         onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
                                                     <i class="fas fa-minus"></i>
                                                 </button>
 
                                                 <div data-mdb-input-init class="form-outline">
-                                                    <input asp-for="@Model[i].TempSqFt" class="form-control" style="border-radius:0;height: 46px;" />
+                                                    <input asp-for="@Model[i].TempSqFt" class="form-control" style="border-radius:0;height: 46px;" min="0"/>
                                                     <label class="form-label" for="form1">Кол-во</label>
                                                 </div>
 
-                                                <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary" style="padding: 10px 20px 10px 20px; height: 46px; border-radius: 0px 15px 15px 0px;"
+                                                <button type="submit" asp-action="UpdateCart" formmethod="post" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary" style="padding: 10px 20px 10px 20px; height: 46px; border-radius: 0px 15px 15px 0px;"
                                                         onclick="this.parentNode.querySelector('input[type=number]').stepUp()">
                                                     <i class="fas fa-plus"></i>
                                                 </button>
@@ -85,16 +80,18 @@
                         }
                         else
                         {
-                            <p>Добавьте товары в корзину.</p>
+                            <p class="mt-5">Добавьте товары в корзину.</p>
                         }
                     </div>
                 </div>
 
                 <div class="card mb-4">
                     <div class="card-body">
-                        <div class="btn-group">
-                            <a asp-action="Clear" class="btn btn-warning shadow mx-2">Отчистить корзину</a>
-                            <a asp-action="Index" asp-controller="Home" class="btn btn-info shadow mx-2">Продолжить покупки</a>
+                        <div>
+                            <a asp-action="Clear" class="btn btn-warning shadow btn-sm mx-2">Отчистить корзину</a>
+
+                            <input type="submit" asp-action="UpdateCart" formmethod="post" name="Update" value="Обновить корзину"
+                                   class="btn btn-warning shadow btn-sm mx-2" hidden/>
                         </div>
                     </div>
                 </div>
@@ -120,14 +117,7 @@
                             </li>
                         </ul>
 
-                        <div class="col-6 col-md-3" style="width: auto;text-align: center;">
-                        @if (User.IsInRole(WC.AdminRole))
-                        {
-                            <input type="submit" asp-action="UpdateCart" formmethod="post" name="Update" value="Обновить корзину"
-                                   class="btn btn-info shadows" style="min-width: 210px;" />
-                        }
-                        </div>
-                        <div class="col-6 col-md-3" style="width: auto;text-align: center;">
+                        <div class="col-6 col-md-3 mt-5" style="width: auto;text-align: center;">
                             <button type="submit" class="btn btn-success shadow" style="min-width: 210px;">
                                 <span>Продолжить</span>
                             </button>

@@ -5,6 +5,7 @@ using Rolled_metal_products.Data;
 using Rolled_metal_products.Models;
 using Rolled_metal_products.Models.ViewModels;
 using Rolled_metal_products.Repository.IRepository;
+using Syncfusion.EJ2.Layouts;
 
 
 namespace Rolled_metal_products.Controllers
@@ -24,18 +25,52 @@ namespace Rolled_metal_products.Controllers
 
         }
 
-        public IActionResult Index()
+        // GET - INDEX
+        public IActionResult Index(string? searchString, string? sortOrder)
         {
-            IEnumerable<Category> objList = _catRepo.GetAll(includeProperties: "SubCategories", filter: x => x.ParentId == null);
-            return View(objList);
+            // Устанавливаем значения для ViewData
+            ViewData["CurrentFilter"] = searchString;
+            ViewData["CurrentSort"] = sortOrder;
+
+            IEnumerable<Category> categoryList = _catRepo.GetAll(includeProperties: "SubCategories,Products", filter: x => x.ParentId == null);
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                categoryList = categoryList.Where(c => c.Name.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    categoryList = categoryList.OrderByDescending(c => c.Name);
+                    break;
+                case "displayOrder":
+                    categoryList = categoryList.OrderBy(c => c.DisplayOrder);
+                    break;
+                case "displayOrder_desc":
+                    categoryList = categoryList.OrderByDescending(c => c.DisplayOrder);
+                    break;
+                case "date":
+                    categoryList = categoryList;
+                    break;
+                case "date_desc":
+                    categoryList = categoryList.Reverse();
+                    break;
+                default:
+                    categoryList = categoryList.OrderBy(c => c.Name);
+                    break;
+            }
+
+            return View(categoryList);
         }
 
+        // GET - CREATE
         [HttpGet]
         public IActionResult Create(int? parentId)
         {
             var category = new Category();
 
-            if (parentId != null && parentId != 0)
+            if (parentId != null)
             {
                 category.ParentId = parentId;
             }
@@ -48,12 +83,15 @@ namespace Rolled_metal_products.Controllers
             return View(categoryVM);
         }
 
+        // POST - CREATE
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(CreateCategoryVM model)
+        public IActionResult Create(CreateCategoryVM createCategoryVM)
         {
             if (ModelState.IsValid)
             {
+                # region Add Image
+
                 var files = HttpContext.Request.Form.Files;
                 string webRootPath = _environment.WebRootPath;
                 string uploadPath = Path.Combine(webRootPath, "images", "category");
@@ -72,25 +110,27 @@ namespace Rolled_metal_products.Controllers
                     files[0].CopyTo(fileStream);
                 }
 
-                model.Category.ImageName = fileName + extension;
+                createCategoryVM.Category.ImageName = fileName + extension;
 
-                _catRepo.Add(model);
+                # endregion
+
+                _catRepo.Add(createCategoryVM);
                 _catRepo.Save();
                 TempData[WC.Success] = "Категория успешно создана";
 
 
-                if (model.Category.ParentId == 0 || model.Category.ParentId == null)
+                if (createCategoryVM.Category.ParentId == null)
                 {
                     return RedirectToAction(nameof(Index));
                 }
                 else
                 {
-                    return RedirectToAction("Details", new { id = model.Category.ParentId });
+                    return RedirectToAction("Details", new { id = createCategoryVM.Category.ParentId });
                 }
 
             }
             TempData[WC.Error] = "Ошибка при создании категории";
-            return View(model);
+            return View(createCategoryVM);
         }
 
         //GET - EDIT
@@ -100,23 +140,24 @@ namespace Rolled_metal_products.Controllers
             {
                 return NotFound();
             }
-            var obj = _catRepo.GetCategory(id.GetValueOrDefault());
-            if (obj == null)
+
+            var createCategoryVM = _catRepo.GetCategory(id.GetValueOrDefault());
+            if (createCategoryVM == null)
             {
                 return NotFound();
             }
 
-            return View(obj);
+            return View(createCategoryVM);
         }
 
         //POST - EDIT
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(CreateCategoryVM viewModel)
+        public IActionResult Edit(CreateCategoryVM createCategoryVM)
         {
             if (ModelState.IsValid)
             {
-                var catFromDb = _catRepo.FirstOrDefault(u => u.Id == viewModel.Category.Id, isTracking: false);
+                var categoryFromDb = _catRepo.FirstOrDefault(u => u.Id == createCategoryVM.Category.Id, isTracking: false);
 
                 var files = HttpContext.Request.Form.Files;
                 string webRootPath = _environment.WebRootPath;
@@ -127,7 +168,7 @@ namespace Rolled_metal_products.Controllers
                     string fileName = Guid.NewGuid().ToString();
                     string extension = Path.GetExtension(files[0].FileName);
 
-                    var oldFile = Path.Combine(upload, catFromDb.ImageName);
+                    var oldFile = Path.Combine(upload, categoryFromDb.ImageName);
 
                     if (System.IO.File.Exists(oldFile))
                     {
@@ -139,21 +180,28 @@ namespace Rolled_metal_products.Controllers
                         files[0].CopyTo(fileStream);
                     }
 
-                    viewModel.Category.ImageName = fileName + extension;
+                    createCategoryVM.Category.ImageName = fileName + extension;
                 }
                 else
                 {
-                    viewModel.Category.ImageName =catFromDb.ImageName;
+                    createCategoryVM.Category.ImageName = categoryFromDb.ImageName;
                 }
 
 
-                _catRepo.Update(viewModel);
+                _catRepo.Update(createCategoryVM);
                 _catRepo.Save();
                 TempData[WC.Success] = "Изменение успешно завершено";
-                return RedirectToAction("Index");
-            }
-            return View(viewModel);
 
+                if (createCategoryVM.Category.ParentId == 0 || createCategoryVM.Category.ParentId == null)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    return RedirectToAction("Details", new { id = createCategoryVM.Category.ParentId });
+                }
+            }
+            return View(createCategoryVM);
         }
 
         //GET - DELETE
@@ -176,27 +224,28 @@ namespace Rolled_metal_products.Controllers
         //POST - DELETE
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult DeletePost(int?id)
+        public IActionResult DeletePost(int? id)
         {
-            var obj = _catRepo.Find(id.GetValueOrDefault());
-            if (obj == null)
+            var category = _catRepo.Find(id.GetValueOrDefault());
+            if (category == null)
             {
                 return NotFound();
             }
 
-            DeleteCategoryAndSubCategories(obj.Id);
+            DeleteCategoryAndSubCategories(category.Id);
             _catRepo.Save();
 
-            if (obj.ParentId == null)
+            if (category.ParentId == null)
             {
                 return RedirectToAction(nameof(Index));
             }
             else
             {
-                return RedirectToAction("Details", new { id = obj.ParentId });
+                return RedirectToAction("Details", new { id = category.ParentId });
             }
         }
 
+        // DELETE SUBCATEGORIES AND PRODUCTS
         private void DeleteCategoryAndSubCategories(int categoryId)
         {
             var category = _catRepo.GetCategoryWithSubCategories(categoryId);

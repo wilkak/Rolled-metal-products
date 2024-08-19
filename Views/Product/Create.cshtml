@@ -13,95 +13,97 @@
 </style>
 
 <form asp-action="Create" enctype="multipart/form-data">
-    <div class="border p-3">
-        <div class="form-group row">
-            <h2 class="text-info pl-3">@title</h2>
-        </div>
-        <div class="row">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="col-8">
-                <div class="form-group row">
-                    <div class="col-4">
-                        <label asp-for="Product.Name"></label>
-                    </div>
-                    <div class="col-8">
-                        <input asp-for="Product.Name" class="form-control" />
-                        <span asp-validation-for="Product.Name" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-4">
-                        <label asp-for="Product.Price"></label>
-                    </div>
-                    <div class="col-8">
-                        <input asp-for="Product.Price" class="form-control" />
-                        <span asp-validation-for="Product.Price" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-4">
-                        <label asp-for="Product.OldPrice"></label>
-                    </div>
-                    <div class="col-8">
-                        <input asp-for="Product.OldPrice" class="form-control" />
-                        <span asp-validation-for="Product.OldPrice" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-4">
-                        <label asp-for="Product.Description"></label>
-                    </div>
-                    <div class="col-8">
-                        <textarea asp-for="Product.Description" class="form-control summernote"></textarea>
-                        <span asp-validation-for="Product.Description" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-4">
-                        Изображение
-                    </div>
-                    <div class="col-8">
-                        <input asp-for="Product.ImageName" hidden />
-                        <input type="file" name="files" id="uploadBox" multiple class="form-control" />
-                    </div>
-                </div>
-                <input type="hidden" asp-for="Product.CategoryId" />
-                @foreach (var param in Model.CategoryParameters)
-                {
+    <div class="container py-5">
+        <div class="border p-3">
+            <div class="form-group row">
+                <h2 class="text-info pl-3">@title</h2>
+            </div>
+            <div class="row">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="col-8">
                     <div class="form-group row">
                         <div class="col-4">
-                            @param.Name
+                            <label asp-for="Product.Name"></label>
                         </div>
                         <div class="col-8">
-                            <input type="text" name="CategoryParameters[@Model.CategoryParameters.IndexOf(param)].Value" class="form-control" />
-                            <input type="hidden" name="CategoryParameters[@Model.CategoryParameters.IndexOf(param)].CategoryParameterId" value="@param.CategoryParameterId" />
-                            <input type="hidden" name="CategoryParameters[@Model.CategoryParameters.IndexOf(param)].Name" value="@param.Name" />
+                            <input asp-for="Product.Name" class="form-control" />
+                            <span asp-validation-for="Product.Name" class="text-danger"></span>
                         </div>
                     </div>
-                }
-
-                <div class="form-group row">
-                    <div class="col-8 offset-4 row">
-                        <div class="col">
-                            <input type="submit" value="Добавить" class="btn btn-success w-100" onclick="return validateInput()" />
+                    <div class="form-group row">
+                        <div class="col-4">
+                            <label asp-for="Product.Price"></label>
                         </div>
-                        <div class="col">
-                            <a asp-action="Details" asp-controller="Category" asp-route-id="@Model.Product.CategoryId" class="btn btn-info w-100"><i class="fas fa-sign-out-alt"></i> Назад к списку</a>
+                        <div class="col-8">
+                            <input asp-for="Product.Price" class="form-control" />
+                            <span asp-validation-for="Product.Price" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-4">
+                            <label asp-for="Product.OldPrice"></label>
+                        </div>
+                        <div class="col-8">
+                            <input asp-for="Product.OldPrice" class="form-control" />
+                            <span asp-validation-for="Product.OldPrice" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-4">
+                            <label asp-for="Product.Description"></label>
+                        </div>
+                        <div class="col-8">
+                            <textarea asp-for="Product.Description" class="form-control summernote"></textarea>
+                            <span asp-validation-for="Product.Description" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-4">
+                            Изображение
+                        </div>
+                        <div class="col-8">
+                            <input asp-for="Product.ImageName" hidden />
+                            <input type="file" name="files" id="uploadBox" multiple class="form-control" />
+                        </div>
+                    </div>
+                    <input type="hidden" asp-for="Product.CategoryId" />
+                    @foreach (var param in Model.CategoryParameters)
+                    {
+                        <div class="form-group row">
+                            <div class="col-4">
+                                @param.Name
+                            </div>
+                            <div class="col-8">
+                                <input type="text" name="CategoryParameters[@Model.CategoryParameters.IndexOf(param)].Value" class="form-control" />
+                                <input type="hidden" name="CategoryParameters[@Model.CategoryParameters.IndexOf(param)].CategoryParameterId" value="@param.CategoryParameterId" />
+                                <input type="hidden" name="CategoryParameters[@Model.CategoryParameters.IndexOf(param)].Name" value="@param.Name" />
+                            </div>
+                        </div>
+                    }
+
+                    <div class="form-group row">
+                        <div class="col-8 offset-4 row">
+                            <div class="col">
+                                <input type="submit" value="Добавить" class="btn btn-success w-100" onclick="return validateInput()" />
+                            </div>
+                            <div class="col">
+                                <a asp-action="Details" asp-controller="Category" asp-route-id="@Model.Product.CategoryId" class="btn btn-info w-100"><i class="fas fa-sign-out-alt"></i> Назад к списку</a>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <div class="col-3 offset-1 p-4">
+                    @if (Model.Product.ImageName == null)
+                    {
+                        <img id="imagePreview" src="@WC.NoImagePath" width="100%" style="border-radius:5px; border: 1px solid #bbb" />
+                    }
+                    else
+                    {
+                        <img id="imagePreview" src="@WC.ImagePath@Model.Product.ImageName" width="100%" style="border-radius:5px; border: 1px solid #bbb" />
+                    }
+                </div>
             </div>
-            <div class="col-3 offset-1 p-4">
-                @if (Model.Product.ImageName == null)
-                {
-                    <img id="imagePreview" src="@WC.NoImagePath" width="100%" style="border-radius:5px; border: 1px solid #bbb" />
-                }
-                else
-                {
-                    <img id="imagePreview" src="@WC.ImagePath@Model.Product.ImageName" width="100%" style="border-radius:5px; border: 1px solid #bbb" />
-                }
-            </div>
-        </div>
+        </div
     </div>
 </form>
 

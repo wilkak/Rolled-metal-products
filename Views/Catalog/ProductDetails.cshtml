@@ -2,8 +2,19 @@
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 <style>
+    /*.product-specs {
+        width: 33%;
+    }
+
+
+
+
+    */
+
+
+
     .product-title-wrapper .product-title {
-        font-size: 24px;
+        /*font-size: 24px;*/
         margin-bottom: 10px;
     }
 
@@ -14,7 +25,7 @@
     .current-price {
         font-size: 20px;
         font-weight: bold;
-        color: #28a745;
+        color: #00b779;
         margin-right: 10px;
     }
 
@@ -30,7 +41,6 @@
     }
 
     .product-specs .spec {
-        margin-bottom: 10px;
         padding: 5px 0;
         border-bottom: 1px solid #e0e0e0;
     }
@@ -81,93 +91,99 @@
         margin-top: 20px;
     }
 </style>
-
-<form>
-    <input asp-for="@Model.Product.Id" hidden />
-    <div class="container mt-5">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item">
-                    <a asp-controller="Home" asp-action="Index">Главная</a>
-                </li>
-                <li class="breadcrumb-item">
-                    <a asp-controller="Catalog" asp-action="Index">Категории</a>
-                </li>
-                @foreach (var category in Model.BreadcrumbCategories)
-                {
+<div class="container p-3">
+    <form>
+        <input asp-for="@Model.Product.Id" hidden />
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a asp-route-parentId="@category.Id" asp-controller="Catalog" asp-action="Index">@category.Name</a>
+                    <a asp-controller="Home" asp-action="Index" style="color:#1b6ec2;">Главная</a>
                     </li>
-                }
-                <li class="breadcrumb-item active">
-                    @Model.Product.Name
-                </li>
-            </ol>
-        </nav>
-        <div class="row">
-            <div class="col-md-3 text-center">
-                <div class="product-image mb-3">
-                    <img src="@WC.ImagePath@Model.Product.ImageName" alt="Product Image" class="img-fluid rounded">
-                </div>
-                <div class="product-action mb-3">
-                    @if (Model.ExistsInCart)
+                    <li class="breadcrumb-item">
+                    <a asp-controller="Catalog" asp-action="Index" style="color:#1b6ec2;">Категории</a>
+                    </li>
+                    @foreach (var category in Model.BreadcrumbCategories)
                     {
-                        <a asp-action="RemoveFromCart" asp-route-id="@Model.Product.Id" class="btn btn-danger btn-block">Удалить из корзины</a>
+                        <li class="breadcrumb-item">
+                        <a asp-route-parentId="@category.Id" asp-controller="Catalog" asp-action="Index" style="color:#1b6ec2;">@category.Name</a>
+                        </li>
                     }
-                    else
-                    {
-                        <a asp-action="ProductDetailsPost" asp-route-id="@Model.Product.Id" class="btn btn-success btn-block">Добавить в корзину</a>
-                    }
-                </div>
-            </div>
-            <div class="col-md-9">
-                <div class="product-title-wrapper mb-3">
-                    <h1 class="product-title">@Model.Product.Name</h1>
-                </div>
-                <div class="product-pricing-wrapper mb-4">
-                    <span class="current-price">@Model.Product.Price.ToString("C")</span>
-                    @if (Model.Product.OldPrice.HasValue)
-                    {
-                        <span class="old-price">@Model.Product.OldPrice?.ToString("C")</span>
-                    }
-                </div>
-                <section class="product-specs mb-4">
-                    <div class="product-specs-header-wrapper">
-                        <h2 class="product-specs-header">Характеристики</h2>
+                    <li class="breadcrumb-item active">
+                        @Model.Product.Name
+                    </li>
+                </ol>
+            </nav>
+            <div class="row">
+                <div class="col-md-3 text-center">
+                <div class="product-image" style="margin-bottom: 40px;">
+                        <img src="@WC.ImagePath@Model.Product.ImageName" alt="Product Image" class="img-fluid rounded">
                     </div>
-                    <ul class="list-unstyled">
-                        @foreach (var item in Model.Product.ProductParameters)
-                        {
-                            <li class="spec d-flex justify-content-between">
-                                <div class="spec-name">@item.Name:</div>
-                                <div class="spec-value">@item.Value.ToString()</div>
-                            </li>
-                        }
-
-                    </ul>
-                </section>
-                <div class="product-description-wrapper">
-                    <p class="product-description">@Html.Raw(Model.Product.Description)</p>
-                </div>
-
-                @if (User.IsInRole(WC.AdminRole))
-                {
-                    <div class="col-12">
-                        SqFt:
-                    </div>
-                    <div class="col-12">
+                    <div class="product-action">
                         @if (Model.ExistsInCart)
                         {
-                            <input asp-for="@Model.Product.TempSqFt" disabled class="form-control" />
+                            <a asp-action="RemoveFromCart" asp-route-id="@Model.Product.Id" class="btn btn-danger shadow btn-block">Удалить из корзины</a>
                         }
                         else
                         {
-                            <input asp-for="@Model.Product.TempSqFt" class="form-control" />
+                            <a asp-action="ProductDetailsPost" asp-route-id="@Model.Product.Id" class="btn btn-success shadow btn-block">Добавить в корзину</a>
                         }
-                        <span asp-validation-for="@Model.Product.TempSqFt" class="text-danger"></span>
                     </div>
-                }
+                </div>
+                <div class="col-md-9">
+                    <div class="product-title-wrapper mb-3">
+                    <h3 class="product-title fw-bold">@Model.Product.Name</h3>
+                    </div>
+                    <div class="product-pricing-wrapper mb-4">
+                        <span class="current-price">@Model.Product.Price.ToString("C")</span>
+                        @if (Model.Product.OldPrice.HasValue)
+                        {
+                            <span class="old-price">@Model.Product.OldPrice?.ToString("C")</span>
+                        }
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <section class="product-specs mb-4">
+                                <div class="product-specs-header-wrapper">
+                                    <h4 class="product-specs-header ref-name">ХАРАКТЕРИСТИКИ</h4>
+                                </div>
+                                <ul class="list-unstyled">
+                                    @foreach (var item in Model.Product.ProductParameters)
+                                    {
+                                        <li class="spec d-flex justify-content-between">
+                                            <div class="spec-name">@item.Name:</div>
+                                            <div class="spec-value">@item.Value.ToString()</div>
+                                        </li>
+                                    }
+                                </ul>
+                            </section>
+                        </div>
+                        <div class="col-md-8">
+                            @if (User.IsInRole(WC.AdminRole))
+                            {
+                                <div class="row">
+                                <div class="col-4" style="text-align: end;padding: 10px 10px;">
+                                        Кол-во:
+                                    </div>
+                                    <div class="col-8">
+                                        @if (Model.ExistsInCart)
+                                        {
+                                            <input asp-for="@Model.Product.TempSqFt" disabled class="form-control" style="max-width: 150px;" />
+                                        }
+                                        else
+                                        {
+                                            <input asp-for="@Model.Product.TempSqFt" class="form-control" style="max-width: 150px;"/>
+                                        }
+                                        <span asp-validation-for="@Model.Product.TempSqFt" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="product-description-wrapper">
+                        <p class="product-description">@Html.Raw(Model.Product.Description)</p>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-</form>
+    </form>
+</div>
+

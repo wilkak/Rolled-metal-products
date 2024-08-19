@@ -669,7 +669,7 @@ namespace Rolled_metal_products.Migrations
             modelBuilder.Entity("Rolled_metal_products.Models.Product", b =>
                 {
                     b.HasOne("Rolled_metal_products.Models.Category", "Category")
-                        .WithMany()
+                        .WithMany("Products")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -691,6 +691,8 @@ namespace Rolled_metal_products.Migrations
             modelBuilder.Entity("Rolled_metal_products.Models.Category", b =>
                 {
                     b.Navigation("CategoryParameters");
+
+                    b.Navigation("Products");
 
                     b.Navigation("SubCategories");
                 });

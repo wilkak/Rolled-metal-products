@@ -49,7 +49,8 @@
                         <li class="nav-item dropdown">
                             <a class="dropdown-toggle nav-link" aria-expanded="true" data-bs-toggle="dropdown" href="#">Менеджмент</a>
                             <div class="dropdown-menu" data-bs-popper="none">
-                                <a class="dropdown-item" asp-area="" asp-controller="Category" asp-action="Index">Каталог</a>
+                                <a class="dropdown-item" asp-area="" asp-controller="Category" asp-action="Index">Категории</a>
+                                <a class="dropdown-item" asp-area="" asp-controller="Product" asp-action="Index">Товары</a>
                                 <a class="dropdown-item" id="register" asp-area="Identity" asp-page="/Account/Register">Доб. админа</a>
                                 <a class="dropdown-item" asp-area="" asp-controller="Inquiry" asp-action="Index">Запросы</a>
                                 <a class="dropdown-item" asp-area="" asp-controller="Order" asp-action="Index">Заказы</a>
@@ -85,7 +86,7 @@
     </nav>
 
 
-    <section class="py-5">
+    <section class="py-5" style="min-height: 700px">
         @RenderBody()
     </section>
 

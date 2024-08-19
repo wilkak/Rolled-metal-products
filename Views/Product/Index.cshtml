@@ -1,70 +1,132 @@
 ﻿@model IEnumerable<Rolled_metal_products.Models.Product>
-
-
 @{
     ViewData["Title"] = "Товары";
+    int index = 1;
+    string currentSearch = ViewData["CurrentFilter"] as string;
+    string currentSort = ViewData["CurrentSort"] as string;
+
+    var sortDescriptions = new Dictionary<string, string>
+    {
+        { "name", "Название (по возрастанию)" },
+        { "name_desc", "Название (по убыванию)" },
+        { "category", "По категории" },
+        { "date", "По дате добавления (по возрастанию)" },
+        { "date_desc", "По дате добавления (по убыванию)" },
+        { "", "Название (по возрастанию)" }
+    };
 }
 
 <style>
-    .btn-create {
-        text-align: center;
-        line-height: 30px;
+    .mod-btn {
+        padding: 12px 22px 12px 22px;
     }
 </style>
 
+
 <div class="container p-3">
-    <div class="row pt-4">
+    <div class="row">
         <div class="col-6">
-            <h2 class="text-primary">Список товаров</h2>
-        </div>
-        <div class="col-6 d-flex justify-content-end">
-            <a class="btn btn-primary btn-create" asp-action="Upsert" asp-controller="Product">
-                <i class="fa-solid fa-plus"></i>&nbsp; Добавить новый продукт
-            </a>
+            <h2 class="text-primary fw-bold">Товары</h2>
         </div>
     </div>
-    <br /><br />
+
+    <div class="row pt-4">
+        <div class="col-md-8">
+            <form asp-action="Index" method="get">
+                <div class="input-group">
+                    <input type="text" class="form-control" name="searchString" value="@currentSearch" placeholder="Поиск товаров..." />
+                    <button class="btn btn-primary" type="submit" style="border-radius: 1rem; border-top-left-radius: 0px; border-bottom-left-radius: 0px;">Найти</button>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-4 text-end">
+            <form asp-action="Index" method="get">
+                <input type="hidden" name="searchString" value="@currentSearch" />
+                <select class="form-select" name="sortOrder" onchange="this.form.submit()">
+                    <option value="name" selected="@(currentSort == "name")">Сортировать по названию</option>
+                    <option value="name_desc" selected="@(currentSort == "name_desc")">Сортировать по названию (убыв.)</option>
+                    <option value="category" selected="@(currentSort == "category")">Категории</option>
+                    <option value="date" selected="@(currentSort == "date")">Сортировать по дате</option>
+                    <option value="date_desc" selected="@(currentSort == "date_desc")">Сортировать по дате (убыв.)</option>
+                </select>
+            </form>
+        </div>
+    </div>
+
+    @if (!String.IsNullOrEmpty(currentSearch) || !String.IsNullOrEmpty(currentSort))
+    {
+
+        <div class="row pt-4">
+            <div class="col-12 d-flex">
+                @if (!String.IsNullOrEmpty(currentSearch))
+                {
+                    <div class="alert alert-info me-2" style="max-width: fit-content;">
+                        <span>Поиск: @currentSearch <a href="@Url.Action("Index", new { searchString = "", sortOrder = currentSort })" class="text-danger">&times;</a></span>
+                    </div>
+                }
+                @if (!String.IsNullOrEmpty(currentSort))
+                {
+                    var currentSortDescription = sortDescriptions.ContainsKey(currentSort) ? sortDescriptions[currentSort] : currentSort;
+
+                    <div class="alert alert-info" style="max-width: fit-content;">
+                        <span>Сортировка: @currentSortDescription <a href="@Url.Action("Index", new { searchString = currentSearch, sortOrder = "" })" class="text-danger">&times;</a></span>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    </br>
     @if (Model.Count() > 0)
     {
-        <table class="table table-bordered table-striped" style="width:100%">
-            <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Name)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Price)
-                </th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td width="50%">
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </td>
-                    <td width="50%">
-                        @Html.DisplayFor(modelItem => item.Price)
-                    </td>
-                    <td class="text-center">
-                        <div class="btn-group">
-                            <a class="btn btn-primary mx-2" asp-action="Upsert" asp-controller="Product" asp-route-id="@item.Id">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                            </a>
-                            <a class="btn btn-danger mx-2" asp-action="Delete" asp-controller="Product" asp-route-id="@item.Id">
-                                <i class="fa-solid fa-trash"></i>
-                            </a>
-                        </div>
-                    </td>
-                </tr>
-            }
-            </tbody>
-        </table>
+        <div class="table-responsive shadow">
+            <table class="table table-borderless table-striped table-hover table-reflow" style="margin-bottom: 0px;">
+                <thead class="table-dark">
+                    <tr>
+                        <th scope="col" style="text-align:center">#</th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Name)
+                        </th>
+                        <th>
+                            Категория
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Price)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.OldPrice)
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <th scope="row" style="text-align:center" width="5%">@index</th>
+                            <td width="25%">@item.Name</td>
+                            <td width="25%">@item.Category.Name</td>
+                            <td width="10%">@item.Price</td>
+                            <td width="15%">@item.OldPrice</td>
+                            <td class="text-center">
+                                <div class="btn-group">
+                                    <a class="btn btn-primary mx-2 mod-btn" asp-action="Edit" asp-controller="Product" asp-route-id="@item.Id" data-bs-toggle="tooltip" data-bs-placement="top" title="Редактировать категорию">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </a>
+                                    <a class="btn btn-danger mx-2 mod-btn" asp-action="Delete" asp-controller="Product" asp-route-id="@item.Id" data-bs-toggle="tooltip" data-bs-placement="top" title="Удалить категорию">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        index++;
+                    }
+                </tbody>
+            </table>
+        </div>
     }
     else
     {
-        <p> Никаких товаров не существует.</p>
+        <p> Товаров нет.</p>
     }
 </div>

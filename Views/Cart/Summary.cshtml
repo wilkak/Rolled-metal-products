@@ -2,17 +2,15 @@
 
 
 <form method="post" id="payment-form">
-    <br />
     <div class="backgroundWhiteBorder">
-        <div class="container">
+        <div class="container mt-3">
             <div class="card">
-                <div class="card-header bg-dark text-light ml-0 row container">
+                <div class="row mb-3">
                     <div class="col-6">
-                        <i class="fa fa-shopping-cart"></i> &nbsp;
-                        Order Summary
+                        <h2 class="mb-0">Корзина </h2>
                     </div>
-                    <div class="col-6 text-right">
-                        <a class="btn btn-outline-info btn-sm" asp-action="Index">Back to Cart</a>
+                    <div class="col-6 text-end">
+                        <a asp-action="Index" asp-controller="Home" class="btn btn-primary btn-sm shadow" style="font-size: 0.875rem;">Продолжить покупки</a>
                     </div>
                 </div>
                 <div class="card-body">
@@ -21,68 +19,47 @@
                             <div class="col-12 col-lg-7 pb-4">
                                 <div class="row">
                                     <h4 class="d-flex justify-content-between align-items-center mb-3">
-                                        <span class="text-info">User Details:</span>
+                                        <span class="text-info">Информация о покупателе</span>
                                     </h4>
                                 </div>
-                                <div class="row my-1">
-                                    <div class="col-3">
-                                        <label>Name</label>
-                                    </div>
-                                    <div class="col-9">
-                                        <input asp-for="ApplicationUser.FullName" type="text" class="form-control" />
+                                <div class="row my-1 mb-3">
+                                    <div class="col">
+                                        <input asp-for="ApplicationUser.FullName" type="text" class="form-control" placeholder="ФИО" />
                                     </div>
                                 </div>
-                                <div class="row my-1">
-                                    <div class="col-3">
-                                        <label>Phone</label>
-                                    </div>
-                                    <div class="col-9">
-                                        <input asp-for="ApplicationUser.PhoneNumber" required type="text" class="form-control" />
+                                <div class="row my-1 mb-3">
+                                    <div class="col">
+                                        <input asp-for="ApplicationUser.PhoneNumber" required type="text" class="form-control" placeholder="Номер телефона" />
                                     </div>
                                 </div>
-                                <div class="row my-1">
-                                    <div class="col-3">
-                                        <label>Email</label>
-                                    </div>
-                                    <div class="col-9">
-                                        <input asp-for="ApplicationUser.Email" required type="text" class="form-control" />
+                                <div class="row my-1 mb-3">
+                                    <div class="col">
+                                        <input asp-for="ApplicationUser.Email" required type="text" class="form-control" placeholder="Email" />
                                     </div>
                                 </div>
                                 @if (User.IsInRole(WC.AdminRole))
                                 {
-                                    <div class="row my-1">
-                                        <div class="col-3">
-                                            <label>Address</label>
+                                    <div class="row my-1 mb-3">
+                                        <div class="col">
+                                            <input asp-for="ApplicationUser.StreetAddress" type="text" class="form-control" placeholder="Адрес" />
                                         </div>
-                                        <div class="col-9">
-                                            <input asp-for="ApplicationUser.StreetAddress" type="text" class="form-control" />
+                                    </div>
+
+                                    <div class="row my-1 mb-3">
+                                        <div class="col">
+                                            <input asp-for="ApplicationUser.City" type="text" class="form-control" placeholder="Город" />
+                                        </div>
+                                    </div>
+
+                                    <div class="row my-1 mb-3">
+                                        <div class="col">
+                                            <input asp-for="ApplicationUser.State" type="text" class="form-control" placeholder="Штат" />
                                         </div>
                                     </div>
 
                                     <div class="row my-1">
-                                        <div class="col-3">
-                                            <label>City</label>
-                                        </div>
-                                        <div class="col-9">
-                                            <input asp-for="ApplicationUser.City" type="text" class="form-control" />
-                                        </div>
-                                    </div>
-
-                                    <div class="row my-1">
-                                        <div class="col-3">
-                                            <label>State</label>
-                                        </div>
-                                        <div class="col-9">
-                                            <input asp-for="ApplicationUser.State" type="text" class="form-control" />
-                                        </div>
-                                    </div>
-
-                                    <div class="row my-1">
-                                        <div class="col-3">
-                                            <label>Postal Code</label>
-                                        </div>
-                                        <div class="col-9">
-                                            <input asp-for="ApplicationUser.PostalCode" type="text" class="form-control" />
+                                        <div class="col">
+                                            <input asp-for="ApplicationUser.PostalCode" type="text" class="form-control" placeholder="Почтовый код" />
                                         </div>
                                     </div>
                                 }
@@ -90,7 +67,7 @@
                             <div class="col-12 col-lg-5 row">
                                 <div class="col-12">
                                     <h4 class="d-flex justify-content-between align-items-center mb-3">
-                                        <span class="text-info">Summary:</span>
+                                        <span class="text-info">Заказ</span>
                                     </h4>
                                     <ul class="list-group mb-3">
                                         @{
