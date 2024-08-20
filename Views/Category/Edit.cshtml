@@ -5,64 +5,85 @@
     var title = "Редактирование категории";
     ViewData["Title"] = title;
 }
+
 <style>
     .form-group {
         padding: 10px;
     }
 
+    .param-input {
+        margin-bottom: 20px;
+    }
+
     .btn-delete-parametr {
         border-radius: 0 1rem 1rem 0;
     }
+</style>
 
+<style>
+    .custom-img {
+        width: 70%;
+        border-radius: 5px;
+        border: 1px solid #bbb;
+        height: fit-content;
+    }
+
+    .btn-block {
+        padding: 0px 5px 0px 5px;
+    }
+
+        .btn-block .btn {
+            padding: 9px 10px 9px 10px;
+        }
 </style>
 
 <form asp-action="Edit" enctype="multipart/form-data">
-    <div class="container py-5">
+    <div class="container py-3">
         <input asp-for="Category.Id" hidden></input>
         @if (Model.Category.ParentId != null)
         {
             title = "Редактирование подкатегории";
             <input asp-for="Category.ParentId" hidden></input>
         }
-        <div class="border p-3">
+        <div class="p-3">
             <div class="form-group row">
-                <h2 class="text-info pl-3">@title</h2>
+                <h2 class="text-info pl-3 fw-bold">@title</h2>
             </div>
             <div class="row">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="col-8">
+                <div class="col-12 col-md-8 order-2 order-md-1 mb-3">
                     <div class="form-group row">
-                        <div class="col-4">
+                        <div class="col-12 col-md-4">
                             <label asp-for="Category.Name"></label>
                         </div>
-                        <div class="col-8">
+                        <div class="col-12 col-md-8">
                             <input asp-for="Category.Name" class="form-control" />
                             <span asp-validation-for="Category.Name" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <div class="col-4">
+                        <div class="col-12 col-md-4">
                             <label asp-for="Category.DisplayOrder"></label>
                         </div>
-                        <div class="col-8">
+                        <div class="col-12 col-md-8">
                             <input asp-for="Category.DisplayOrder" class="form-control" />
                             <span asp-validation-for="Category.DisplayOrder" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <div class="col-4">
+                        <div class="col-12 col-md-4">
                             Изображение
                         </div>
-                        <div class="col-8">
+                        <div class="col-12 col-md-8">
                             <input asp-for="Category.ImageName" hidden />
                             <input type="file" name="files" id="uploadBox" multiple class="form-control" />
                         </div>
                     </div>
                     <div class="form-group row">
-                        <div class="col-4">
+                        <div class="col-12 col-md-4">
                             <label>Параметры категории</label>
                         </div>
-                        <div class="col-8">
+                        <div class="col-12 col-md-8">
                             <div id="parameters">
                                 @foreach (var parameter in Model.Parameters)
                                 {
@@ -77,39 +98,44 @@
                             <button class="btn btn-primary" type="button" onclick="addParameter()">Добавить параметр</button>
                         </div>
                     </div>
-                    <div class="form-group row">
-                        <div class="col-8 offset-4 row">
-                            <div class="col">
-                                <input type="submit" value="Редактировать" class="btn btn-success w-100"/>
+                </div>
+                <div class="col-12 col-md-4 p-4 order-1 order-md-2 d-flex justify-content-center">
+                    @if (Model.Category.ImageName == null)
+                    {
+                        <img id="imagePreview" src="@WC.NoImagePath" class="custom-img" />
+                    }
+                    else
+                    {
+                        <img id="imagePreview" src="@WC.ImagePathCategory@Model.Category.ImageName" class="custom-img" />
+                    }
+                </div>
+                <div class="col-12 col-md-8 order-3">
+                    <div class="row justify-content-end">
+                        <div class="col-12 col-md-8 d-flex flex-row">
+                            <div class="col-6 btn-block">
+                                <input type="submit" value="Редактировать" class="btn btn-success w-100" onclick="return validateInput()" />
                             </div>
-                            <div class="col">
+                            <div class="col-6 btn-block">
                                 @if (Model.Category.ParentId != null)
                                 {
-                                    <a class="btn btn-info w-100" asp-action="Details" asp-controller="Category" asp-route-id="@Model.Category.ParentId"><i class="fas fa-sign-out-alt"></i> Назад к списку</a>
+                                    <a class="btn btn-info w-100" asp-action="Details" asp-controller="Category" asp-route-id="@Model.Category.ParentId">
+                                        <i class="fas fa-sign-out-alt"></i> Назад
+                                    </a>
                                 }
                                 else
                                 {
-                                    <a asp-action="Index" class="btn btn-info w-100"><i class="fas fa-sign-out-alt"></i> Назад к списку</a>
+                                    <a asp-action="Index" class="btn btn-info w-100">
+                                        <i class="fas fa-sign-out-alt"></i> Назад
+                                    </a>
                                 }
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-3 offset-1 p-4">
-                    @if (Model.Category.ImageName == null)
-                    {
-                        <img id="imagePreview" src="@WC.NoImagePath" width="100%" style="border-radius:5px; border: 1px solid #bbb" />
-                    }
-                    else
-                    {
-                        <img id="imagePreview" src="@WC.ImagePathCategory@Model.Category.ImageName" width="100%" style="border-radius:5px; border: 1px solid #bbb" />
-                    }
-                </div>
             </div>
         </div>
     </div>
 </form>
-
 
 @section Scripts {
     @{
@@ -129,18 +155,23 @@
     </script>
     <script>
         function validateInput() {
-            var nme = document.getElementById("uploadBox");
-            if (nme.value.length == 0) {
-                Swal.fire({
-                    title: "Error!",
-                    text: "Please upload an Image!",
-                    icon: "error"
-                });
-                return false;
+            var paramInputs = document.querySelectorAll("#parameters .param-input");
+            for (var i = 0; i < paramInputs.length; i++) {
+                if (paramInputs[i].value.trim().length == 0) {
+                    Swal.fire({
+                        title: "Ошибка!",
+                        text: "Все поля параметров должны быть заполнены!",
+                        icon: "error"
+                    });
+                    return false;
+                }
             }
+
             return true;
         }
     </script>
+
+
     <script>
         function readURL(input) {
             if (input.files && input.files[0]) {
@@ -149,8 +180,7 @@
                 reader.onload = function (e) {
                     $("img#imagePreview")
                         .attr("src", e.target.result)
-                        .width(200)
-                        .height(200);
+                        .addClass("custom-img");
                 }
 
                 reader.readAsDataURL(input.files[0]);

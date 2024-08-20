@@ -1,85 +1,113 @@
 ﻿@model Rolled_metal_products.Models.Product
 
 @{
-    ViewData["Title"] = "Delete Product";
+    ViewData["Title"] = "Удаление товара";
 }
 
 <style>
     .form-group {
         padding: 10px;
     }
+
+    .param-input {
+        margin-bottom: 20px;
+    }
+
+    .btn-delete-parametr {
+        border-radius: 0 1rem 1rem 0;
+    }
+
+    .btn-block {
+        padding: 0px 5px 0px 5px;
+    }
+
+        .btn-block .btn {
+            padding: 9px 10px 9px 10px;
+        }
+</style>
+
+<style>
+    .custom-img {
+        width: 70%;
+        border-radius: 5px;
+        border: 1px solid #bbb;
+        height: fit-content;
+    }
 </style>
 
 <form asp-action="Delete" enctype="multipart/form-data">
-    <div class="container py-5">
-        <input asp-for="Id" hidden></input>
-        <div class="border p-3">
+    <div class="container py-3">
+         <div class="p-3">
             <div class="form-group row">
-                <h2 class="text-info pl-3">Удаление товара</h2>
+                <h2 class="text-info pl-3 fw-bold">Удаление товара</h2>
             </div>
             <div class="row">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="col-8">
+                <div class="col-12 col-md-8 order-2 order-md-1 mb-3">
                     <div class="form-group row">
-                        <div class="col-4">
+                        <div class="col-12 col-md-4">
                             <label asp-for="Name"></label>
                         </div>
-                        <div class="col-8">
+                        <div class="col-12 col-md-8">
                             <input asp-for="Name" disabled class="form-control" />
                         </div>
                     </div>
                     <div class="form-group row">
-                        <div class="col-4">
+                        <div class="col-12 col-md-4">
                             <label asp-for="Price"></label>
                         </div>
-                        <div class="col-8">
+                        <div class="col-12 col-md-8">
                             <input asp-for="Price" disabled class="form-control" />
                         </div>
                     </div>
                     <div class="form-group row">
-                        <div class="col-4">
+                        <div class="col-12 col-md-4">
                             <label asp-for="OldPrice"></label>
                         </div>
-                        <div class="col-8">
+                        <div class="col-12 col-md-8">
                             <input asp-for="OldPrice" disabled class="form-control" />
                         </div>
                     </div>
                     <div class="form-group row">
-                        <div class="col-4">
+                        <div class="col-12 col-md-4">
                             <label asp-for="Description"></label>
                         </div>
-                        <div class="col-8">
+                        <div class="col-12 col-md-8">
                             <textarea asp-for="Description" class="form-control summernote"></textarea>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <div class="col-4">
+                        <div class="col-12 col-md-4">
                             <label asp-for="CategoryId"></label>
                         </div>
-                        <div class="col-8">
+                        <div class="col-12 col-md-8">
                             <input asp-for="@Model.Category.Name" disabled class="form-control" />
                         </div>
                     </div>
-                    <div class="form-group row">
-                        <div class="col-8 offset-4 row">
-                            <div class="col">
-                                <button type="submit" class="btn btn-danger w-100">Удалить</button>
-                            </div>
-                            <div class="col">
-                                <a asp-action="Details" asp-controller="Category" asp-route-id="@Model.CategoryId" class="btn btn-info w-100"><i class="fas fa-sign-out-alt"></i> Назад к списку</a>
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
-                <div class="col-3 offset-1 p-4">
+                <div class="col-12 col-md-4 p-4 order-1 order-md-2 d-flex justify-content-center">
                     @if (Model.ImageName == null)
                     {
-                        <img id="imagePreview" src="@WC.NoImagePath" width="100%" class="w-100" style="border-radius:5px; border: 1px solid #bbb" />
+                        <img id="imagePreview" src="@WC.NoImagePath" class="custom-img" />
                     }
                     else
                     {
-                        <img id="imagePreview" src="@WC.ImagePath@Model.ImageName" class="w-100" width="100%" style="border-radius:5px; border: 1px solid #bbb" />
+                        <img id="imagePreview" src="@WC.ImagePath@Model.ImageName" class="custom-img" />
                     }
+                </div>
+
+                <div class="col-12 col-md-8 order-3">
+                    <div class="row justify-content-end">
+                        <div class="col-12 col-md-8 d-flex flex-row">
+                            <div class="col-6 btn-block">
+                                <button type="submit" class="btn btn-danger w-100">Удалить</button>
+                            </div>
+                            <div class="col-6 btn-block">
+                                <a asp-action="Details" asp-controller="Category" asp-route-id="@Model.CategoryId" class="btn btn-info w-100"><i class="fas fa-sign-out-alt"></i> Назад</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

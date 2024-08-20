@@ -32,13 +32,13 @@
         </div>
         <div class="col-6 text-end">
             <a class="btn btn-primary shadow" asp-action="Create" asp-controller="Category">
-                <i class="fa-solid fa-plus"></i>&nbsp; Добавить категорию
+                <i class="fa-solid fa-plus"></i><span class="btn-text">&nbsp; Добавить категорию</span>
             </a>
         </div>
     </div>
 
     <div class="row pt-4">
-        <div class="col-md-8">
+        <div class="col-md-8 mb-3">
             <form asp-action="Index" method="get">
                 <div class="input-group">
                     <input type="text" class="form-control" name="searchString" value="@currentSearch" placeholder="Поиск категории..." />
@@ -63,21 +63,20 @@
 
     @if (!String.IsNullOrEmpty(currentSearch) || !String.IsNullOrEmpty(currentSort))
     {
-
         <div class="row pt-4">
-            <div class="col-12 d-flex">
+            <div class="col-12 d-flex flex-wrap">
                 @if (!String.IsNullOrEmpty(currentSearch))
                 {
-                    <div class="alert alert-info me-2" style="max-width: fit-content;">
-                        <span>Поиск: @currentSearch <a href="@Url.Action("Index", new { searchString = "", sortOrder = currentSort })" class="text-danger">&times;</a></span>
+                    <div class="alert alert-info me-2 mb-2 mb-md-0" style="max-width: fit-content;">
+                        <span> @currentSearch <a href="@Url.Action("Index", new { searchString = "", sortOrder = currentSort })" class="text-danger">&times;</a></span>
                     </div>
                 }
                 @if (!String.IsNullOrEmpty(currentSort))
                 {
                     var currentSortDescription = sortDescriptions.ContainsKey(currentSort) ? sortDescriptions[currentSort] : currentSort;
-                    
-                    <div class="alert alert-info" style="max-width: fit-content;">
-                        <span>Сортировка: @currentSortDescription <a href="@Url.Action("Index", new { searchString = currentSearch, sortOrder = "" })" class="text-danger">&times;</a></span>
+
+                    <div class="alert alert-info mb-2 mb-md-0" style="max-width: fit-content;">
+                        <span>@currentSortDescription <a href="@Url.Action("Index", new { searchString = currentSearch, sortOrder = "" })" class="text-danger">&times;</a></span>
                     </div>
                 }
             </div>

@@ -164,7 +164,7 @@ namespace Rolled_metal_products.Controllers
 
                 if (files.Count > 0)
                 {
-                    string upload = webRootPath + WC.ImagePath;
+                    string upload = webRootPath + WC.ImagePathCategory;
                     string fileName = Guid.NewGuid().ToString();
                     string extension = Path.GetExtension(files[0].FileName);
 

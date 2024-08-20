@@ -10,98 +10,130 @@
     .form-group {
         padding: 10px;
     }
+
+    .param-input {
+        margin-bottom: 20px;
+    }
+
+    .btn-delete-parametr {
+        border-radius: 0 1rem 1rem 0;
+    }
+
+      .btn-block {
+        padding:0px 5px 0px 5px;
+    }
+
+        .btn-block .btn {
+            padding: 9px 10px 9px 10px;
+        }
+</style>
+
+<style>
+    .custom-img {
+        width: 70%;
+        border-radius: 5px;
+        border: 1px solid #bbb;
+        height: fit-content;
+    }
 </style>
 
 <form asp-action="Create" enctype="multipart/form-data">
-    <div class="container py-5">
-        <div class="border p-3">
+    <div class="container py-3">
+         <div class="p-3">
             <div class="form-group row">
-                <h2 class="text-info pl-3">@title</h2>
+                <h2 class="text-info pl-3 fw-bold">@title</h2>
             </div>
             <div class="row">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="col-8">
+               <div class="col-12 col-md-8 order-2 order-md-1 mb-3">
+                  
                     <div class="form-group row">
-                        <div class="col-4">
+                        <div class="col-12 col-md-4">
                             <label asp-for="Product.Name"></label>
                         </div>
-                        <div class="col-8">
+                        <div class="col-12 col-md-8">
                             <input asp-for="Product.Name" class="form-control" />
                             <span asp-validation-for="Product.Name" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <div class="col-4">
+                    <div class="col-12 col-md-4">
                             <label asp-for="Product.Price"></label>
                         </div>
-                        <div class="col-8">
+                        <div class="col-12 col-md-8">
                             <input asp-for="Product.Price" class="form-control" />
                             <span asp-validation-for="Product.Price" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <div class="col-4">
+                        <div class="col-12 col-md-4">
                             <label asp-for="Product.OldPrice"></label>
                         </div>
-                        <div class="col-8">
+                        <div class="col-12 col-md-8">
                             <input asp-for="Product.OldPrice" class="form-control" />
                             <span asp-validation-for="Product.OldPrice" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <div class="col-4">
+                        <div class="col-12 col-md-4">
                             <label asp-for="Product.Description"></label>
                         </div>
-                        <div class="col-8">
+                        <div class="col-12 col-md-8">
                             <textarea asp-for="Product.Description" class="form-control summernote"></textarea>
                             <span asp-validation-for="Product.Description" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <div class="col-4">
+                        <div class="col-12 col-md-4">
                             Изображение
                         </div>
-                        <div class="col-8">
+                        <div class="col-12 col-md-8">
                             <input asp-for="Product.ImageName" hidden />
                             <input type="file" name="files" id="uploadBox" multiple class="form-control" />
                         </div>
                     </div>
                     <input type="hidden" asp-for="Product.CategoryId" />
-                    @foreach (var param in Model.CategoryParameters)
+                    <div id="parameters">
+                        @foreach (var param in Model.CategoryParameters)
+                        {
+                            <div class="form-group row">
+                                <div class="col-12 col-md-4">
+                                        @param.Name
+                                </div>
+                                <div class="col-12 col-md-8">
+                                    <input type="text" name="CategoryParameters[@Model.CategoryParameters.IndexOf(param)].Value" class="form-control" />
+                                    <input type="hidden" name="CategoryParameters[@Model.CategoryParameters.IndexOf(param)].CategoryParameterId" value="@param.CategoryParameterId" />
+                                    <input type="hidden" name="CategoryParameters[@Model.CategoryParameters.IndexOf(param)].Name" value="@param.Name" />
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="col-12 col-md-4 p-4 order-1 order-md-2 d-flex justify-content-center">
+                    @if (Model.Product.ImageName == null)
                     {
-                        <div class="form-group row">
-                            <div class="col-4">
-                                @param.Name
-                            </div>
-                            <div class="col-8">
-                                <input type="text" name="CategoryParameters[@Model.CategoryParameters.IndexOf(param)].Value" class="form-control" />
-                                <input type="hidden" name="CategoryParameters[@Model.CategoryParameters.IndexOf(param)].CategoryParameterId" value="@param.CategoryParameterId" />
-                                <input type="hidden" name="CategoryParameters[@Model.CategoryParameters.IndexOf(param)].Name" value="@param.Name" />
-                            </div>
-                        </div>
+                        <img id="imagePreview" src="@WC.NoImagePath" class="custom-img" />
                     }
+                    else
+                    {
+                        <img id="imagePreview" src="@WC.ImagePath@Model.Product.ImageName" class="custom-img" />
+                    }
+                </div>
 
-                    <div class="form-group row">
-                        <div class="col-8 offset-4 row">
-                            <div class="col">
+
+                <div class="col-12 col-md-8 order-3">
+                    <div class="row justify-content-end">
+                        <div class="col-12 col-md-8 d-flex flex-row">
+                            <div class="col-6 btn-block">
                                 <input type="submit" value="Добавить" class="btn btn-success w-100" onclick="return validateInput()" />
                             </div>
-                            <div class="col">
-                                <a asp-action="Details" asp-controller="Category" asp-route-id="@Model.Product.CategoryId" class="btn btn-info w-100"><i class="fas fa-sign-out-alt"></i> Назад к списку</a>
+                            <div class="col-6 btn-block">
+                                <a asp-action="Details" asp-controller="Category" asp-route-id="@Model.Product.CategoryId" class="btn btn-info w-100"><i class="fas fa-sign-out-alt"></i> Назад</a>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-3 offset-1 p-4">
-                    @if (Model.Product.ImageName == null)
-                    {
-                        <img id="imagePreview" src="@WC.NoImagePath" width="100%" style="border-radius:5px; border: 1px solid #bbb" />
-                    }
-                    else
-                    {
-                        <img id="imagePreview" src="@WC.ImagePath@Model.Product.ImageName" width="100%" style="border-radius:5px; border: 1px solid #bbb" />
-                    }
-                </div>
+
             </div>
         </div
     </div>
@@ -125,18 +157,32 @@
         function validateInput() {
             var nme = document.getElementById("uploadBox");
             if (nme.value.length == 0) {
-                Swal.fire({
-                    title: "Error!",
-                    text: "Please upload an Image!",
+                 Swal.fire({
+                    title: "Ошибка!",
+                    text: "Пожалуйста, загрузите изображение!",
                     icon: "error"
                 });
                 return false;
             }
-            return true;
+
+            var paramInputs = document.querySelectorAll("#parameters .form-control");
+            for (var i = 0; i < paramInputs.length; i++) {
+                if (paramInputs[i].value.trim().length == 0) {
+                
+                    Swal.fire({
+                        title: "Ошибка!",
+                        text: "Все поля параметров должны быть заполнены!",
+                        icon: "error"
+                    });
+                    return false;
+                }
+            }
+
+        return true;
         }
     </script>
 
-    <script>
+  <script>
         function readURL(input) {
             if (input.files && input.files[0]) {
                 var reader = new FileReader();
@@ -144,8 +190,7 @@
                 reader.onload = function (e) {
                     $("img#imagePreview")
                         .attr("src", e.target.result)
-                        .width(200)
-                        .height(200);
+                        .addClass("custom-img");
                 }
 
                 reader.readAsDataURL(input.files[0]);

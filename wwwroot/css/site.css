@@ -282,13 +282,6 @@ body {
 }
 
 
-
-
-
-
-
-
-
 @media (max-width: 990px) {
     .sidebar-categories {
         display: none;
@@ -309,6 +302,30 @@ body {
 
 @media (max-width: 575px) {
     .catalog-item-body {
+        display: none;
+    }
+}
+
+
+
+
+.main-section {
+    margin-bottom:310px;
+}
+
+@media (max-width: 575px) {
+    .main-section {
+        margin-bottom: 570px;
+    }
+}
+
+
+.btn-text {
+    display:contents;
+}
+
+@media (max-width: 500px) {
+    .btn-text {
         display: none;
     }
 }
