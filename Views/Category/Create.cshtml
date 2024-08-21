@@ -84,7 +84,7 @@
                         </div>
                         <div class="col-12 col-md-8">
                             <div id="parameters">
-                                <div class="input-group mb-2"></div>
+                              
                             </div>
                             <button class="btn btn-primary" type="button" onclick="addParameter()">Добавить параметр</button>
                         </div>
@@ -189,35 +189,41 @@
     </script>
 
     <script>
-        function addParameter() {
-            var container = document.getElementById("parameters");
-            var inputGroup = document.createElement("div");
-            inputGroup.className = "input-group mb-2";
+    function addParameter() {
+        var container = document.getElementById("parameters");
+        var inputGroup = document.createElement("div");
+        inputGroup.className = "input-group mb-2";
 
-            var input = document.createElement("input");
-            input.type = "text";
-            input.name = "Parameters";
-            input.className = "form-control param-input";
+        var input = document.createElement("input");
+        input.type = "text";
+        input.name = `Parameters[${container.children.length}].Name`;
+        input.className = "form-control param-input";
 
-            var inputGroupAppend = document.createElement("div");
-            inputGroupAppend.className = "input-group-append";
+        var inputGroupAppend = document.createElement("div");
+        inputGroupAppend.className = "input-group-append";
 
-            var button = document.createElement("button");
-            button.type = "button";
-            button.className = "btn btn-danger btn-delete-parametr";
-            button.innerText = "Удалить";
-            button.onclick = function () { removeParameter(button); };
+        var button = document.createElement("button");
+        button.type = "button";
+        button.className = "btn btn-danger btn-delete-parametr";
+        button.innerText = "Удалить";
+        button.onclick = function () { removeParameter(button); };
 
-            inputGroupAppend.appendChild(button);
-            inputGroup.appendChild(input);
-            inputGroup.appendChild(inputGroupAppend);
-            container.appendChild(inputGroup);
+        inputGroupAppend.appendChild(button);
+        inputGroup.appendChild(input);
+        inputGroup.appendChild(inputGroupAppend);
+        container.appendChild(inputGroup);
+    }
+
+    function removeParameter(button) {
+        var container = document.getElementById("parameters");
+        container.removeChild(button.parentElement.parentElement);
+
+        // Update the names of the remaining inputs
+        var inputs = container.getElementsByClassName("param-input");
+        for (var i = 0; i < inputs.length; i++) {
+            inputs[i].name = `Parameters[${i}].Name`;
         }
-
-        function removeParameter(button) {
-            var container = document.getElementById("parameters");
-            container.removeChild(button.parentElement.parentElement);
-        }
-    </script>
+    }
+</script>
 
 }

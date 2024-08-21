@@ -13,7 +13,11 @@ namespace Rolled_metal_products.Models
         [ForeignKey("ProductId")]
         public virtual Product Product { get; set; }
 
-        public string Name { get; set; }
+        public int CategoryParameterId { get; set; }
+
+        [ForeignKey("CategoryParameterId")]
+        public virtual CategoryParameter CategoryParameter { get; set; }
+       // public string Name { get; set; }
         public string Value { get; set; }
     }
 }

@@ -1,7 +1,7 @@
 ﻿@model Rolled_metal_products.Models.ViewModels.CategoryProductsVM
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @{
-    ViewData["Title"] = "CategoryProducts";
+    ViewData["Title"] = "Товары категории";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -85,7 +85,7 @@
 
 </style>
 
-<div class="container p-3" style="min-height: 850px; ">
+<div class="container p-3">
     <div class="row">
         <!-- Кнопка для фильтров в мобильной версии -->
         <div class="d-md-none mb-3">
@@ -102,30 +102,29 @@
                             <li class="list-group-item">
                                 <div class="row">
                                     <div class="col-10" style="font-size: 20px;font-weight: 700 !important;">
-                                        @parameter.Key
+                                        @parameter.Name
                                     </div>
                                     <div class="col-2 text-end">
-                                        <button class="btn btn-transparent" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample_@parameter.Key" aria-expanded="false" aria-controls="collapseExample_@parameter.Key">
+                                        <button class="btn btn-transparent" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample_@parameter.Id" aria-expanded="false" aria-controls="collapseExample_@parameter.Id">
                                             <i class="fa-solid fa-chevron-down"></i>
                                         </button>
                                     </div>
                                 </div>
 
-                                <div class="collapse show" id="collapseExample_@parameter.Key">
+                                <div class="collapse show" id="collapseExample_@parameter.Id">
                                     <ul class="list-group list-group-flush">
-                                        @foreach (var value in parameter.Value)
+                                        @foreach (var value in parameter.Values)
                                         {
                                             <li>
-                                                <div class="form-check" style="padding: 1em 1.5em 1em 1.5em;font-size: 15px;">
-                                                    <input type="checkbox" class="form-check-input parameter-checkbox" data-parameter="@parameter.Key" value="@value" id="@parameter.Key-@value" />
-                                                    <label class="form-check-label" for="@parameter.Key-@value">@value</label>
+                                                <div class="form-check" style="    padding: 0.5em 1.5em 0.5em 1.5em;font-size: 15px;">
+                                                    <input type="checkbox" class="form-check-input parameter-checkbox" data-parameter-id="@parameter.Id" value="@value" id="@parameter.Id-@value" />
+                                                    <label class="form-check-label" for="@parameter.Id-@value">@value</label>
                                                 </div>
                                             </li>
                                         }
                                     </ul>
                                 </div>
                             </li>
-                         
                         }
                     </ul>
                     <button class="btn btn-primary shadow" id="closeFilterButton">Смотреть товары</button>
@@ -137,24 +136,20 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a asp-controller="Home" asp-action="Index" style="color:#1b6ec2;">Главная</a>
+                        <a asp-controller="Home" style="color: #1b6ec2;" asp-action="Index">Главная</a>
                     </li>
                     <li class="breadcrumb-item">
-                        <a asp-controller="Catalog" asp-action="Index" style="color:#1b6ec2;">Категории</a>
+                        <a asp-controller="Catalog" style="color: #1b6ec2;" asp-action="Index">Категории</a>
                     </li>
-                    @if (Model.BreadcrumbCategories.Count > 3)
+                    @if (Model.BreadcrumbCategories.Count > 2)
                     {
                         <li class="breadcrumb-item dropdown">
-                            <a class="dropdown-toggle" href="#" id="breadcrumbDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                ...
-                            </a>
+                            <a href="#" class="dropdown-toggle" id="breadcrumbDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">...</a>
                             <ul class="dropdown-menu" aria-labelledby="breadcrumbDropdown">
-                                @for (int i = 2; i < Model.BreadcrumbCategories.Count - 1; i++)
+                                @foreach (var category in Model.BreadcrumbCategories.Take(Model.BreadcrumbCategories.Count - 1))
                                 {
                                     <li>
-                                        <a class="dropdown-item" asp-route-parentId="@Model.BreadcrumbCategories[i].Id" asp-controller="Catalog" asp-action="Index">
-                                            @Model.BreadcrumbCategories[i].Name
-                                        </a>
+                                        <a class="dropdown-item" asp-route-parentId="@category.Id" asp-controller="Catalog" asp-action="Index">@category.Name</a>
                                     </li>
                                 }
                             </ul>
@@ -167,20 +162,17 @@
                     {
                         @foreach (var category in Model.BreadcrumbCategories)
                         {
-                            if (category == Model.BreadcrumbCategories.Last())
-                            {
-                                <li class="breadcrumb-item active" aria-current="page">@category.Name</li>
-                            }
-                            else
-                            {
-                                <li class="breadcrumb-item">
-                                    <a asp-route-parentId="@category.Id" asp-controller="Catalog" asp-action="Index" style="color:#1b6ec2;">@category.Name</a>
-                                </li>
-                            }
+                            <li class="breadcrumb-item">
+                                <a asp-route-parentId="@category.Id" style="color: #1b6ec2;" asp-controller="Catalog" asp-action="Index">@category.Name</a>
+                            </li>
                         }
+                        <li class="breadcrumb-item active" aria-current="page">
+                            @Model.BreadcrumbCategories.Last().Name
+                        </li>
                     }
                 </ol>
             </nav>
+
             <h2 style="font-weight: 700 !important;">@Model.Category.Name</h2>
             <div class="mt-4" id="products-list-container" class="row">
                 <partial name="_IndividualProductCard" model="@Model.Products" />
@@ -293,19 +285,28 @@
         function filterProducts() {
             const selectedParameters = {};
             document.querySelectorAll('.parameter-checkbox:checked').forEach(checkbox => {
-                const parameter = checkbox.getAttribute('data-parameter');
+                const parameterId = checkbox.getAttribute('data-parameter-id');
                 const value = checkbox.value;
-                if (!selectedParameters[parameter]) {
-                    selectedParameters[parameter] = [];
+                if (!selectedParameters[parameterId]) {
+                    selectedParameters[parameterId] = [];
                 }
-                selectedParameters[parameter].push(value);
+                selectedParameters[parameterId].push(value);
             });
+
+            // Получаем categoryId из модели
+            const categoryId = @Model.Category.Id;
+
+            // Создаем объект для передачи в запрос
+            const requestData = {
+                selectedParameters: selectedParameters,
+                categoryId: categoryId
+            };
 
             $.ajax({
                 url: '@Url.Action("FilterProducts", "Catalog")',
                 type: 'POST',
                 contentType: 'application/json',
-                data: JSON.stringify(selectedParameters),
+                data: JSON.stringify(requestData), // Передаем объект requestData
                 headers: {
                     'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
                 },
@@ -316,7 +317,6 @@
                     console.error("Ошибка при запросе:", status, error);
                 }
             });
-
         }
     </script>
     <script>

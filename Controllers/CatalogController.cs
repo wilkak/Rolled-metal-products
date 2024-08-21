@@ -6,6 +6,7 @@ using Rolled_metal_products.Models;
 using Rolled_metal_products.Utility;
 using Rolled_metal_products.Repository.IRepository;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
+using System.Reflection;
 
 namespace Rolled_metal_products.Controllers
 {
@@ -66,18 +67,23 @@ namespace Rolled_metal_products.Controllers
 
             var products = _prodRepo.GetAll(filter: p => p.CategoryId == categoryId, includeProperties: "ProductParameters");
 
-            var categoryParameters = new Dictionary<string, List<string>>();
+            var categoryParameters = new List<FilterParameterInfoVM>();
 
             foreach (var parameter in category.CategoryParameters)
             {
                 var values = products
                     .SelectMany(p => p.ProductParameters)
-                    .Where(pp => pp.Name == parameter.Name)
+                    .Where(pp => pp.CategoryParameterId == parameter.Id)
                     .Select(pp => pp.Value)
                     .Distinct()
                     .ToList();
 
-                categoryParameters.Add(parameter.Name, values);
+                categoryParameters.Add(new FilterParameterInfoVM
+                {
+                    Id = parameter.Id,
+                    Name = parameter.Name,
+                    Values = values
+                });
             }
 
             List<ShoppingCart> shoppingCartList = new List<ShoppingCart>();
@@ -91,6 +97,13 @@ namespace Rolled_metal_products.Controllers
             var productVMList = products.Select(product => new ProductVM
             {
                 Product = product,
+                Parameters = product.ProductParameters.Select(pp => new ProductParameterVM
+                {
+                    CategoryParameterId = pp.CategoryParameterId,
+                    Id = pp.Id,
+                    Name = pp.CategoryParameter.Name, 
+                    Value = pp.Value
+                }).ToList(),
                 ExistsInCart = shoppingCartList.Any(cartItem => cartItem.ProductId == product.Id)
             }).ToList();
 
@@ -129,14 +142,27 @@ namespace Rolled_metal_products.Controllers
         }
 
         [HttpPost]
-        public IActionResult FilterProducts([FromBody] Dictionary<string, List<string>> selectedParameters)
+        public IActionResult FilterProducts([FromBody] FilterProductsRequestVM request)
         {
-            var productsQuery = _prodRepo.GetAll(includeProperties: "ProductParameters").AsQueryable();
+            var categoryId = request.CategoryId;
+            var selectedParameters = request.SelectedParameters;
+
+            // Добавляем фильтрацию по категории
+            var productsQuery = _prodRepo.GetAll(includeProperties: "ProductParameters.CategoryParameter")
+                                         .Where(p => p.CategoryId == categoryId)
+                                         .AsQueryable();
 
             foreach (var parameter in selectedParameters)
             {
-                productsQuery = productsQuery.Where(p => p.ProductParameters
-                    .Any(pp => pp.Name == parameter.Key && parameter.Value.Contains(pp.Value)));
+                if (int.TryParse(parameter.Key, out int categoryParameterId))
+                {
+                    productsQuery = productsQuery.Where(p => p.ProductParameters
+                        .Any(pp => pp.CategoryParameterId == categoryParameterId && parameter.Value.Contains(pp.Value)));
+                }
+                else
+                {
+                    return BadRequest("Error.");
+                }
             }
 
             // Выполняем запрос к базе данных и загружаем продукты в память
@@ -153,6 +179,13 @@ namespace Rolled_metal_products.Controllers
             var productVMList = products.Select(product => new ProductVM
             {
                 Product = product,
+                Parameters = product.ProductParameters.Select(pp => new ProductParameterVM
+                {
+                    CategoryParameterId = pp.CategoryParameterId,
+                    Id = pp.Id,
+                    Name = pp.CategoryParameter != null ? pp.CategoryParameter.Name : "Unknown", // Проверка на null
+                    Value = pp.Value
+                }).ToList(),
                 ExistsInCart = shoppingCartList.Any(cartItem => cartItem.ProductId == product.Id)
             }).ToList();
 

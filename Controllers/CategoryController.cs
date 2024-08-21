@@ -114,7 +114,11 @@ namespace Rolled_metal_products.Controllers
 
                 # endregion
 
-                _catRepo.Add(createCategoryVM);
+                var category = createCategoryVM.Category;
+
+                category.CategoryParameters = createCategoryVM.Parameters;
+                _catRepo.Add(category);
+
                 _catRepo.Save();
                 TempData[WC.Success] = "Категория успешно создана";
 
@@ -187,8 +191,11 @@ namespace Rolled_metal_products.Controllers
                     createCategoryVM.Category.ImageName = categoryFromDb.ImageName;
                 }
 
+                var category = createCategoryVM.Category;
 
-                _catRepo.Update(createCategoryVM);
+                category.CategoryParameters = createCategoryVM.Parameters;
+                _catRepo.Update(category);
+
                 _catRepo.Save();
                 TempData[WC.Success] = "Изменение успешно завершено";
 

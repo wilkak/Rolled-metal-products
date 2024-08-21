@@ -6,6 +6,8 @@ namespace Rolled_metal_products.Models.ViewModels
     {
         public Product Product { get; set; }
 
+        public IEnumerable<ProductParameterVM> Parameters { get; set; }
+
         public bool ExistsInCart { get; set; }
     }
 }

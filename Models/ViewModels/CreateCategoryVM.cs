@@ -3,6 +3,6 @@
     public class CreateCategoryVM
     {
         public Category Category { get; set; }
-        public List<string> Parameters { get; set; } = new List<string>();
+        public List<CategoryParameter> Parameters { get; set; }
     }
 }

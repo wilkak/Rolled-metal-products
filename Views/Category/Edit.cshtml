@@ -85,10 +85,12 @@
                         </div>
                         <div class="col-12 col-md-8">
                             <div id="parameters">
-                                @foreach (var parameter in Model.Parameters)
+                                @for (int i = 0; i < Model.Parameters.Count; i++)
                                 {
+                                    <input type="hidden" name="Parameters[@i].CategoryId" value="@Model.Parameters[i].CategoryId" />
+                                    <input type="hidden" name="Parameters[@i].Id" value="@Model.Parameters[i].Id" />
                                     <div class="input-group mb-2">
-                                        <input type="text" name="Parameters" class="form-control param-input" value="@parameter" />
+                                        <input type="text" name="Parameters[@i].Name" value="@Model.Parameters[i].Name" class="form-control param-input" />
                                         <div class="input-group-append">
                                             <button type="button" class="btn btn-danger btn-delete-parametr" onclick="removeParameter(this)">Удалить</button>
                                         </div>
@@ -195,12 +197,24 @@
     <script>
         function addParameter() {
             var container = document.getElementById("parameters");
+            var index = container.children.length / 3; // Каждая группа параметров состоит из 3 элементов: два скрытых поля и один input-group
+
+            var hiddenCategoryId = document.createElement("input");
+            hiddenCategoryId.type = "hidden";
+            hiddenCategoryId.name = `Parameters[${index}].CategoryId`;
+            hiddenCategoryId.value = "0"; // или другое значение по умолчанию
+
+            var hiddenId = document.createElement("input");
+            hiddenId.type = "hidden";
+            hiddenId.name = `Parameters[${index}].Id`;
+            hiddenId.value = "0"; // или другое значение по умолчанию
+
             var inputGroup = document.createElement("div");
             inputGroup.className = "input-group mb-2";
 
             var input = document.createElement("input");
             input.type = "text";
-            input.name = "Parameters";
+            input.name = `Parameters[${index}].Name`;
             input.className = "form-control param-input";
 
             var inputGroupAppend = document.createElement("div");
@@ -212,16 +226,44 @@
             button.innerText = "Удалить";
             button.onclick = function () { removeParameter(button); };
 
-            inputGroupAppend.appendChild(button);
             inputGroup.appendChild(input);
+            inputGroupAppend.appendChild(button);
             inputGroup.appendChild(inputGroupAppend);
+
+            container.appendChild(hiddenCategoryId);
+            container.appendChild(hiddenId);
             container.appendChild(inputGroup);
         }
 
         function removeParameter(button) {
             var container = document.getElementById("parameters");
-            container.removeChild(button.parentElement.parentElement);
+            var inputGroup = button.parentElement.parentElement;
+
+            // Удаляем скрытые поля, связанные с этой группой ввода
+            var hiddenCategoryId = inputGroup.previousElementSibling;
+            var hiddenId = hiddenCategoryId.previousElementSibling;
+            container.removeChild(hiddenCategoryId);
+            container.removeChild(hiddenId);
+
+            // Удаляем саму группу ввода
+            container.removeChild(inputGroup);
+
+            // Обновляем имена оставшихся полей ввода
+            var inputs = container.getElementsByClassName("param-input");
+            for (var i = 0; i < inputs.length; i++) {
+                inputs[i].name = `Parameters[${i}].Name`;
+            }
+
+            var hiddenInputs = container.querySelectorAll("input[type='hidden']");
+            var hiddenIndex = 0;
+            hiddenInputs.forEach(function (hiddenInput) {
+                if (hiddenInput.name.includes("CategoryId")) {
+                    hiddenInput.name = `Parameters[${hiddenIndex}].CategoryId`;
+                } else if (hiddenInput.name.includes("Id")) {
+                    hiddenInput.name = `Parameters[${hiddenIndex}].Id`;
+                    hiddenIndex++;
+                }
+            });
         }
     </script>
-
 }

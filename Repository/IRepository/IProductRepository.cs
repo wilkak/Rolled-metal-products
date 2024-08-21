@@ -14,5 +14,7 @@ namespace Rolled_metal_products.Repository.IRepository
         void Update(Product obj);
 
         void DeleteExistingParameters(int id);
+
+        IEnumerable<ProductParameter> GetParameter(int productId);
     }
 }

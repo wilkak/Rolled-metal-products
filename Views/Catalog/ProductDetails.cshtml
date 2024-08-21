@@ -1,18 +1,13 @@
 ﻿@model Rolled_metal_products.Models.ViewModels.DetailsVM
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
+@{
+    ViewData["Title"] = Model.Product.Name;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
 <style>
-    /*.product-specs {
-        width: 33%;
-    }
-
-
-
-
-    */
-
-
-
     .product-title-wrapper .product-title {
         /*font-size: 24px;*/
         margin-bottom: 10px;
@@ -94,25 +89,55 @@
 <div class="container p-3">
     <form>
         <input asp-for="@Model.Product.Id" hidden />
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item">
-                    <a asp-controller="Home" asp-action="Index" style="color:#1b6ec2;">Главная</a>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a asp-controller="Home" style="color: #1b6ec2;" asp-action="Index">Главная</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a asp-controller="Catalog" style="color: #1b6ec2;" asp-action="Index">Категории</a>
+                </li>
+                @if (Model.BreadcrumbCategories.Count > 2)
+                {
+                    <li class="breadcrumb-item dropdown">
+                        <a href="#" class="dropdown-toggle" id="breadcrumbDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">...</a>
+                        <ul class="dropdown-menu" aria-labelledby="breadcrumbDropdown">
+                            @foreach (var category in Model.BreadcrumbCategories.Take(Model.BreadcrumbCategories.Count - 1))
+                            {
+                                <li>
+                                    <a class="dropdown-item" asp-route-parentId="@category.Id" asp-controller="Catalog" asp-action="Index">@category.Name</a>
+                                </li>
+                            }
+                        </ul>
                     </li>
-                    <li class="breadcrumb-item">
-                    <a asp-controller="Catalog" asp-action="Index" style="color:#1b6ec2;">Категории</a>
+                    <li class="breadcrumb-item" style="color: #1b6ec2;">
+                        @Model.BreadcrumbCategories.Last().Name
                     </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        @Model.Product.Name
+                    </li>
+                }
+                else
+                {
                     @foreach (var category in Model.BreadcrumbCategories)
                     {
                         <li class="breadcrumb-item">
-                        <a asp-route-parentId="@category.Id" asp-controller="Catalog" asp-action="Index" style="color:#1b6ec2;">@category.Name</a>
+                            <a asp-route-parentId="@category.Id" style="color: #1b6ec2;" asp-controller="Catalog" asp-action="Index">@category.Name</a>
                         </li>
                     }
-                    <li class="breadcrumb-item active">
+                    <li class="breadcrumb-item" style="color: #1b6ec2;">
+                        @Model.BreadcrumbCategories.Last().Name
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
                         @Model.Product.Name
                     </li>
-                </ol>
-            </nav>
+                }
+            </ol>
+        </nav>
+
+
+
+            
             <div class="row">
                 <div class="col-md-3 text-center">
                 <div class="product-image" style="margin-bottom: 40px;">
@@ -141,22 +166,24 @@
                         }
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
-                            <section class="product-specs mb-4">
-                                <div class="product-specs-header-wrapper">
-                                    <h4 class="product-specs-header ref-name">ХАРАКТЕРИСТИКИ</h4>
-                                </div>
-                                <ul class="list-unstyled">
-                                    @foreach (var item in Model.Product.ProductParameters)
-                                    {
-                                        <li class="spec d-flex justify-content-between">
-                                            <div class="spec-name">@item.Name:</div>
-                                            <div class="spec-value">@item.Value.ToString()</div>
-                                        </li>
-                                    }
-                                </ul>
-                            </section>
-                        </div>
+                        @if (Model.Product.ProductParameters.Any()) { 
+                            <div class="col-md-4">
+                                <section class="product-specs mb-4">
+                                    <div class="product-specs-header-wrapper">
+                                        <h4 class="product-specs-header ref-name">ХАРАКТЕРИСТИКИ</h4>
+                                    </div>
+                                    <ul class="list-unstyled">
+                                        @foreach (var item in Model.Product.ProductParameters)
+                                        {
+                                            <li class="spec d-flex justify-content-between">
+                                            @*<div class="spec-name">@item.Name:</div>*@
+                                                <div class="spec-value">@item.Value.ToString()</div>
+                                            </li>
+                                        }
+                                    </ul>
+                                </section>
+                            </div>
+                        }
                         <div class="col-md-8">
                             @if (User.IsInRole(WC.AdminRole))
                             {

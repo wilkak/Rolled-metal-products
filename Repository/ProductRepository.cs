@@ -21,6 +21,13 @@ namespace Rolled_metal_products.Repository
             _db = db;
         }
 
+
+        public IEnumerable<ProductParameter> GetParameter(int productId) 
+        {
+            IEnumerable<ProductParameter> paramList = _db.ProductParameters.Where(x => x.ProductId == productId).Include(x => x.CategoryParameter).ToList();
+            return paramList;
+        }
+
         public Category GetCategory(int id)
         {
             var category = _db.Categories

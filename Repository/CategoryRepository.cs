@@ -21,34 +21,39 @@ namespace Rolled_metal_products.Repository
             _db = db;
         }
 
-        public void Add(CreateCategoryVM model)
+        /*public void Add(CreateCategoryVM model)
         {
             var category = model.Category;
-            category.CategoryParameters = model.Parameters.Select(p => new CategoryParameter
-            {
-                Name = p
-            }).ToList();
+            category.CategoryParameters = model.Parameters.ToList();
 
             _db.Categories.Add(category);
+        }*/
+
+
+        public void Add(Category obj)
+        {
+            _db.Categories.Add(obj);
         }
 
-        public void Update(CreateCategoryVM viewModel)
+        public void Update(Category obj)
         {
-            var categoryFromDb = _db.Categories.Include(x => x.CategoryParameters).FirstOrDefault(c => c.Id == viewModel.Category.Id);
+            var categoryFromDb = _db.Categories.Include(x => x.CategoryParameters).FirstOrDefault(c => c.Id == obj.Id);
 
-            categoryFromDb.CategoryParameters.Clear();
+            /*categoryFromDb.CategoryParameters.Clear();*/
 
-            if (viewModel != null)
+            if (obj != null)
             {
-                categoryFromDb.Name = viewModel.Category.Name;
-                categoryFromDb.DisplayOrder = viewModel.Category.DisplayOrder;
-                categoryFromDb.ImageName = viewModel.Category.ImageName;
-                categoryFromDb.CategoryParameters = viewModel.Parameters.Select(p => new CategoryParameter
-                {
-                    Name = p
-                }).ToList();
+                categoryFromDb.Name = obj.Name;
+                categoryFromDb.DisplayOrder = obj.DisplayOrder;
+                categoryFromDb.ImageName = obj.ImageName;
+                categoryFromDb.CategoryParameters = obj.CategoryParameters.ToList();
             }
         }
+
+        /*public void Update(Category obj)
+        {
+            _db.Categories.Update(obj);
+        }*/
 
         public Category GetCategoryWithSubCategories(int id)
         {
@@ -71,13 +76,16 @@ namespace Rolled_metal_products.Repository
             var viewModel = new CreateCategoryVM
             {
                 Category = category,
-                Parameters = category.CategoryParameters.Select(cp => cp.Name).ToList()
+                Parameters = category.CategoryParameters.ToList()
             };
 
             return viewModel;
         }
 
+        public IEnumerable<CategoryParameter> GetCategoryParameters(int categoryId)
+        {
+            return _db.CategoryParameters.Where(cp => cp.CategoryId == categoryId).ToList();
+        }
 
-       
     }
 }

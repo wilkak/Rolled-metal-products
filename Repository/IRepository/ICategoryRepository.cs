@@ -10,10 +10,12 @@ namespace Rolled_metal_products.Repository.IRepository
 {
     public interface ICategoryRepository : IRepository<Category>
     {
-        void Add(CreateCategoryVM model);
-        void Update(CreateCategoryVM viewModel);
+        void Add(Category obj);
+        void Update(Category obj);
         Category GetCategoryWithSubCategories(int id);
 
         CreateCategoryVM GetCategory(int id);
+
+        IEnumerable<CategoryParameter> GetCategoryParameters(int categoryId);
     }
 }

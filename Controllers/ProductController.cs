@@ -87,45 +87,7 @@ namespace Rolled_metal_products.Controllers
             return View(model);
         }
 
-        // POST - CREATE
-        /* [HttpPost]
-         public IActionResult Create(CreateProductVM viewModel)
-         {
-             if (ModelState.IsValid)
-             {
-                 var files = HttpContext.Request.Form.Files;
-                 string webRootPath = _webHostEnvironment.WebRootPath;
-
-                 string upload = webRootPath + WC.ImagePath;
-                 string fileName = Guid.NewGuid().ToString();
-                 string extension = Path.GetExtension(files[0].FileName);
-
-                 using (var fileStream = new FileStream(Path.Combine(upload, fileName + extension), FileMode.Create))
-                 {
-                     files[0].CopyTo(fileStream);
-                 }
-
-                 viewModel.Product.ImageName = fileName + extension;
-
-                 var product = viewModel.Product;
-
-                 product.ProductParameters = viewModel.CategoryParameters.Select(pp => new ProductParameter
-                 {
-                     ProductId = viewModel.Product.Id,
-                     Name = pp.Name,
-                     Value = pp.Value
-                 }).ToList();
-
-                 _prodRepo.Add(product);
-                 _prodRepo.Save();
-
-                 return RedirectToAction("Details", "Category", new { id = product.CategoryId });
-                 //return RedirectToAction("","Index");
-             }
-
-             return View(viewModel);
-         }*/
-
+        
         // POST - CREATE
         [HttpPost]
         public IActionResult Create(CreateProductVM viewModel)
@@ -157,7 +119,7 @@ namespace Rolled_metal_products.Controllers
                 product.ProductParameters = viewModel.CategoryParameters.Select(pp => new ProductParameter
                 {
                     ProductId = viewModel.Product.Id,
-                    Name = pp.Name,
+                    CategoryParameterId = pp.CategoryParameterId,
                     Value = pp.Value
                 }).ToList();
 
@@ -174,24 +136,32 @@ namespace Rolled_metal_products.Controllers
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            var product = _prodRepo.FirstOrDefault(p => p.Id == id, includeProperties: "ProductParameters");
+            var product = _prodRepo.FirstOrDefault(p => p.Id == id);
+
+            // Получение всех параметров категории
+            var categoryParameters = _catRepo.GetCategoryParameters(product.CategoryId);
+
+            // Получение параметров продукта
+            var productParameters = _prodRepo.GetParameter(id);
 
             if (product == null)
             {
                 return NotFound();
             }
 
-            var categoryParameters = product.ProductParameters
-                .Select(pp => new ProductParameterVM
-                {
-                    Name = pp.Name,
-                    Value = pp.Value
-                }).ToList();
+            // Создание списка параметров для отображения
+            var categoryParameterVMs = categoryParameters.Select(cp => new ProductParameterVM
+            {
+                Name = cp.Name,
+                Id = cp.Id,
+                CategoryParameterId = cp.Id,
+                Value = productParameters.FirstOrDefault(pp => pp.CategoryParameterId == cp.Id)?.Value ?? string.Empty
+            }).ToList();
 
             var viewModel = new CreateProductVM
             {
                 Product = product,
-                CategoryParameters = categoryParameters
+                CategoryParameters = categoryParameterVMs
             };
 
             return View(viewModel);
@@ -238,9 +208,9 @@ namespace Rolled_metal_products.Controllers
                 var product = viewModel.Product;
 
                 product.ProductParameters = viewModel.CategoryParameters.Select(pp => new ProductParameter
-                {
+                { 
                     ProductId = viewModel.Product.Id,
-                    Name = pp.Name,
+                    CategoryParameterId = pp.CategoryParameterId,
                     Value = pp.Value
                 }).ToList();
 
