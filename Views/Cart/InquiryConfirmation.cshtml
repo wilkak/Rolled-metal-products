@@ -1,19 +1,14 @@
 ﻿@model Rolled_metal_products.Models.OrderHeader
 
 <div class="text-center">
-
     @if (Model != null)
     {
-        <h1 class="text-info"> Order Created</h1>
-        <p>Order #@Model.Id has been created successfully!</p>
+        <h1 class="text-info">Заказ создан</h1>
+        <p>Заказ @Model.Id был успешно создан!</p>
     }
     else
     {
-
-
-        <h1 class="text-info">Inquiry Confirmation</h1>
-
-        <p>We have recieved your inquiry and someone from our team will contact you shortly!</p>
+        <h1 class="text-info">Подтверждение запроса</h1>
+        <p>Мы получили ваш запрос, и кто-то из нашей команды свяжется с вами в ближайшее время!</p>
     }
-    <img src="/images/patio.jpg" width="80%" />
 </div>

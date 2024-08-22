@@ -8,10 +8,10 @@
                 <div class="card mb-4">
                     <div class="row mb-3">
                         <div class="col-6">
-                            <h2 class="mb-0">Корзина </h2>
+                            <h3 class="text-primary fw-bold mb-0" style="margin-top: 3px;">Корзина </h3>
                         </div>
                         <div class="col-6 text-end">
-                            <a asp-action="Index" asp-controller="Home" class="btn btn-primary btn-sm shadow" style="font-size: 0.875rem;">Продолжить покупки</a>
+                            <a asp-action="Index" asp-controller="Home" class="btn btn-outline-info btn-sm" style="font-size: 0.875rem;">Продолжить покупки</a>
                         </div>
                     </div>
 
@@ -91,7 +91,7 @@
                             <a asp-action="Clear" class="btn btn-warning shadow btn-sm mx-2">Отчистить корзину</a>
 
                             <input type="submit" asp-action="UpdateCart" formmethod="post" name="Update" value="Обновить корзину"
-                                   class="btn btn-warning shadow btn-sm mx-2" hidden/>
+                                   class="btn btn-outline-warning btn-sm" hidden />
                         </div>
                     </div>
                 </div>
@@ -102,26 +102,27 @@
             <div class="col-md-4">
                 <div class="card mb-4">
                     <div class="card-header py-3" style="background:transparent">
-                        <h2 class="mb-0">Заказ</h2>
+                        <h4 class="mb-0">Заказ</h4>
                     </div>
                     <div class="card-body">
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
-                                @if (User.IsInRole(WC.AdminRole))
-                                {
+                                
                                     <div>
                                         <strong>Общая сумма</strong>
                                     </div>
                                     <span><strong>@string.Format("{0:c}", orderTotal)</strong></span>
-                                }
+                                
                             </li>
                         </ul>
-
-                        <div class="col-6 col-md-3 mt-5" style="width: auto;text-align: center;">
-                            <button type="submit" class="btn btn-success shadow" style="min-width: 210px;">
-                                <span>Продолжить</span>
-                            </button>
-                        </div>
+                        @if (Model.Count() > 0)
+                        {
+                            <div class="col-6 col-md-3 mt-5" style="width: auto;text-align: center;">
+                                <button type="submit" class="btn btn-success shadow" style="min-width: 210px;">
+                                    <span>Продолжить</span>
+                                </button>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>

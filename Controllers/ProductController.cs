@@ -125,10 +125,10 @@ namespace Rolled_metal_products.Controllers
 
                 _prodRepo.Add(product);
                 _prodRepo.Save();
-
+                TempData[WC.Success] = "Товар успешно создан";
                 return RedirectToAction("Details", "Category", new { id = product.CategoryId });
             }
-
+            TempData[WC.Error] = "Ошибка при создании товара";
             return View(viewModel);
         }
 
@@ -216,9 +216,10 @@ namespace Rolled_metal_products.Controllers
 
                 _prodRepo.Update(product);
                 _prodRepo.Save();
-
+                TempData[WC.Success] = "Изменение успешно завершено";
                 return RedirectToAction("Details", "Category", new { id = product.CategoryId });
             }
+            TempData[WC.Error] = "Ошибка при изменении";
             return View(viewModel);
         }
 

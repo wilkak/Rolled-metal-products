@@ -1,92 +1,119 @@
 ﻿@model Rolled_metal_products.Models.ViewModels.InquiryVM
 
+<style>
+
+    .btn-block {
+        padding: 0px 5px 0px 5px;
+    }
+
+        .btn-block .btn {
+            padding: 9px 10px 9px 10px;
+        }
+</style>
+
+
     <form method="post">
         <input hidden asp-for="InquiryHeader.Id" />
         <br />
         <div class="backgroundWhite container">
             <div class="card">
-                <div class="card-header bg-dark text-light ml-0 row container">
-                    <div class="col-12 d-none d-md-block col-md-6 pb-1">
-                        <i class="fas fa-shopping-cart"></i> &nbsp; Order Summary
-                    </div>
-                    <div class="col-12 col-md-4 offset-md-2 text-right">
-                        <a asp-action="Index" class="btn btn-outline-info form-control btn-sm">Back to Inquiry</a>
-                    </div>
+             
+
+            <div class="card-header container row p-3" style="margin-left:0; background:transparent">
+                <div class="col-6 align-items-center justify-content-center">
+                    <h3 class="text-primary fw-bold mb-0" style="margin-top: 3px;">Запрос</h3>
                 </div>
+                <div class="col-6 text-end">
+                    <a asp-action="Index" class="btn btn-primary shadow btn-sm">Назад</a>
+                </div>
+            </div>
+
                 <div class="card-body pb-0">
                     <div class="container rounded p-2">
                         <div class="row">
                             <div class="col-12 col-lg-6 pb-4">
                                 <div class="row">
                                     <h4 class="d-flex justify-content-between align-items-center mb-3">
-                                        <span class="text-info">PickUp Details:</span>
+                                        <span class="text-info">Данные о пользователе:</span>
                                     </h4>
                                 </div>
-                                <div class="row my-1">
-                                    <div class="col-3">Name</div>
+                                <div class="row my-1 mb-3">
+                                    <div class="col-3">Имя</div>
                                     <div class="col-9">
                                         <input asp-for="InquiryHeader.FullName" type="text" class="form-control" />
                                         <span asp-validation-for="InquiryHeader.FullName" class="text-danger"></span>
                                     </div>
                                 </div>
-                                <div class="row my-1">
-                                    <div class="col-3">Phone</div>
+                                <div class="row my-1 mb-3">
+                                    <div class="col-3">Телефон</div>
                                     <div class="col-9">
                                         <input asp-for="InquiryHeader.PhoneNumber" type="text" class="form-control" />
                                         <span asp-validation-for="InquiryHeader.PhoneNumber" class="text-danger"></span>
                                     </div>
                                 </div>
-
-                                <div class="row my-1">
+                                <div class="row my-1 mb-3">
                                     <div class="col-3">Email</div>
                                     <div class="col-9">
                                         <input asp-for="InquiryHeader.Email" type="text" class="form-control" />
                                         <span asp-validation-for="InquiryHeader.Email" class="text-danger"></span>
                                     </div>
                                 </div>
-                                <div class="row my-1">
-                                    <div class="col-3">Inquiry Date</div>
+                                <div class="row my-1 mb-5">
+                                    <div class="col-3">Дата запроса</div>
                                     <div class="col-9">
                                         <input value="@Model.InquiryHeader.InquiryDate.ToShortDateString()" type="text" class="form-control" readonly />
                                     </div>
                                 </div>
-
-                                <div class="row my-1 pt-2">
-                                    <div class="col-9 offset-3">
-                                        <div class="row">
-                                            <div class="col">
-                                                <input type="submit" value="Convert To Cart" class="btn btn-info form-control" />
-                                            </div>
-
-                                            <div class="col">
-                                                <input type="submit" value="Delete" class="btn btn-danger form-control"
-                                                   formaction="/Inquiry/Delete" formmethod="post"  />
-                                            </div>
+                                <div class="row my-1 mb-3">
+                                    <div class="col-12 col-md-9  d-flex flex-row offset-md-3">
+                                        <div class="col-6 btn-block">
+                                            <input type="submit" value="В корзину" class="btn btn-info shadow w-100">
+                                        </div>
+                                        <div class="col-6 btn-block">
+                                            <input type="submit" value="Удалить" class="btn btn-danger shadow w-100" formaction="/Inquiry/Delete" formmethod="post">
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-12 col-lg-5 offset-lg-1">
                                 <h4 class="d-flex justify-content-between align-items-center mb-3">
-                                    <span class="text-info">Order Summary</span>
+                                    <span class="text-info">Заказ</span>
                                 </h4>
                                 <ul class="list-group mb-3">
+                                @{
+                                    var orderTotal = 0.0;
+                                }
                                     @foreach (var prod in Model.InquiryDetail)
                                     {
-                                    <li class="list-group-item d-flex justify-content-between p-2">
+                                    <li class="list-item d-flex justify-content-between p-2">
                                         <div class="row container">
                                             <div class="col-8">
 
                                                 <h6 class="my-0 text-info">@prod.Product.Name</h6>
-                                                <small class="text-muted">Price : $@prod.Product.Price</small><br />
+                                                <small class="text-muted">Цена : @prod.Product.Price.ToString("C")</small><br />
                                             </div>
                                             <div class="col-4">
                                             </div>
                                         </div>
                                     </li>
-                                    }
+                                    orderTotal += prod.Product.Price;
+                                }
+
+                                </br>
+                                <li class="list-item d-flex justify-content-between p-2">
+                                    <div class="row container">
+                                        <div class="col-8">
+                                            <strong>Общая сумма</strong>
+                                        </div>
+                                        <div class="col-4 text-end">
+                                            <span><strong>@orderTotal ₽</strong></span>
+                                        </div>
+                                    </div>
+
+                                </li>
                                 </ul>
-                                <br />
+
+
                             </div>
                         </div>
                     </div>

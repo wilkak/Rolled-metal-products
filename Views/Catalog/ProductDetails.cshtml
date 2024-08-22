@@ -138,11 +138,11 @@
                 <div class="product-action">
                     @if (Model.ExistsInCart)
                     {
-                        <a asp-action="RemoveFromCart" asp-route-id="@Model.Product.Id" class="btn btn-danger shadow btn-block">Удалить из корзины</a>
+                        <a asp-action="RemoveFromCart" asp-route-id="@Model.Product.Id" class="btn btn-danger shadow btn-block" style="border-radius: 15px;">Удалить из корзины</a>
                     }
                     else
                     {
-                        <button type="submit" asp-route-id="@Model.Product.Id" class="btn btn-success shadow btn-block">Добавить в корзину</button>
+                        <button type="submit" asp-route-id="@Model.Product.Id" class="btn btn-primary shadow btn-block" style="border-radius: 15px;">Добавить в корзину</button>
                     }
                 </div>
             </div>

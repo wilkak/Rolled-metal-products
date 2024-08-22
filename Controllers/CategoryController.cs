@@ -200,6 +200,7 @@ namespace Rolled_metal_products.Controllers
                     return RedirectToAction("Details", new { id = createCategoryVM.Category.ParentId });
                 }
             }
+            TempData[WC.Error] = "Ошибка при изменении";
             return View(createCategoryVM);
         }
 
@@ -232,6 +233,8 @@ namespace Rolled_metal_products.Controllers
             }
             DeleteCategoryAndSubCategories(category.Id);
             _catRepo.Save();
+
+            TempData[WC.Success] = "Категория успешно удалена!";
             if (category.ParentId == null)
             {
                 return RedirectToAction(nameof(Index));

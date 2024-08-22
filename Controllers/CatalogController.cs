@@ -272,7 +272,7 @@ namespace Rolled_metal_products.Controllers
 
             shoppingCartList.Add(new ShoppingCart { ProductId = productId, SqFt = 1 });
             HttpContext.Session.Set(WC.SessionCart, shoppingCartList);
-
+            TempData[WC.Success] = "Товар успешно добавлен в корзину";
             return Json(new { success = true, message = "Товар добавлен в корзину" });
         }
 
@@ -292,7 +292,7 @@ namespace Rolled_metal_products.Controllers
                 shoppingCartList.Remove(itemToRemove);
             }
             HttpContext.Session.Set(WC.SessionCart, shoppingCartList);
-
+            TempData[WC.Success] = "Товар успешно удален из корзины";
             return Json(new { success = true, message = "Товар удален из корзины" });
         }
     }

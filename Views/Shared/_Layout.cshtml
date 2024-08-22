@@ -17,6 +17,7 @@
     <script src="https://kit.fontawesome.com/8dbe653448.js" crossorigin="anonymous"></script>
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.syncfusion.com/ej2/material.css" />
+    <link rel="stylesheet" href="~/lib/toastr/css/toastr.css" asp-append-version="true"></link>
 </head>
 
 <body>
@@ -87,6 +88,7 @@
 
 
     <section class="py-5 main-section">
+        <partial name="_Notifications" />
         @RenderBody()
     </section>
 
