@@ -43,10 +43,10 @@
                                     @if (User.IsInRole(WC.AdminRole))
                                     {
                                         <div class="col-6 col-lg-2">
-                                            Sqft
+                                            кг
                                         </div>
                                         <div class="col-6 col-lg-2">
-                                            Total Price
+                                            Полная цена
                                         </div>
                                     }
                                     <div class="col-6 col-sm-4 col-lg-1">
@@ -110,7 +110,7 @@
                             {
                                 <div class="row">
                                     <div class="col-12 text-right pr-4" style="color:#821f3d">
-                                        Order Total : @string.Format("{0:c}", orderTotal)
+                                        Общее количество заказов: @string.Format("{0:c}", orderTotal)
                                     </div>
                                 </div>
                             }
