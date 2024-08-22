@@ -1,56 +1,78 @@
 ﻿@model Rolled_metal_products.Models.ViewModels.OrderListVM
 
+<style>
+    .customcss {
+        padding: 10px 0px !important;
+    }
 
-<form method="get">
-    <div class="container p-4 my-3">
-        <h2 class="text-info">Управление заказами</h2>
-        <div class="border bg-white p-3" style="border-radius:15px;">
+    .e-pager .e-currentitem, .e-pager .e-currentitem:hover {
+        background: #1b6ec2;
+    }
+</style>
+
+<div class="container p-3">
+    <div class="row">
+        <div class="col-6">
+            <h2 class="text-primary fw-bold">Заказы</h2>
+        </div>
+    </div>
+    <form method="get">
+        <div class="bg-white p-3 rounded-3">
             <div class="row">
                 <div class="col-12">
-                    <div class="row" style="padding-top:10px">
-                        <div class="col-4">
-                            @Html.Editor("searchName", new { htmlAttributes = new { @class = "form-control", @placeholder = "Name..." } })
+                    <div class="row g-3">
+                        <div class="col-12 col-md-4">
+                            @Html.Editor("searchName", new { htmlAttributes = new { @class = "form-control", @placeholder = "Имя..." } })
                         </div>
-                        <div class="col-4">
+                        <div class="col-12 col-md-4">
                             @Html.Editor("searchEmail", new { htmlAttributes = new { @class = "form-control", @placeholder = "Email..." } })
                         </div>
-                        <div class="col-4">
-                            @Html.Editor("searchPhone", new { htmlAttributes = new { @class = "form-control", @placeholder = "Phone..." } })
+                        <div class="col-12 col-md-4">
+                            @Html.Editor("searchPhone", new { htmlAttributes = new { @class = "form-control", @placeholder = "Телефон..." } })
                         </div>
                     </div>
-                    <div class="row pt-1">
-                        <div class="col-4">
-                            @Html.DropDownListFor(u=>u.Status,Model.StatusList,"--Order Status--",new {@class="form-select" })
+                    <div class="row g-3 pt-3">
+                        <div class="col-12 col-md-4">
+                            @Html.DropDownListFor(u => u.Status, Model.StatusList, "--Order Status--", new { @class = "form-select" })
                         </div>
-                        <div class="offset-4 col-4">
-                            <button type="submit" class="h-100 btn btn-info form-control">
-                                <i class="fas fa-search"></i>Search
+                        <div class="col-12 col-md-4 offset-md-4">
+                            <button type="submit" class="btn btn-info w-100 h-100">
+                                <i class="fas fa-search"></i> Найти
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</form>
-<hr />
+    </form>
     
-    <div class="bg-white p-3">
+
+    <br></br>
+    <div class="bg-white p-3 shadow">
         <ejs-grid id="Grid" dataSource="@Model.OrderHList" allowFiltering="true" allowSorting="true" allowPaging="true">
             <e-grid-filtersettings type="Menu"></e-grid-filtersettings>
             <e-grid-pagesettings pageSize="5"></e-grid-pagesettings>
             <e-grid-columns>
                 <e-grid-column field="Id" headerText="ID" isPrimaryKey="true" textAlign="Right" width="100"></e-grid-column>
                 <e-grid-column field="FullName" headerText="Name" textAlign="Right"></e-grid-column>
-
                 <e-grid-column field="Email" headerText="Email" textAlign="Right"></e-grid-column>
                 <e-grid-column field="PhoneNumber" headerText="Phone" textAlign="Right"></e-grid-column>
                 <e-grid-column field="OrderStatus" headerText="Status" textAlign="Right"></e-grid-column>
                 <e-grid-column field="OrderDate" headerText="Order Date" customFormat="@(new { type="date", format="MM/dd/yyyy" })" textAlign="Right"></e-grid-column>
-                <e-grid-column field="Id" headerText="" width="70"
-                               template="<a rel='nofollow' href='Order/Details/${Id}' class='btn btn-primary'> <i class='fas fa-list'></i><a>">
-
+                <e-grid-column field="Id" headerText="" width="70" customAttributes=@(new{@class="customcss"})
+                               template="<a rel='nofollow' href='Order/Details/${Id}' class='btn btn-primary btn-sm'> <i class='fas fa-list'></i></a>">
                 </e-grid-column>
             </e-grid-columns>
         </ejs-grid>
     </div>
+</div>
+
+
+
+
+
+
+
+
+
+   
