@@ -28,7 +28,6 @@ namespace Rolled_metal_products.Controllers
         // GET - INDEX
         public IActionResult Index(string? searchString, string? sortOrder)
         {
-            // Устанавливаем значения для ViewData
             ViewData["CurrentFilter"] = searchString;
             ViewData["CurrentSort"] = sortOrder;
 
@@ -69,17 +68,14 @@ namespace Rolled_metal_products.Controllers
         public IActionResult Create(int? parentId)
         {
             var category = new Category();
-
             if (parentId != null)
             {
                 category.ParentId = parentId;
             }
-
             CreateCategoryVM categoryVM = new CreateCategoryVM()
             {
                 Category = category
             };
-
             return View(categoryVM);
         }
 
@@ -122,7 +118,6 @@ namespace Rolled_metal_products.Controllers
                 _catRepo.Save();
                 TempData[WC.Success] = "Категория успешно создана";
 
-
                 if (createCategoryVM.Category.ParentId == null)
                 {
                     return RedirectToAction(nameof(Index));
@@ -144,13 +139,11 @@ namespace Rolled_metal_products.Controllers
             {
                 return NotFound();
             }
-
             var createCategoryVM = _catRepo.GetCategory(id.GetValueOrDefault());
             if (createCategoryVM == null)
             {
                 return NotFound();
             }
-
             return View(createCategoryVM);
         }
 
@@ -162,7 +155,6 @@ namespace Rolled_metal_products.Controllers
             if (ModelState.IsValid)
             {
                 var categoryFromDb = _catRepo.FirstOrDefault(u => u.Id == createCategoryVM.Category.Id, isTracking: false);
-
                 var files = HttpContext.Request.Form.Files;
                 string webRootPath = _environment.WebRootPath;
 
@@ -238,10 +230,8 @@ namespace Rolled_metal_products.Controllers
             {
                 return NotFound();
             }
-
             DeleteCategoryAndSubCategories(category.Id);
             _catRepo.Save();
-
             if (category.ParentId == null)
             {
                 return RedirectToAction(nameof(Index));
@@ -256,15 +246,12 @@ namespace Rolled_metal_products.Controllers
         private void DeleteCategoryAndSubCategories(int categoryId)
         {
             var category = _catRepo.GetCategoryWithSubCategories(categoryId);
-
             if (category == null)
             {
                 return;
             }
-
             string webRootPath = _environment.WebRootPath;
             string upload = webRootPath + WC.ImagePath;
-
             // Удаляем все товары, связанные с категорией
             var products = _prodRepo.GetAll(x => x.CategoryId == categoryId, includeProperties: "ProductParameters");
             foreach (var product in products)
@@ -276,7 +263,6 @@ namespace Rolled_metal_products.Controllers
                 }
                 _prodRepo.Remove(product);
             }
-
             if (category.SubCategories != null && category.SubCategories.Any())
             {
                 foreach (var subCategory in category.SubCategories.ToList())
@@ -284,7 +270,6 @@ namespace Rolled_metal_products.Controllers
                     DeleteCategoryAndSubCategories(subCategory.Id);
                 }
             }
-
             // Удаляем изображения для категории
             string uploadCategory = webRootPath + WC.ImagePathCategory;
             var oldFileCategory = Path.Combine(uploadCategory, category.ImageName);
@@ -292,7 +277,6 @@ namespace Rolled_metal_products.Controllers
             {
                 System.IO.File.Delete(oldFileCategory);
             }
-
             _catRepo.Remove(category);
         }
 
@@ -301,20 +285,16 @@ namespace Rolled_metal_products.Controllers
         public IActionResult Details(int id)
         {
             var category = _catRepo.GetCategoryWithSubCategories(id);
-
             if (category == null)
             {
                 return NotFound();
             }
-
             var products = _prodRepo.GetAll(filter: c => c.CategoryId == id).ToList();
-
             var model = new CategoryDetailsVM()
             {
                 Category = category,
                 Products = products
             };
-
             return View(model);
         }
     }

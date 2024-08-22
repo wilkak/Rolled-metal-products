@@ -201,7 +201,7 @@ namespace Rolled_metal_products.Controllers
                 shoppingCartList = HttpContext.Session.Get<List<ShoppingCart>>(WC.SessionCart);
             }
 
-            var product = _prodRepo.FirstOrDefault(x => x.Id == id, includeProperties: "ProductParameters");
+            var product = _prodRepo.FirstOrDefault(x => x.Id == id, includeProperties: "ProductParameters.CategoryParameter");
 
             DetailsVM detailsVM = new DetailsVM()
             {
@@ -214,6 +214,7 @@ namespace Rolled_metal_products.Controllers
                 if (item.ProductId == id)
                 {
                     detailsVM.ExistsInCart = true;
+                    detailsVM.Product.TempSqFt = item.SqFt;
                 }
             }
 
@@ -224,6 +225,7 @@ namespace Rolled_metal_products.Controllers
             return View(detailsVM);
         }
 
+        [HttpPost, ActionName("ProductDetails")]
         public IActionResult ProductDetailsPost(int id, DetailsVM detailsVM)
         {
             List<ShoppingCart> shoppingCartList = new List<ShoppingCart>();
@@ -268,7 +270,7 @@ namespace Rolled_metal_products.Controllers
                 shoppingCartList = HttpContext.Session.Get<List<ShoppingCart>>(WC.SessionCart);
             }
 
-            shoppingCartList.Add(new ShoppingCart { ProductId = productId });
+            shoppingCartList.Add(new ShoppingCart { ProductId = productId, SqFt = 1 });
             HttpContext.Session.Set(WC.SessionCart, shoppingCartList);
 
             return Json(new { success = true, message = "Товар добавлен в корзину" });
