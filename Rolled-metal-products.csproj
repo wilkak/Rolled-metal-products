@@ -76,6 +76,7 @@
     <PackageReference Include="MimeKit" Version="4.7.1" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
     <PackageReference Include="Syncfusion.EJ2.AspNet.Core" Version="26.2.8" />
+    <PackageReference Include="X.Web.PagedList" Version="10.1.2" />
   </ItemGroup>
 
   <ItemGroup>

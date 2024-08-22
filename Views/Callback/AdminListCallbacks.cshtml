@@ -1,4 +1,8 @@
-﻿@model IEnumerable<Rolled_metal_products.Models.CallbackRequest>
+﻿@*@model IEnumerable<Rolled_metal_products.Models.CallbackRequest>*@
+@model IPagedList<Rolled_metal_products.Models.CallbackRequest>
+@using X.PagedList
+@using X.Web.PagedList
+
 
 @{
     ViewData["Title"] = "Запросы на звонок";
@@ -35,6 +39,66 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @for (int i = 0; i < Model.Count; i++)
+                    {
+                        var item = Model[i];
+                        <tr>
+                            <th scope="row" style="text-align:center" width="5%">@(i + 1 + (Model.PageNumber - 1) * Model.PageSize)</th>
+                            <td width="25%">@item.Name</td>
+                            <td width="25%">@item.Email</td>
+                            <td width="10%">@item.PhoneNumber</td>
+                            <td width="15%">@item.Text</td>
+                            <td width="15%">@item.Date</td>
+                            <td class="text-center">
+                                <div class="btn-group">
+                                    <a class="btn btn-info mx-2 mod-btn" asp-action="Details" asp-route-id="@item.Id" data-bs-toggle="tooltip" data-bs-placement="top" title="Подробнее">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </a>
+                                    <a class="btn btn-danger mx-2 mod-btn" asp-action="Delete" asp-route-id="@item.Id" data-bs-toggle="tooltip" data-bs-placement="top" title="Удалить">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="text-center mt-4">
+            @Html.PagedListPager(Model, page => Url.Action("AdminListCallbacks", new { page }), PagedListRenderOptions.ClassicPlusFirstAndLast)
+        </div>
+    }
+    else
+    {
+        <p>Звонков нет.</p>
+    }
+</div>
+
+@*
+<div class="container p-3">
+    <div class="row">
+        <div class="col-6">
+            <h2 class="text-primary fw-bold">Звонки</h2>
+        </div>
+    </div>
+
+    </br>
+    @if (Model.Count() > 0)
+    {
+        <div class="table-responsive shadow">
+            <table class="table table-borderless table-striped table-hover table-reflow" style="margin-bottom: 0px;">
+                <thead class="table-dark">
+                    <tr>
+                        <th scope="col" style="text-align:center">#</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone Number</th>
+                        <th>Text</th>
+                        <th>Date</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
                     @foreach (var item in Model)
                     {
                         <tr>
@@ -46,9 +110,16 @@
                             <td width="15%">@item.Date</td>
                             <td class="text-center">
                                 <div class="btn-group">
-                                    <a class="btn btn-danger mx-2 mod-btn" asp-action="Delete" asp-controller="" asp-route-id="@item.Id" data-bs-toggle="tooltip" data-bs-placement="top" title="Удалить">
+                                  <!--  <a class="btn btn-danger mx-2 mod-btn" asp-action="Delete" asp-controller="" asp-route-id="@item.Id" data-bs-toggle="tooltip" data-bs-placement="top" title="Удалить">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </a> -->
+                                    <a class="btn btn-info mx-2 mod-btn" asp-action="Details" asp-route-id="@item.Id" data-bs-toggle="tooltip" data-bs-placement="top" title="Подробнее">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </a>
+                                    <a class="btn btn-danger mx-2 mod-btn" asp-action="Delete" asp-route-id="@item.Id" data-bs-toggle="tooltip" data-bs-placement="top" title="Удалить">
                                         <i class="fa-solid fa-trash"></i>
                                     </a>
+
                                 </div>
                             </td>
                         </tr>
@@ -63,3 +134,4 @@
         <p> Звонков нет.</p>
     }
 </div>
+*@

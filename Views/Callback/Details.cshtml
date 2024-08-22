@@ -1,0 +1,20 @@
+﻿@model Rolled_metal_products.Models.CallbackRequest
+
+@{
+    ViewData["Title"] = "Детали звонка";
+}
+
+<h2>Детали звонка</h2>
+
+<div class="card">
+    <div class="card-header">
+        Звонок от @Model.Name
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">Email: @Model.Email</h5>
+        <p class="card-text"><strong>Телефон:</strong> @Model.PhoneNumber</p>
+        <p class="card-text"><strong>Сообщение:</strong> @Model.Text</p>
+        <p class="card-text"><strong>Дата:</strong> @Model.Date.ToString("g")</p>
+        <a href="@Url.Action("AdminListCallbacks", "Callback")" class="btn btn-primary">Назад к списку</a>
+    </div>
+</div>

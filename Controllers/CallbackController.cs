@@ -22,6 +22,7 @@ using Rolled_metal_products.Models.ViewModels;
 using System.Security.Claims;
 using System.Text;
 using Rolled_metal_products.Repository.IRepository;
+using X.PagedList.Extensions;
 
 
 
@@ -114,13 +115,62 @@ namespace Rolled_metal_products.Controllers
             return View(request);
         }
 
-        [HttpGet]
+       /* [HttpGet]
         [Authorize(Roles = WC.AdminRole)]
         public IActionResult AdminListCallbacks()
         {
             var callbacks = _CallbackRequestRepo.GetAll();
             return View(callbacks);
+        }*/
+
+        [HttpGet]
+        [Authorize(Roles = WC.AdminRole)]
+        public IActionResult AdminListCallbacks(int? page)
+        {
+            int pageSize = 10; // Количество элементов на странице
+            int pageNumber = page ?? 1; // Номер страницы, если не задано, будет 1
+
+            var callbacks = _CallbackRequestRepo.GetAll().OrderByDescending(c => c.Date).ToPagedList(pageNumber, pageSize);
+
+            return View(callbacks);
         }
+
+
+
+        [HttpPost]
+        [Authorize(Roles = WC.AdminRole)]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete(int id)
+        {
+            var callback = _CallbackRequestRepo.FirstOrDefault(c => c.Id == id);
+            if (callback != null)
+            {
+                _CallbackRequestRepo.Remove(callback);
+                _CallbackRequestRepo.Save();
+                _logger.LogInformation("Callback request with ID {Id} deleted successfully.", id);
+                return RedirectToAction(nameof(AdminListCallbacks));
+            }
+            else
+            {
+                _logger.LogWarning("Callback request with ID {Id} not found.", id);
+                return NotFound();
+            }
+        }
+
+        [HttpGet]
+        [Authorize(Roles = WC.AdminRole)]
+        public IActionResult Details(int id)
+        {
+            var callback = _CallbackRequestRepo.FirstOrDefault(c => c.Id == id);
+            if (callback == null)
+            {
+                _logger.LogWarning("Callback request with ID {Id} not found.", id);
+                return NotFound();
+            }
+
+            return View(callback);
+        }
+
 
         public IActionResult Summary(ProductUserVM productUserVM)
         {
