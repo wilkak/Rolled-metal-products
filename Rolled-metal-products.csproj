@@ -11,6 +11,25 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="Views\Callback\AdminListCallbacks.cshtml" />
+    <None Include="Views\Callback\Details.cshtml" />
+    <None Include="Views\Callback\Index.cshtml" />
+    <None Include="Views\Callback\InquiryConfirmation.cshtml" />
+    <None Include="Views\Callback\RequestCallback.cshtml" />
+    <None Include="Views\Callback\Summary.cshtml" />
+    <None Include="Views\Category\Create.cshtml" />
+    <None Include="Views\Category\Delete.cshtml" />
+    <None Include="Views\Category\Details.cshtml" />
+    <None Include="Views\Category\Edit.cshtml" />
+    <None Include="Views\Category\Index.cshtml" />
+    <None Include="Views\Inquiry\Details.cshtml" />
+    <None Include="Views\Inquiry\Index.cshtml" />
+    <None Include="Views\Order\Details.cshtml" />
+    <None Include="Views\Order\Index.cshtml" />
+    <None Include="Views\Product\Create.cshtml" />
+    <None Include="Views\Product\Delete.cshtml" />
+    <None Include="Views\Product\Edit.cshtml" />
+    <None Include="Views\Product\Index.cshtml" />
     <None Include="wwwroot\js\site.js" />
     <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map" />
     <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css.map" />

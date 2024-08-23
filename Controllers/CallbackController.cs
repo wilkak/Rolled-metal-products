@@ -125,12 +125,45 @@ namespace Rolled_metal_products.Controllers
 
         [HttpGet]
         [Authorize(Roles = WC.AdminRole)]
-        public IActionResult AdminListCallbacks(int? page)
+        public IActionResult AdminListCallbacks(int? page, string? searchName, string? searchEmail, string? searchPhone, string? sortOrder)
         {
             int pageSize = 10; // Количество элементов на странице
             int pageNumber = page ?? 1; // Номер страницы, если не задано, будет 1
 
-            var callbacks = _CallbackRequestRepo.GetAll().OrderByDescending(c => c.Date).ToPagedList(pageNumber, pageSize);
+            ViewData["CurrentName"] = searchName;
+            ViewData["CurrentEmail"] = searchEmail;
+            ViewData["CurrentPhone"] = searchPhone;
+            ViewData["CurrentSort"] = sortOrder;
+
+            var callbacks = _CallbackRequestRepo.GetAll();
+
+            if (!string.IsNullOrEmpty(searchName))
+            {
+                callbacks = callbacks.Where(u => u.Name.ToLower().Contains(searchName.ToLower()));
+            }
+            if (!string.IsNullOrEmpty(searchEmail))
+            {
+                callbacks = callbacks.Where(u => u.Email.ToLower().Contains(searchEmail.ToLower()));
+            }
+            if (!string.IsNullOrEmpty(searchPhone))
+            {
+                callbacks = callbacks.Where(u => u.PhoneNumber.ToLower().Contains(searchPhone.ToLower()));
+            }
+
+            switch (sortOrder)
+            {
+                case "date":
+                    callbacks = callbacks.OrderBy(c => c.Date);
+                    break;
+                case "date_desc":
+                    callbacks = callbacks.OrderByDescending(c => c.Date);
+                    break;
+                default:
+                    callbacks = callbacks.OrderByDescending(c => c.Date);
+                    break;
+            }
+
+            callbacks = callbacks.ToPagedList(pageNumber, pageSize);
 
             return View(callbacks);
         }

@@ -6,6 +6,7 @@ using Rolled_metal_products.Models;
 using Rolled_metal_products.Models.ViewModels;
 using Rolled_metal_products.Repository.IRepository;
 using Syncfusion.EJ2.Layouts;
+using X.PagedList.Extensions;
 
 
 namespace Rolled_metal_products.Controllers
@@ -26,12 +27,15 @@ namespace Rolled_metal_products.Controllers
         }
 
         // GET - INDEX
-        public IActionResult Index(string? searchString, string? sortOrder)
+        public IActionResult Index(string? searchString, string? sortOrder, int? page)
         {
             ViewData["CurrentFilter"] = searchString;
             ViewData["CurrentSort"] = sortOrder;
 
-            IEnumerable<Category> categoryList = _catRepo.GetAll(includeProperties: "SubCategories,Products", filter: x => x.ParentId == null);
+            int pageSize = 10; // Количество элементов на странице
+            int pageNumber = page ?? 1; // Номер страницы, если не задано, будет 1
+
+            var categoryList = _catRepo.GetAll(includeProperties: "SubCategories,Products", filter: x => x.ParentId == null);
 
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -40,6 +44,9 @@ namespace Rolled_metal_products.Controllers
 
             switch (sortOrder)
             {
+                case "name":
+                    categoryList = categoryList.OrderBy(c => c.Name);
+                    break;
                 case "name_desc":
                     categoryList = categoryList.OrderByDescending(c => c.Name);
                     break;
@@ -56,9 +63,11 @@ namespace Rolled_metal_products.Controllers
                     categoryList = categoryList.Reverse();
                     break;
                 default:
-                    categoryList = categoryList.OrderBy(c => c.Name);
+                    categoryList = categoryList.Reverse();
                     break;
             }
+
+            categoryList = categoryList.ToPagedList(pageNumber, pageSize);
 
             return View(categoryList);
         }

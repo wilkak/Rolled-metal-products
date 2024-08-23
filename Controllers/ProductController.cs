@@ -8,6 +8,7 @@ using Rolled_metal_products.Models;
 using Rolled_metal_products.Models.ViewModels;
 using Rolled_metal_products.Repository.IRepository;
 using System.Security.AccessControl;
+using X.PagedList.Extensions;
 
 
 namespace Rolled_metal_products.Controllers
@@ -25,11 +26,14 @@ namespace Rolled_metal_products.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
-        public IActionResult Index(string? searchString, string? sortOrder)
+        public IActionResult Index(string? searchString, string? sortOrder, int? page)
         {
             // Устанавливаем значения для ViewData
             ViewData["CurrentFilter"] = searchString;
             ViewData["CurrentSort"] = sortOrder;
+
+            int pageSize = 10; // Количество элементов на странице
+            int pageNumber = page ?? 1; // Номер страницы, если не задано, будет 1
 
             IEnumerable<Product> objList = _prodRepo.GetAll(includeProperties: "Category");
 
@@ -40,6 +44,9 @@ namespace Rolled_metal_products.Controllers
 
             switch (sortOrder)
             {
+                case "name":
+                    objList = objList.OrderBy(c => c.Name);
+                    break;
                 case "name_desc":
                     objList = objList.OrderByDescending(c => c.Name);
                     break;
@@ -53,10 +60,11 @@ namespace Rolled_metal_products.Controllers
                     objList = objList.OrderBy(c => c.Category.Name);
                     break;
                 default:
-                    objList = objList.OrderBy(c => c.Name);
+                    objList = objList.Reverse();
                     break;
             }
 
+            objList = objList.ToPagedList(pageNumber, pageSize);
 
             return View(objList);
         }

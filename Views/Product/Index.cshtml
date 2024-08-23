@@ -1,4 +1,6 @@
-﻿@model IEnumerable<Rolled_metal_products.Models.Product>
+﻿@model IPagedList<Rolled_metal_products.Models.Product>
+@using X.PagedList
+@using X.Web.PagedList
 @{
     ViewData["Title"] = "Товары";
     int index = 1;
@@ -12,13 +14,34 @@
         { "category", "По категории" },
         { "date", "По дате добавления (по возрастанию)" },
         { "date_desc", "По дате добавления (по убыванию)" },
-        { "", "Название (по возрастанию)" }
+        { "", "По дате добавления (по убыванию)" }
     };
 }
 
 <style>
     .mod-btn {
         padding: 12px 22px 12px 22px;
+    }
+</style>
+
+<style>
+    .pagination li a {
+        padding: 10px;
+        box-shadow: 0 .5rem 1rem rgba(55, 99, 244, .15) !important;
+        border-radius: 10px;
+        margin-right: 5px;
+        color: #0366d6;
+        cursor: pointer;
+    }
+
+    .pagination li span {
+        color: white;
+        background: #0366d6;
+        padding: 10px;
+        box-shadow: 0 .5rem 1rem rgba(55, 99, 244, .15) !important;
+        border-radius: 10px;
+        margin-right: 5px;
+        cursor: pointer;
     }
 </style>
 
@@ -43,11 +66,11 @@
             <form asp-action="Index" method="get">
                 <input type="hidden" name="searchString" value="@currentSearch" />
                 <select class="form-select" name="sortOrder" onchange="this.form.submit()">
+                    <option value="date_desc" selected="@(currentSort == "date_desc")">Сортировать по дате (убыв.)</option>
+                    <option value="date" selected="@(currentSort == "date")">Сортировать по дате</option>
                     <option value="name" selected="@(currentSort == "name")">Сортировать по названию</option>
                     <option value="name_desc" selected="@(currentSort == "name_desc")">Сортировать по названию (убыв.)</option>
                     <option value="category" selected="@(currentSort == "category")">Категории</option>
-                    <option value="date" selected="@(currentSort == "date")">Сортировать по дате</option>
-                    <option value="date_desc" selected="@(currentSort == "date_desc")">Сортировать по дате (убыв.)</option>
                 </select>
             </form>
         </div>
@@ -85,16 +108,16 @@
                     <tr>
                         <th scope="col" style="text-align:center">#</th>
                         <th>
-                            @Html.DisplayNameFor(model => model.Name)
+                            Название
                         </th>
                         <th>
                             Категория
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.Price)
+                            Цена
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.OldPrice)
+                            Старая цена
                         </th>
                         <th></th>
                     </tr>
@@ -123,6 +146,9 @@
                     }
                 </tbody>
             </table>
+        </div>
+        <div class="text-center mt-4">
+            @Html.PagedListPager(Model, page => Url.Action("Index", new { page, searchString = currentSearch, sortOrder = currentSort }), PagedListRenderOptions.ClassicPlusFirstAndLast)
         </div>
     }
     else
