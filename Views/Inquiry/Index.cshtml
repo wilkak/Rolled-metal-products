@@ -1,4 +1,8 @@
-﻿
+﻿@{
+    ViewData["Title"] = "Запросы";
+}
+
+
 <style>
     .dataTables_length {
         margin: 1.5rem 0px 10px 0px;
@@ -89,24 +93,26 @@
 </style>
 
 
-<div class="container p-3">
+<div class="container p-3" style="min-height: 650px; position: relative;">
     <div class="row">
         <div class="col-6">
             <h2 class="text-primary fw-bold">Запросы</h2>
         </div>
     </div>
-    <div class="table-responsive" style="overflow-y:hidden">
-        <table id="tblData" class="table table-borderless table-striped table-hover table-reflow shadow" style="margin-bottom: 0px;">
-            <thead class="thead-dark">
-                <tr class="table-dark">
-                    <th>Id</th>
-                    <th>Имя</th>
-                    <th>Номер телефона</th>
-                    <th>Email</th>
-                    <th></th>
-                </tr>
-            </thead>
-        </table>
+    <div class="table-block-responsive">
+        <div style="margin-bottom:20px">
+            <table id="tblData" class="table table-borderless table-striped table-hover table-reflow shadow" style="margin-bottom: 0px;">
+                <thead class="thead-dark">
+                    <tr class="table-dark">
+                        <th>Id</th>
+                        <th>Имя</th>
+                        <th>Номер телефона</th>
+                        <th>Email</th>
+                        <th></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
     </div>
 </div>
 

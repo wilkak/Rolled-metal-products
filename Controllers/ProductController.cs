@@ -35,38 +35,36 @@ namespace Rolled_metal_products.Controllers
             int pageSize = 10; // Количество элементов на странице
             int pageNumber = page ?? 1; // Номер страницы, если не задано, будет 1
 
-            IEnumerable<Product> objList = _prodRepo.GetAll(includeProperties: "Category");
-
+            IEnumerable<Product> productList = _prodRepo.GetAll(includeProperties: "Category");
             if (!String.IsNullOrEmpty(searchString))
             {
-                objList = objList.Where(c => c.Name.Contains(searchString));
+                productList = productList.Where(c => c.Name.Contains(searchString));
             }
 
             switch (sortOrder)
             {
                 case "name":
-                    objList = objList.OrderBy(c => c.Name);
+                    productList = productList.OrderBy(c => c.Name);
                     break;
                 case "name_desc":
-                    objList = objList.OrderByDescending(c => c.Name);
+                    productList = productList.OrderByDescending(c => c.Name);
                     break;
                 case "date":
-                    objList = objList;
+                    productList = productList;
                     break;
                 case "date_desc":
-                    objList = objList.Reverse();
+                    productList = productList.Reverse();
                     break;
                 case "category":
-                    objList = objList.OrderBy(c => c.Category.Name);
+                    productList = productList.OrderBy(c => c.Category.Name);
                     break;
                 default:
-                    objList = objList.Reverse();
+                    productList = productList.Reverse();
                     break;
             }
 
-            objList = objList.ToPagedList(pageNumber, pageSize);
-
-            return View(objList);
+            productList = productList.ToPagedList(pageNumber, pageSize);
+            return View(productList);
         }
 
 
@@ -74,7 +72,6 @@ namespace Rolled_metal_products.Controllers
         public IActionResult Create(int categoryId)
         {
             var category = _catRepo.FirstOrDefault(c => c.Id == categoryId, includeProperties: "CategoryParameters");
-
             if (category == null)
             {
                 return NotFound();
@@ -82,7 +79,8 @@ namespace Rolled_metal_products.Controllers
 
             Product product = new Product();
             product.CategoryId = categoryId;
-            var model = new CreateProductVM
+
+            var createProductVM = new CreateProductVM
             {
                 Product = product,
                 CategoryParameters = category.CategoryParameters.Select(cp => new ProductParameterVM
@@ -91,14 +89,13 @@ namespace Rolled_metal_products.Controllers
                     Name = cp.Name
                 }).ToList()
             };
-
-            return View(model);
+            return View(createProductVM);
         }
 
         
         // POST - CREATE
         [HttpPost]
-        public IActionResult Create(CreateProductVM viewModel)
+        public IActionResult Create(CreateProductVM createProductVM)
         {
             if (ModelState.IsValid)
             {
@@ -120,13 +117,13 @@ namespace Rolled_metal_products.Controllers
                     files[0].CopyTo(fileStream);
                 }
 
-                viewModel.Product.ImageName = fileName + extension;
+                createProductVM.Product.ImageName = fileName + extension;
 
-                var product = viewModel.Product;
+                var product = createProductVM.Product;
 
-                product.ProductParameters = viewModel.CategoryParameters.Select(pp => new ProductParameter
+                product.ProductParameters = createProductVM.CategoryParameters.Select(pp => new ProductParameter
                 {
-                    ProductId = viewModel.Product.Id,
+                    ProductId = createProductVM.Product.Id,
                     CategoryParameterId = pp.CategoryParameterId,
                     Value = pp.Value
                 }).ToList();
@@ -137,7 +134,7 @@ namespace Rolled_metal_products.Controllers
                 return RedirectToAction("Details", "Category", new { id = product.CategoryId });
             }
             TempData[WC.Error] = "Ошибка при создании товара";
-            return View(viewModel);
+            return View(createProductVM);
         }
 
         // GET - EDIT 
@@ -171,17 +168,16 @@ namespace Rolled_metal_products.Controllers
                 Product = product,
                 CategoryParameters = categoryParameterVMs
             };
-
             return View(viewModel);
         }
 
         // POST - EDIT
         [HttpPost]
-        public IActionResult Edit(CreateProductVM viewModel)
+        public IActionResult Edit(CreateProductVM createProductVM)
         {
             if (ModelState.IsValid)
             {
-                var productFromDb = _prodRepo.FirstOrDefault(u => u.Id == viewModel.Product.Id, isTracking: false);
+                var productFromDb = _prodRepo.FirstOrDefault(u => u.Id == createProductVM.Product.Id, isTracking: false);
 
                 var files = HttpContext.Request.Form.Files;
                 string webRootPath = _webHostEnvironment.WebRootPath;
@@ -204,20 +200,20 @@ namespace Rolled_metal_products.Controllers
                         files[0].CopyTo(fileStream);
                     }
 
-                    viewModel.Product.ImageName = fileName + extension;
+                    createProductVM.Product.ImageName = fileName + extension;
                 }
                 else
                 {
-                    viewModel.Product.ImageName = productFromDb.ImageName;
+                    createProductVM.Product.ImageName = productFromDb.ImageName;
                 }
 
-                _prodRepo.DeleteExistingParameters(viewModel.Product.Id);
+                _prodRepo.DeleteExistingParameters(createProductVM.Product.Id);
 
-                var product = viewModel.Product;
+                var product = createProductVM.Product;
 
-                product.ProductParameters = viewModel.CategoryParameters.Select(pp => new ProductParameter
+                product.ProductParameters = createProductVM.CategoryParameters.Select(pp => new ProductParameter
                 { 
-                    ProductId = viewModel.Product.Id,
+                    ProductId = createProductVM.Product.Id,
                     CategoryParameterId = pp.CategoryParameterId,
                     Value = pp.Value
                 }).ToList();
@@ -228,7 +224,7 @@ namespace Rolled_metal_products.Controllers
                 return RedirectToAction("Details", "Category", new { id = product.CategoryId });
             }
             TempData[WC.Error] = "Ошибка при изменении";
-            return View(viewModel);
+            return View(createProductVM);
         }
 
         //GET - DELETE
@@ -238,8 +234,8 @@ namespace Rolled_metal_products.Controllers
             {
                 return NotFound();
             }
+
             Product product = _prodRepo.FirstOrDefault(u => u.Id == id, includeProperties: "Category");
-            //product.Category = _db.Category.Find(product.CategoryId);
             if (product == null)
             {
                 return NotFound();
@@ -253,14 +249,14 @@ namespace Rolled_metal_products.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeletePost(int? id)
         {
-            var obj = _prodRepo.FirstOrDefault(x => x.Id == id, includeProperties: "ProductParameters");
-            if (obj == null)
+            var product = _prodRepo.FirstOrDefault(x => x.Id == id, includeProperties: "ProductParameters");
+            if (product == null)
             {
                 return NotFound();
             }
 
             string upload = _webHostEnvironment.WebRootPath + WC.ImagePath;
-            var oldFile = Path.Combine(upload, obj.ImageName);
+            var oldFile = Path.Combine(upload, product.ImageName);
 
             if (System.IO.File.Exists(oldFile))
             {
@@ -269,12 +265,13 @@ namespace Rolled_metal_products.Controllers
 
             if (ModelState.IsValid)
             {
-                _prodRepo.Remove(obj);
+                _prodRepo.Remove(product);
                 _prodRepo.Save();
                 TempData[WC.Success] = "Успешно удалено";
-                return RedirectToAction("Details", "Category", new { id = obj.CategoryId });
+                return RedirectToAction("Details", "Category", new { id = product.CategoryId });
             }
-            return View(obj);
+            TempData[WC.Error] = "Ошибка при удалении";
+            return View(product);
         }
     }
 }

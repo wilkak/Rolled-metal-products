@@ -24,9 +24,10 @@ namespace Rolled_metal_products.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
+        // GET - INDEX
         public IActionResult Index(int? parentId)
         {
-            var viewModel = new CatalogVM
+            var catalogVM = new CatalogVM
             {
                 ParentCategories = _catRepo.GetAll(x => x.ParentId == null, includeProperties: "SubCategories").ToList(),
                 ChildCategories = new List<Category>(),
@@ -38,11 +39,11 @@ namespace Rolled_metal_products.Controllers
                 var parentCategory = _catRepo.Find(parentId.Value);
                 if (parentCategory != null)
                 {
-                    viewModel.ParentCategoryName = parentCategory.Name;
-                    viewModel.ChildCategories = _catRepo.GetAll(x => x.ParentId == parentId.Value, includeProperties: "SubCategories").ToList();
-                    viewModel.BreadcrumbCategories = GetBreadcrumbCategories(parentCategory.Id);
+                    catalogVM.ParentCategoryName = parentCategory.Name;
+                    catalogVM.ChildCategories = _catRepo.GetAll(x => x.ParentId == parentId.Value, includeProperties: "SubCategories").ToList();
+                    catalogVM.BreadcrumbCategories = GetBreadcrumbCategories(parentCategory.Id);
 
-                    if (!viewModel.ChildCategories.Any())
+                    if (!catalogVM.ChildCategories.Any())
                     {
                         return RedirectToAction("CategoryProducts", new { categoryId = parentId.Value });
                     }
@@ -50,14 +51,16 @@ namespace Rolled_metal_products.Controllers
             }
             else
             {
-                viewModel.ParentCategoryName = "Категории";
-                viewModel.ChildCategories = _catRepo.GetAll(x => x.ParentId == null, includeProperties: "SubCategories").ToList();
+                catalogVM.ParentCategoryName = "Категории";
+                catalogVM.ChildCategories = _catRepo.GetAll(x => x.ParentId == null, includeProperties: "SubCategories").ToList();
             }
-            return View(viewModel);
+            return View(catalogVM);
         }
 
+        // GET - CATEGORYPRODUCTS
         public IActionResult CategoryProducts(int categoryId)
         {
+            // Получение категории
             var category = _catRepo.FirstOrDefault(c => c.Id == categoryId, includeProperties: "CategoryParameters");
 
             if (category == null)
@@ -65,10 +68,11 @@ namespace Rolled_metal_products.Controllers
                 return NotFound();
             }
 
+            // Получение товаров
             var products = _prodRepo.GetAll(filter: p => p.CategoryId == categoryId, includeProperties: "ProductParameters");
 
+            // Получение параметров категории
             var categoryParameters = new List<FilterParameterInfoVM>();
-
             foreach (var parameter in category.CategoryParameters)
             {
                 var values = products
@@ -86,8 +90,8 @@ namespace Rolled_metal_products.Controllers
                 });
             }
 
+            // Создаем корзину и получаем данные
             List<ShoppingCart> shoppingCartList = new List<ShoppingCart>();
-
             if (HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WC.SessionCart) != null && HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WC.SessionCart).Count() > 0)
             {
                 shoppingCartList = HttpContext.Session.Get<List<ShoppingCart>>(WC.SessionCart);
@@ -107,17 +111,18 @@ namespace Rolled_metal_products.Controllers
                 ExistsInCart = shoppingCartList.Any(cartItem => cartItem.ProductId == product.Id)
             }).ToList();
 
+            // Получение хлебных крошек
             var breadcrumbCategories = GetBreadcrumbCategories(categoryId);
 
-            var viewModel = new CategoryProductsVM
+            // Создаем модель CategoryProductsVM
+            var categoryProductsVM = new CategoryProductsVM
             {
                 Category = category,
                 Products = productVMList,
                 CategoryParameters = categoryParameters,
                 BreadcrumbCategories = breadcrumbCategories
             };
-
-            return View(viewModel);
+            return View(categoryProductsVM);
         }
 
         private List<Category> GetBreadcrumbCategories(int categoryId)

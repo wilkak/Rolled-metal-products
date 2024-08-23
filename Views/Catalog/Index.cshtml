@@ -87,8 +87,8 @@
     }
 
     .image-container {
-        width: 50px; 
-        height: 50px; 
+        width: 62px;
+        height: 62px;
         margin-right: 10px; 
     }
 
@@ -103,7 +103,8 @@
     .name-container {
         display: flex;
         align-items: center;
-        height: 80px; 
+        height: 80px;
+        margin-left: 15px;
     }
 
     .custom-link {
@@ -138,7 +139,7 @@
 </style>
 
 
-<div class="container p-3" >
+<div class="container p-3" style="min-height: 650px;">
     <div class="row">
         <div class="col-lg-3">
             <div class="mb-3">
@@ -223,7 +224,7 @@
             <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3">
                 @foreach (var item in Model.ChildCategories)
                 {
-                    <div class="col mb-4">
+                    <div class="col mb-4 category-col">
                         <div class="catalog-item d-flex align-items-center">
                             <div class="image-container">
                                 @if (item.ImageName == null)

@@ -1,5 +1,9 @@
 ﻿@model List<Product>
 
+@{
+    ViewData["Title"] = "Корзина";
+}
+
 
 <form method="post">
     <div class="container mt-4" style="min-height: 500px;">
@@ -11,7 +15,7 @@
                             <h3 class="text-primary fw-bold mb-0" style="margin-top: 3px;">Корзина </h3>
                         </div>
                         <div class="col-6 text-end">
-                            <a asp-action="Index" asp-controller="Home" class="btn btn-outline-info btn-sm" style="font-size: 0.875rem;">Продолжить покупки</a>
+                            <a asp-action="Index" asp-controller="Home" class="btn btn-outline-primary btn-sm" style="font-size: 0.875rem;">Продолжить покупки</a>
                         </div>
                     </div>
 
@@ -38,7 +42,7 @@
                                     <div class="col-lg-5 col-md-6 mb-4 mb-lg-0">
                                         <p><strong>@Model[i].Name</strong></p>
                                         <p>Цена: @Model[i].Price.ToString("C")</p>
-                                        <a asp-action="Remove" asp-route-id="@Model[i].Id" class="btn btn-danger btn-sm me-1 mb-2">
+                                        <a asp-action="Remove" asp-route-id="@Model[i].Id" class="btn btn-danger btn-sm me-1 mb-2" style="border-radius: 15px;padding: 10px 17px 10px 17px;">
                                             <i class="fas fa-trash"></i>
                                         </a>
 
@@ -88,7 +92,7 @@
                 <div class="card mb-4">
                     <div class="card-body">
                         <div>
-                            <a asp-action="Clear" class="btn btn-warning shadow btn-sm mx-2">Отчистить корзину</a>
+                            <a asp-action="Clear" class="btn btn-danger shadow btn-sm mx-2">Отчистить корзину</a>
 
                             <input type="submit" asp-action="UpdateCart" formmethod="post" name="Update" value="Обновить корзину"
                                    class="btn btn-outline-warning btn-sm" hidden />
@@ -118,7 +122,7 @@
                         @if (Model.Count() > 0)
                         {
                             <div class="col-6 col-md-3 mt-5" style="width: auto;text-align: center;">
-                                <button type="submit" class="btn btn-success shadow" style="min-width: 210px;">
+                                <button type="submit" class="btn btn-primary shadow" style="min-width: 210px;">
                                     <span>Продолжить</span>
                                 </button>
                             </div>
