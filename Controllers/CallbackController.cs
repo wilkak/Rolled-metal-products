@@ -101,7 +101,7 @@ namespace Rolled_metal_products.Controllers
                     };
                     _CallbackRequestRepo.Add(Callback);
                     _CallbackRequestRepo.Save();
-
+                    TempData[WC.Success] = "Запрос отправлен! Скоро мы с вами свяжемся.";
                     return View();
                 }
                 catch (Exception ex)
@@ -112,7 +112,7 @@ namespace Rolled_metal_products.Controllers
                 }
             }
 
-            return View(request);
+            return View();
         }
 
        /* [HttpGet]

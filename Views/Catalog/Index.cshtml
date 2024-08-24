@@ -126,13 +126,13 @@
     }
 
     .sub-category {
-        margin-left: 62px;
+        margin-left: 88px;
         font-size: 14px;
     }
 
     .show-more, .show-less {
         cursor: pointer;
-        margin-left: 62px;
+        margin-left: 88px;
         font-size: 14px;
     }
 
@@ -161,16 +161,35 @@
                                 </div>
                             </div>
 
-                            <div class="collapse" id="collapseExample_@item.Id">
-                                <ul class="list-group list-group-flush" style="padding-top: 10px">
-                                    @foreach (var subcat in item.SubCategories)
-                                    {
-                                        <li class="list-group-item" style="padding: 5px 0px 5px 0px; font-size: 12px;">
-                                            <a class="custom-link sidebar-child-category" asp-route-parentId="@subcat.Id" asp-controller="Catalog" asp-action="Index">@subcat.Name</a>
-                                        </li>
-                                    }
-                                </ul>
-                            </div>
+                            @if (Model.ParentCategoryName == item.Name)
+                            {
+                                <div class="collapse show" id="collapseExample_@item.Id">
+                                    <ul class="list-group list-group-flush" style="padding-top: 10px">
+                                        @foreach (var subcat in item.SubCategories)
+                                        {
+                                            <li class="list-group-item" style="padding: 5px 0px 5px 0px; font-size: 12px;">
+                                                <a class="custom-link sidebar-child-category" asp-route-parentId="@subcat.Id" asp-controller="Catalog" asp-action="Index">@subcat.Name</a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="collapse" id="collapseExample_@item.Id">
+                                    <ul class="list-group list-group-flush" style="padding-top: 10px">
+                                        @foreach (var subcat in item.SubCategories)
+                                        {
+                                            <li class="list-group-item" style="padding: 5px 0px 5px 0px; font-size: 12px;">
+                                                <a class="custom-link sidebar-child-category" asp-route-parentId="@subcat.Id" asp-controller="Catalog" asp-action="Index">@subcat.Name</a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+
+                            }
+
+                            
                         </li>
                     }
                 </ul>
@@ -226,16 +245,18 @@
                 {
                     <div class="col mb-4 category-col">
                         <div class="catalog-item d-flex align-items-center">
-                            <div class="image-container">
-                                @if (item.ImageName == null)
-                                {
-                                    <img id="imagePreview" src="@WC.NoImagePath" class="category-image" />
-                                }
-                                else
-                                {
-                                    <img id="imagePreview" src="@WC.ImagePathCategory@item.ImageName" class="category-image" />
-                                }
-                            </div>
+                            <a asp-route-parentId="@item.Id" asp-controller="Catalog" asp-action="Index">
+                                <div class="image-container">
+                                    @if (item.ImageName == null)
+                                    {
+                                        <img id="imagePreview" src="@WC.NoImagePath" class="category-image" />
+                                    }
+                                    else
+                                    {
+                                        <img id="imagePreview" src="@WC.ImagePathCategory@item.ImageName" class="category-image" />
+                                    }
+                                </div>
+                            </a>
                             <div class="name-container d-flex align-items-center">
                                 <a class="custom-link main-parent-category fw-bold mb-0s" asp-route-parentId="@item.Id" asp-controller="Catalog" asp-action="Index">@item.Name</a>
                             </div>

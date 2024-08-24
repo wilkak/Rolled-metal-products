@@ -28,7 +28,13 @@ namespace Rolled_metal_products.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var homeVM = new HomeVM
+            {
+               Categories = _catRepo.GetAll(x => x.ParentId == null, includeProperties: "SubCategories").ToList()
+            };
+
+
+            return View(homeVM);
         }
       
     }
