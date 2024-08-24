@@ -16,11 +16,17 @@
                     <h4 class="text-white form-title">Заявка в один клик!</h4>
                 </div>
                 <div class="row">
-                    <form class="d-flex">
+                    <form class="quick-request-form d-flex">
                         <input type="text" class="form-control me-2" id="search" placeholder="Я ищу...">
                         <input type="text" class="form-control me-2" id="contact" placeholder="Мои контакты...">
                         <button type="submit" class="btn btn-primary">Отправить</button>
                     </form>
+                    @*
+                    <form class="d-flex">
+                        <input type="text" class="form-control me-2" id="search" placeholder="Я ищу...">
+                        <input type="text" class="form-control me-2" id="contact" placeholder="Мои контакты...">
+                        <button type="submit" class="btn btn-primary">Отправить</button>
+                    </form>*@
                 </div>
             </div>
             <div class="col-md-4 text-end">
@@ -247,4 +253,36 @@
             });
         });
     });
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.querySelector('.quick-request-form');
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const search = document.getElementById('search').value;
+            const contact = document.getElementById('contact').value;
+
+            fetch('@Url.Action("QuickRequest", "Home")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '@Html.AntiForgeryToken()'
+                },
+                body: JSON.stringify({ search, contact })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Запрос успешно отправлен!');
+                        form.reset();
+                    } else {
+                        alert(data.message || 'Ошибка при отправке запроса.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Ошибка при отправке запроса.');
+                });
+        });
+    });
+
 </script>

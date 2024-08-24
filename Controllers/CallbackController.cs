@@ -75,6 +75,62 @@ namespace Rolled_metal_products.Controllers
             if (ModelState.IsValid)
             {
                 var Date = DateTime.UtcNow;
+
+                // Проверка на пустые поля и замена на "незаполнено"
+                request.Name = string.IsNullOrWhiteSpace(request.Name) ? "незаполнено" : request.Name;
+                request.Email = string.IsNullOrWhiteSpace(request.Email) ? "незаполнено" : request.Email;
+                request.PhoneNumber = string.IsNullOrWhiteSpace(request.PhoneNumber) ? "незаполнено" : request.PhoneNumber;
+                request.Text = string.IsNullOrWhiteSpace(request.Text) ? "незаполнено" : request.Text;
+
+                // Логирование запроса
+                _logger.LogInformation("Received callback request from {Name}, {Email}, {PhoneNumber}, {Text}, {Date}",
+                    request.Name, request.Email, request.PhoneNumber, request.Text, Date);
+
+                // Отправка электронного письма
+                var subject = "Заявка на звонок";
+
+                var message =
+                    $"Имя: {request.Name}\nПочта: {request.Email}\nТелефон: {request.PhoneNumber}\n\nСообщение:\n{request.Text}\nДата: {Date}";
+
+                try
+                {
+                    await _emailSender.SendEmailAsync(WC.EmailAdmin, subject, message);
+
+                    // Создание объекта CallbackRequest и добавление в базу данных
+                    CallbackRequest callbackRequest = new CallbackRequest()
+                    {
+                        Name = request.Name,
+                        Email = request.Email,
+                        PhoneNumber = request.PhoneNumber,
+                        Text = request.Text,
+                        Date = Date
+                    };
+
+                    _CallbackRequestRepo.Add(callbackRequest);
+                    _CallbackRequestRepo.Save();
+
+                    TempData[WC.Success] = "Запрос отправлен! Скоро мы с вами свяжемся.";
+                    return View();
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error sending email.");
+                    ModelState.AddModelError("", "Internal server error");
+                    return View(request);
+                }
+            }
+
+            return View();
+        }
+
+
+        /*
+        [HttpPost]
+        public async Task<IActionResult> RequestCallback(CallbackRequest request)
+        {
+            if (ModelState.IsValid)
+            {
+                var Date = DateTime.UtcNow;
                 // Логирование запроса
                 _logger.LogInformation("Received callback request from {Name}, {Email}, {PhoneNumber}, {Text}, {Date}",
                     request.Name, request.Email, request.PhoneNumber, request.Text, Date);
@@ -113,15 +169,15 @@ namespace Rolled_metal_products.Controllers
             }
 
             return View();
-        }
-
-       /* [HttpGet]
-        [Authorize(Roles = WC.AdminRole)]
-        public IActionResult AdminListCallbacks()
-        {
-            var callbacks = _CallbackRequestRepo.GetAll();
-            return View(callbacks);
         }*/
+
+        /* [HttpGet]
+         [Authorize(Roles = WC.AdminRole)]
+         public IActionResult AdminListCallbacks()
+         {
+             var callbacks = _CallbackRequestRepo.GetAll();
+             return View(callbacks);
+         }*/
 
         [HttpGet]
         [Authorize(Roles = WC.AdminRole)]
