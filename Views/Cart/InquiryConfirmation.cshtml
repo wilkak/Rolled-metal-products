@@ -1,14 +1,61 @@
 ﻿@model Rolled_metal_products.Models.OrderHeader
 
 <div class="text-center">
+
     @if (Model != null)
     {
-        <h1 class="text-info">Заказ создан</h1>
-        <p>Заказ @Model.Id был успешно создан!</p>
+        <h1 class="text-info display-4">Заказ успешно создан!</h1>
+        <div class="icon-container my-4">
+            <i class="fa-solid fa-box-open fa-3x text-success"></i>
+        </div>
+        <p>Заказ #@Model.Id успешно создан! Мы свяжемся с вами в ближайшее время.</p>
     }
     else
     {
-        <h1 class="text-info">Подтверждение запроса</h1>
-        <p>Мы получили ваш запрос, и кто-то из нашей команды свяжется с вами в ближайшее время!</p>
+        <h1 class="text-info display-4">Подтверждение запроса</h1>
+        <div class="icon-container my-4">
+            <i class="fa-solid fa-check-circle fa-3x text-success"></i>
+        </div>
+        <p>Мы получили ваш запрос, и кто-нибудь из нашей команды свяжется с вами в ближайшее время!</p>
     }
+
+    <div class="social-media mt-5">
+        <p>Подписывайтесь на наши обновления:</p>
+        <a href="https://facebook.com/yourcompany" class="btn btn-primary mx-1">
+            <i class="fa-brands fa-facebook"></i> Facebook
+        </a>
+        <a href="https://twitter.com/yourcompany" class="btn btn-info mx-1">
+            <i class="fa-brands fa-twitter"></i> Twitter
+        </a>
+        <a href="https://instagram.com/yourcompany" class="btn btn-danger mx-1">
+            <i class="fa-brands fa-instagram"></i> Instagram
+        </a>
+    </div>
+
+    <div class="recommendations mt-5">
+        <h4 class="text-muted">Посмотрите также:</h4>
+        <ul class="list-unstyled">
+            <li><a href="/catalog" class="text-primary">Наши продукты</a></li>
+            <li><a href="/services" class="text-primary">Наши услуги</a></li>
+        </ul>
+    </div>
 </div>
+
+<style>
+    .icon-container {
+        display: inline-block;
+        margin-bottom: 20px;
+    }
+
+    .social-media a {
+        display: inline-block;
+        margin: 0 10px;
+        font-size: 1.2em;
+    }
+
+    .recommendations a {
+        display: block;
+        margin-top: 10px;
+        font-size: 1.1em;
+    }
+</style>

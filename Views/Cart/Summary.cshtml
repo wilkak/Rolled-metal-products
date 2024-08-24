@@ -59,41 +59,34 @@
                                     <span asp-validation-for="ApplicationUser.StreetAddress" class="text-danger"></span>
                                     </div>
                                 </div>
+   
 
-                            <div class="row my-1 mb-3">
-                                <div class="col-3">Адрес</div>
-                                <div class="col-9">
-                                    <input asp-for="ApplicationUser.StreetAddress" type="text" class="form-control" />
-                                    <span asp-validation-for="ApplicationUser.StreetAddress" class="text-danger"></span>
+                                <div class="row my-1 mb-3 ">
+                                    <div class="col-3">
+                                        <label>Город</label>
+                                    </div>
+                                    <div class="col-9">
+                                        <input asp-for="ApplicationUser.City" type="text" class="form-control" />
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="row my-1 mb-3 ">
-                                <div class="col-3">
-                                    <label>Город</label>
+                                <div class="row my-1 mb-3">
+                                    <div class="col-3">
+                                        <label>Область</label>
+                                    </div>
+                                    <div class="col-9">
+                                        <input asp-for="ApplicationUser.State" type="text" class="form-control" />
+                                    </div>
                                 </div>
-                                <div class="col-9">
-                                    <input asp-for="ApplicationUser.City" type="text" class="form-control" />
-                                </div>
-                            </div>
 
-                            <div class="row my-1 mb-3">
-                                <div class="col-3">
-                                    <label>Область</label>
+                                <div class="row my-1 mb-3">
+                                    <div class="col-3">
+                                        <label>Почтовый код</label>
+                                    </div>
+                                    <div class="col-9">
+                                        <input asp-for="ApplicationUser.PostalCode" type="text" class="form-control" />
+                                    </div>
                                 </div>
-                                <div class="col-9">
-                                    <input asp-for="ApplicationUser.State" type="text" class="form-control" />
-                                </div>
-                            </div>
-
-                            <div class="row my-1 mb-3">
-                                <div class="col-3">
-                                    <label>Почтовый код</label>
-                                </div>
-                                <div class="col-9">
-                                    <input asp-for="ApplicationUser.PostalCode" type="text" class="form-control" />
-                                </div>
-                            </div>
                             }
                         </div>
                         <div class="col-12 col-lg-5 offset-lg-1">
