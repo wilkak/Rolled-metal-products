@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  app: 
+    container_name: RolledMetalProducts
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports: 
+    - "8080:8080"
+    depends_on:
+    - postgres_db
+    networks:
+    - dokploy-network
+    labels:
+    - traefik.enable=true
+    - traefik.http.routers.app.rule=Host(app.rolledmetalproducts.com)
+    - traefik.http.routers.app.entrypoints=web
+    - traefik.http.services.app.loadbalancer.server.port=8080
+
+  postgres_db:
+    container_name: RolledMetalProductsPostgresDb
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 4567890rtyui7
+      POSTGRES_DB: RolledMetalProductsPostgresDb
+    ports:
+     - "5433:5432"
+    volumes:
+     - postgres-data:/var/lib/postgresql/data
+    networks:
+     - dokploy-network
+
+volumes:
+  postgres-data:
+
+networks:
+  dokploy-network:
+    external: true
