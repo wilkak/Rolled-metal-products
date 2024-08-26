@@ -14,7 +14,7 @@ services:
     - dokploy-network
     labels:
     - traefik.enable=true
-    - traefik.http.routers.app.rule=Host(test-test-aaa903-2cee62-192-144-12-119.traefik.me)
+    - traefik.http.routers.app.rule=Host(app.test-test-aaa903-2cee62-192-144-12-119.traefik.me)
     - traefik.http.routers.app.entrypoints=web
     - traefik.http.services.app.loadbalancer.server.port=8080
 
