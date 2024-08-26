@@ -1,7 +1,20 @@
 version: '3.8'
 
 services:
-  app: 
+ traefik:
+     image: traefik:v2.9
+     command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+     ports:
+      - "80:80"
+      - "8081:8081"
+     volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+     networks:
+      - dokploy-network
+ app: 
     container_name: RolledMetalProducts
     build:
       context: .
@@ -14,11 +27,11 @@ services:
     - dokploy-network
     labels:
     - traefik.enable=true
-    - traefik.http.routers.app.rule=Host(app.test-test-aaa903-2cee62-192-144-12-119.traefik.me)
+    - traefik.http.routers.app.rule=Host('app.test-test-aaa903-2cee62-192-144-12-119.traefik.me')
     - traefik.http.routers.app.entrypoints=web
     - traefik.http.services.app.loadbalancer.server.port=3000
 
-  postgres_db:
+ postgres_db:
     container_name: RolledMetalProductsPostgresDb
     image: postgres:latest
     environment:
