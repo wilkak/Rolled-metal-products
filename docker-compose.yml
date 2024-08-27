@@ -20,7 +20,7 @@ services:
       - dokploy-network
 
   app: 
-    container_name: RolledMetalProductsTEST2
+    container_name: RolledMetalProductsTEST
     build:
       context: .
       dockerfile: Dockerfile
