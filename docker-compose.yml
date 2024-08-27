@@ -35,7 +35,6 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.app.rule=Host(`app.ourtestdomain.online`)"
       - "traefik.http.routers.app.entrypoints=websecure"
-      - "traefik.http.routers.app.service=noop@internal"
       - "traefik.http.routers.app.tls.certResolver=letsencrypt"
       - "traefik.http.services.app.loadbalancer.server.port=8080"
   postgres_db:
