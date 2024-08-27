@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   app: 
-    container_name: RolledMetalProducts
+    container_name: RolledMetalProductsTEST
     build:
       context: .
       dockerfile: Dockerfile
@@ -20,7 +20,7 @@ services:
       - traefik.http.services.app.loadbalancer.server.port=3000
 
   postgres_db:
-    container_name: RolledMetalProductsPostgresDb
+    container_name: RolledMetalProductsPostgresDbTEST
     image: postgres:latest
     environment:
       POSTGRES_USER: postgres
