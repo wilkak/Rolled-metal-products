@@ -1,24 +1,5 @@
 version: '3.8'
 services:
-  traefik:
-    image: traefik:v2.9
-    command:
-      - "--api.insecure=true"
-      - "--providers.docker=true"
-      - "--entrypoints.web.address=:81"
-      - "--entrypoints.websecure.address=:444"
-      - "--certificatesresolvers.letsencrypt.acme.tlschallenge=true"
-      - "--certificatesresolvers.letsencrypt.acme.email=wilkak@yandex.ru"
-      - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
-    ports:
-      - "81:81"
-      - "444:444"
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      - "letsencrypt:/letsencrypt"
-    networks:
-      - dokploy-network
-
   app: 
     container_name: RolledMetalProductsTEST
     build:
@@ -28,7 +9,7 @@ services:
     depends_on:
       - postgres_db
     ports:
-      - 3000
+      - 8080
     networks:
       - dokploy-network
     labels:
@@ -36,7 +17,7 @@ services:
       - "traefik.http.routers.app.rule=Host(`app.ourtestdomain.ru`)"
       - "traefik.http.routers.app.entrypoints=websecure"
       - "traefik.http.routers.app.tls.certResolver=letsencrypt"
-      - "traefik.http.services.app.loadbalancer.server.port=3000"
+      - "traefik.http.services.app.loadbalancer.server.port=8080"
   postgres_db:
     container_name: RolledMetalProductsPostgresDbTEST
     image: postgres:latest
