@@ -14,7 +14,7 @@ services:
       - dokploy-network
     labels:
       - traefik.enable=true
-      - traefik.http.routers.app.rule=Host(`app.ourtestdomain.ru`)
+      - traefik.http.routers.app.rule=Host(`app.ourtestdomain.ru.`)
       - traefik.http.routers.app.entrypoints=websecure
       - traefik.http.routers.app.tls.certresolver=letsencrypt
       - traefik.http.services.app.loadbalancer.server.port=3000
