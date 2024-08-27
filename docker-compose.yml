@@ -1,37 +1,45 @@
 version: '3.8'
 
 services:
- traefik:
-     image: traefik:v2.9
-     command:
+  traefik:
+    image: traefik:v2.9
+    command:
       - "--api.insecure=true"
       - "--providers.docker=true"
       - "--entrypoints.web.address=:81"
-     ports:
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.letsencrypt.acme.tlschallenge=true"
+      - "--certificatesresolvers.letsencrypt.acme.email=wilkak@yandex.ru"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
+    ports:
       - "81:81"
+      - "443:443"
       - "8081:8080"
-     volumes:
+    volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
-     networks:
+      - "letsencrypt:/letsencrypt"
+    networks:
       - dokploy-network
- app: 
+
+  app: 
     container_name: RolledMetalProducts
     build:
       context: .
       dockerfile: Dockerfile
     ports: 
-    - "5000"
+      - "5000"
     depends_on:
-    - postgres_db
+      - postgres_db
     networks:
-    - dokploy-network
+      - dokploy-network
     labels:
-    - traefik.enable=true
-    - traefik.http.routers.app.rule=Host('app.test-test-aaa903-2cee62-192-144-12-119.traefik.me')
-    - traefik.http.routers.app.entrypoints=web
-    - traefik.http.services.app.loadbalancer.server.port=5000
+      - traefik.enable=true
+      - traefik.http.routers.app.rule=Host(`app.test-test-aaa903-3b058e-192-144-12-119.traefik.me`)
+      - traefik.http.routers.app.entrypoints=websecure
+      - traefik.http.routers.app.tls.certresolver=letsencrypt
+      - traefik.http.services.app.loadbalancer.server.port=5000
 
- postgres_db:
+  postgres_db:
     container_name: RolledMetalProductsPostgresDb
     image: postgres:latest
     environment:
@@ -39,14 +47,15 @@ services:
       POSTGRES_PASSWORD: 4567890rtyui7
       POSTGRES_DB: RolledMetalProductsPostgresDb
     ports:
-     - "5433:5432"
+      - "5433:5432"
     volumes:
-     - postgres-data:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
     networks:
-     - dokploy-network
+      - dokploy-network
 
 volumes:
   postgres-data:
+  letsencrypt:
 
 networks:
   dokploy-network:
