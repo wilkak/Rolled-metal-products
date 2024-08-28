@@ -19,7 +19,7 @@ services:
     networks:
       - dokploy-network
 
-  app: 
+  app:
     container_name: RolledMetalProductsTEST
     build:
       context: .
@@ -27,16 +27,18 @@ services:
     restart: always
     depends_on:
       - postgres_db
+      - mongo_db
     ports:
       - 8080
     networks:
       - dokploy-network
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.app.rule=Host(`app.ourtestdomain.online.`)"
+      - "traefik.http.routers.app.rule=Host(`app.ourtestdomain.online`)"
       - "traefik.http.routers.app.entrypoints=websecure"
       - "traefik.http.routers.app.tls.certResolver=letsencrypt"
       - "traefik.http.services.app.loadbalancer.server.port=8080"
+
   postgres_db:
     container_name: RolledMetalProductsPostgresDbTEST
     image: postgres:latest
@@ -51,8 +53,23 @@ services:
     networks:
       - dokploy-network
 
+  mongo_db:
+    container_name: MongoDB
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 4567890rtyui7
+      MONGO_INITDB_DATABASE: images_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - dokploy-network
+
 volumes:
   postgres-data:
+  mongo-data:
   letsencrypt:
 
 networks:

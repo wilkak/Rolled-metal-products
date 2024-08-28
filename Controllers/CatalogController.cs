@@ -15,13 +15,15 @@ namespace Rolled_metal_products.Controllers
         private readonly IProductRepository _prodRepo;
         private readonly ICategoryRepository _catRepo;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IImageRepository _imageRepo;
 
 
-        public CatalogController(IProductRepository prodRepo, ICategoryRepository catRepo, IWebHostEnvironment webHostEnvironment)
+        public CatalogController(IProductRepository prodRepo, ICategoryRepository catRepo, IWebHostEnvironment webHostEnvironment, IImageRepository imageRepo)
         {
             _prodRepo = prodRepo;
             _catRepo = catRepo;
             _webHostEnvironment = webHostEnvironment;
+            _imageRepo = imageRepo;
         }
 
         // GET - INDEX
@@ -299,6 +301,37 @@ namespace Rolled_metal_products.Controllers
             HttpContext.Session.Set(WC.SessionCart, shoppingCartList);
             TempData[WC.Success] = "Товар успешно удален из корзины";
             return Json(new { success = true, message = "Товар удален из корзины" });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UploadProductImage(IFormFile file, int productId)
+        {
+            if (file != null && file.Length > 0)
+            {
+                using (var stream = file.OpenReadStream())
+                {
+                    var fileId = await _imageRepo.UploadImageAsync(stream, file.FileName);
+                    var product = _prodRepo.FirstOrDefault(p => p.Id == productId);
+
+                    if (product != null)
+                    {
+                        product.ImageFileId = fileId;
+                        _prodRepo.Update(product);
+                        // Save changes to the database
+                        _prodRepo.Save();
+                    }
+
+                    return RedirectToAction("ProductDetails", new { id = productId });
+                }
+            }
+
+            return BadRequest("Failed to upload image.");
+        }
+
+        public async Task<IActionResult> GetProductImage(string fileId)
+        {
+            var imageStream = await _imageRepo.DownloadImageAsync(fileId);
+            return File(imageStream, "image/jpeg"); // Adjust the MIME type as needed
         }
     }
 }

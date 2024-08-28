@@ -14,6 +14,8 @@ using Rolled_metal_products.Repository;
 using Rolled_metal_products.Repository.IRepository;
 using AspNet.Security.OAuth.Yandex;
 using Rolled_metal_products.Models;
+using MongoDB.Driver.Core;
+using MongoDB.Driver;
 
 namespace Rolled_metal_products
 {
@@ -22,7 +24,14 @@ namespace Rolled_metal_products
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            // Configure MongoDB
+            var mongoClient = new MongoClient(builder.Configuration.GetConnectionString("MongoDbConnection"));
+            var mongoDatabase = mongoClient.GetDatabase("images_db");
+
             //IDbInitializer dbInitializer;
+
+
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
@@ -58,6 +67,12 @@ namespace Rolled_metal_products
             builder.Services.AddScoped<ICallbackRequestRepository, RequestCallbackRepository>();
             builder.Services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
             builder.Services.AddScoped<IDbInitializer, DbInitializer>();
+
+
+            // Add MongoDB GridFS Repository
+            builder.Services.AddSingleton<IMongoDatabase>(mongoDatabase);
+            builder.Services.AddScoped<IImageRepository, ImageRepository>();
+
             /* builder.Services.AddAuthentication().AddGoogle(googleOptions =>
              {
                  googleOptions.ClientId = configuration["477494116425-6gv9to29vdmqovf7vgi4hiuslv1nj11f.apps.googleusercontent.com"];
