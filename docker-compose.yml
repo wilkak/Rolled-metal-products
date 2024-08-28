@@ -37,7 +37,7 @@ services:
       - "traefik.http.routers.app.entrypoints=websecure"
       - "traefik.http.routers.app.tls.certResolver=letsencrypt"
       - "traefik.http.services.app.loadbalancer.server.port=8080"
-    user: "user1"
+    entrypoint: /bin/sh -c "useradd -m user1 && chown -R user1:user1 /app/wwwroot/images/category && su - user1 -c
   postgres_db:
     container_name: RolledMetalProductsPostgresDbTEST
     image: postgres:latest
