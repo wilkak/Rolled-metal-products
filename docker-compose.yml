@@ -37,6 +37,7 @@ services:
       - "traefik.http.routers.app.entrypoints=websecure"
       - "traefik.http.routers.app.tls.certResolver=letsencrypt"
       - "traefik.http.services.app.loadbalancer.server.port=8080"
+    user: "user1"
   postgres_db:
     container_name: RolledMetalProductsPostgresDbTEST
     image: postgres:latest
