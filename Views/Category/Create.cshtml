@@ -74,7 +74,7 @@
                             Изображение
                         </div>
                         <div class="col-12 col-md-8">
-                            <input asp-for="Category.ImageName" hidden />
+                            <input asp-for="Category.ImageId" hidden />
                             <input type="file" name="files" id="uploadBox" multiple class="form-control" />
                         </div>
                     </div>
@@ -92,13 +92,13 @@
             
                 </div>
                 <div class="col-12 col-md-4 p-4 order-1 order-md-2 d-flex justify-content-center">
-                    @if (Model.Category.ImageName == null)
+                    @if (Model.Category.ImageId == null)
                     {
                         <img id="imagePreview" src="@WC.NoImagePath" class="custom-img" />
                     }
                     else
                     {
-                        <img id="imagePreview" src="@WC.ImagePathCategory@Model.Category.ImageName" class="custom-img" />
+                        <img id="imagePreview" src="@Url.Action("GetImage", "Image", new { imgId = Model.Category.ImageId })" class="custom-img" />
                     }
                 </div>
                 <div class="col-12 col-md-8 order-3">

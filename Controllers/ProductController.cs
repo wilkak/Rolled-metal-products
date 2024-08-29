@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
 using NuGet.Packaging.Signing;
 using Rolled_metal_products.Data;
 using Rolled_metal_products.Models;
@@ -19,11 +20,13 @@ namespace Rolled_metal_products.Controllers
         private readonly IProductRepository _prodRepo;
         private readonly ICategoryRepository _catRepo;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        public ProductController(IProductRepository prodRepo, ICategoryRepository catRepo, IWebHostEnvironment webHostEnvironment)
+        private readonly IMongoCollection<Image> _imagesCollection;
+        public ProductController(IProductRepository prodRepo, ICategoryRepository catRepo, IWebHostEnvironment webHostEnvironment, IMongoDatabase mongoDatabase)
         {
             _prodRepo = prodRepo;
             _catRepo = catRepo;
             _webHostEnvironment = webHostEnvironment;
+            _imagesCollection = mongoDatabase.GetCollection<Image>("Images");
         }
 
         public IActionResult Index(string? searchString, string? sortOrder, int? page)
@@ -95,29 +98,29 @@ namespace Rolled_metal_products.Controllers
         
         // POST - CREATE
         [HttpPost]
-        public IActionResult Create(CreateProductVM createProductVM)
+        public async Task<IActionResult> Create(CreateProductVM createProductVM)
         {
             if (ModelState.IsValid)
             {
+                #region Add Image
+
                 var files = HttpContext.Request.Form.Files;
-                string webRootPath = _webHostEnvironment.WebRootPath;
-                string uploadPath = Path.Combine(webRootPath, "images", "product");
-
-                // Проверка существования директории и создание при необходимости
-                if (!Directory.Exists(uploadPath))
+                if (files.Count > 0)
                 {
-                    Directory.CreateDirectory(uploadPath);
+                    var file = files[0];
+                    var image = new Image
+                    {
+                        FileName = file.FileName,
+                        ContentType = file.ContentType,
+                        Data = await GetFileBytes(file)
+                    };
+
+                    await _imagesCollection.InsertOneAsync(image);
+
+                    createProductVM.Product.ImageId = image.Id;
                 }
 
-                string fileName = Guid.NewGuid().ToString();
-                string extension = Path.GetExtension(files[0].FileName);
-
-                using (var fileStream = new FileStream(Path.Combine(uploadPath, fileName + extension), FileMode.Create))
-                {
-                    files[0].CopyTo(fileStream);
-                }
-
-                createProductVM.Product.ImageName = fileName + extension;
+                #endregion
 
                 var product = createProductVM.Product;
 
@@ -135,6 +138,15 @@ namespace Rolled_metal_products.Controllers
             }
             TempData[WC.Error] = "Ошибка при создании товара";
             return View(createProductVM);
+        }
+
+        private async Task<byte[]> GetFileBytes(IFormFile file)
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                await file.CopyToAsync(memoryStream);
+                return memoryStream.ToArray();
+            }
         }
 
         // GET - EDIT 
@@ -173,38 +185,37 @@ namespace Rolled_metal_products.Controllers
 
         // POST - EDIT
         [HttpPost]
-        public IActionResult Edit(CreateProductVM createProductVM)
+        public async Task<IActionResult> Edit(CreateProductVM createProductVM)
         {
             if (ModelState.IsValid)
             {
                 var productFromDb = _prodRepo.FirstOrDefault(u => u.Id == createProductVM.Product.Id, isTracking: false);
 
                 var files = HttpContext.Request.Form.Files;
-                string webRootPath = _webHostEnvironment.WebRootPath;
-
                 if (files.Count > 0)
                 {
-                    string upload = webRootPath + WC.ImagePath;
-                    string fileName = Guid.NewGuid().ToString();
-                    string extension = Path.GetExtension(files[0].FileName);
-
-                    var oldFile = Path.Combine(upload, productFromDb.ImageName);
-
-                    if (System.IO.File.Exists(oldFile))
+                    var file = files[0];
+                    var image = new Image
                     {
-                        System.IO.File.Delete(oldFile);
+                        FileName = file.FileName,
+                        ContentType = file.ContentType,
+                        Data = await GetFileBytes(file)
+                    };
+
+                    // Удаляем старое изображение из MongoDB
+                    if (productFromDb.ImageId != null)
+                    {
+                        await _imagesCollection.DeleteOneAsync(i => i.Id == productFromDb.ImageId);
                     }
 
-                    using (var fileStream = new FileStream(Path.Combine(upload, fileName + extension), FileMode.Create))
-                    {
-                        files[0].CopyTo(fileStream);
-                    }
+                    // Добавляем новое изображение в MongoDB
+                    await _imagesCollection.InsertOneAsync(image);
 
-                    createProductVM.Product.ImageName = fileName + extension;
+                    createProductVM.Product.ImageId = image.Id;
                 }
                 else
                 {
-                    createProductVM.Product.ImageName = productFromDb.ImageName;
+                    createProductVM.Product.ImageId = productFromDb.ImageId;
                 }
 
                 _prodRepo.DeleteExistingParameters(createProductVM.Product.Id);
@@ -247,7 +258,7 @@ namespace Rolled_metal_products.Controllers
         //POST - DELETE
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeletePost(int? id)
+        public async Task<IActionResult> DeletePost(int? id)
         {
             var product = _prodRepo.FirstOrDefault(x => x.Id == id, includeProperties: "ProductParameters");
             if (product == null)
@@ -255,12 +266,9 @@ namespace Rolled_metal_products.Controllers
                 return NotFound();
             }
 
-            string upload = _webHostEnvironment.WebRootPath + WC.ImagePath;
-            var oldFile = Path.Combine(upload, product.ImageName);
-
-            if (System.IO.File.Exists(oldFile))
+            if (product.ImageId != null)
             {
-                System.IO.File.Delete(oldFile);
+                await _imagesCollection.DeleteOneAsync(i => i.Id == product.ImageId);
             }
 
             if (ModelState.IsValid)

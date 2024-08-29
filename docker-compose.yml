@@ -54,14 +54,15 @@ services:
       - dokploy-network
 
   mongo_db:
-    container_name: MongoDB
     image: mongo:latest
+    container_name: mongo_db
+    restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: 4567890rtyui7
       MONGO_INITDB_DATABASE: images_db
     ports:
-      - "27017:27017"
+      - "27018:27017"
     volumes:
       - mongo-data:/data/db
     networks:

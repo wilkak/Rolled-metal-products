@@ -63,7 +63,7 @@
                                 <input hidden asp-for="@Model[i].Id" />
                                 <div class="row h-100">
                                     <div class="col-4 col-md-2 text-center py-2">
-                                        <img src="@WC.ImagePath@Model[i].ImageName" class="rounded" width="100%" />
+                                        <img src="@Url.Action("GetImage", "Image", new { imgId = Model[i].ImageId })" class="rounded" width="100%" />
                                     </div>
                                     @if (User.IsInRole(WC.AdminRole))
                                     {

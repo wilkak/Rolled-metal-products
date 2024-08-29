@@ -45,7 +45,7 @@ namespace Rolled_metal_products.Repository
             {
                 categoryFromDb.Name = obj.Name;
                 categoryFromDb.DisplayOrder = obj.DisplayOrder;
-                categoryFromDb.ImageName = obj.ImageName;
+                categoryFromDb.ImageId = obj.ImageId;
                 categoryFromDb.CategoryParameters = obj.CategoryParameters.ToList();
             }
         }

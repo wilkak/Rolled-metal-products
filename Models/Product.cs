@@ -24,7 +24,7 @@ namespace Rolled_metal_products.Models
         public double Price { get; set; }
         [DisplayName("Прошлая цена")]
         public double? OldPrice { get; set; }
-        public string? ImageName { get; set; }
+        public int? ImageId { get; set; }
         [Display(Name = "Тип категории")]
         public int CategoryId { get; set; }
 

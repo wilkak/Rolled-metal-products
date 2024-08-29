@@ -22,13 +22,13 @@
             <div class="card shadow">
                 <div class="row g-0">
                     <div class="col-md-2">
-                        @if (Model.Category.ImageName == null)
+                        @if (Model.Category.ImageId == null)
                         {
                             <img id="imagePreview" src="@WC.NoImagePath" class="img-fluid rounded-start" alt="@Model.Category.Name" style="width: 100%; height: 170px; object-fit: cover;" />
                         }
                         else
                         {
-                            <img id="imagePreview" src="@WC.ImagePathCategory@Model.Category.ImageName" class="img-fluid rounded-start" alt="@Model.Category.Name" style="width: 100%; height: 170px; object-fit: cover;" />
+                            <img id="imagePreview" src="@Url.Action("GetImage", "Image", new { imgId = Model.Category.ImageId })" class="img-fluid rounded-start" alt="@Model.Category.Name" style="width: 100%; height: 170px; object-fit: cover;" />
                         }
                     </div>
                     <div class="col-md-7 d-flex align-items-center justify-content-center">
