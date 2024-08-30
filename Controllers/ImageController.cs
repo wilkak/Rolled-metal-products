@@ -6,16 +6,29 @@ namespace Rolled_metal_products.Controllers
 {
     public class ImageController : Controller
     {
-        private readonly IMongoCollection<Image> _imagesCollection;
+        private readonly IMongoCollection<ImageCategory> _imagesCategoryCollection;
+        private readonly IMongoCollection<ImageProduct> _imagesProductCollection;
 
         public ImageController(IMongoDatabase mongoDatabase)
         {
-            _imagesCollection = mongoDatabase.GetCollection<Image>("Images");
+            _imagesCategoryCollection = mongoDatabase.GetCollection<ImageCategory>("ImagesCategory");
+            _imagesProductCollection = mongoDatabase.GetCollection<ImageProduct>("ImagesProduct");
         }
 
-        public async Task<IActionResult> GetImage(int imgId)
+       public async Task<IActionResult> GetImageCategory(int catId)
         {
-            var image = await _imagesCollection.Find(img => img.Id == imgId).FirstOrDefaultAsync();
+            var image = await _imagesCategoryCollection.Find(img => img.CategoryId == catId).FirstOrDefaultAsync();
+            if (image == null)
+            {
+                return NotFound();
+            }
+
+            return File(image.Data, image.ContentType);
+        }
+
+        public async Task<IActionResult> GetImageProduct(int prodId)
+        {
+            var image = await _imagesProductCollection.Find(img => img.ProductId == prodId).FirstOrDefaultAsync();
             if (image == null)
             {
                 return NotFound();

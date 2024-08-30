@@ -133,7 +133,7 @@
         <div class="row">
             <div class="col-md-3 text-center">
                 <div class="product-image" style="margin-bottom: 40px;">
-                    <img src="@Url.Action("GetImage", "Image", new { imgId = Model.Product.ImageId })" alt="Product Image" class="img-fluid rounded" />
+                    <img src="@Url.Action("GetImageProduct", "Image", new { prodId = Model.Product.Id})" alt="Product Image" class="img-fluid rounded" />
                 </div>
                 <div class="product-action">
                     @if (Model.ExistsInCart)

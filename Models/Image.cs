@@ -1,13 +1,23 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using MongoDB.Bson;
+using System.ComponentModel.DataAnnotations;
 
 namespace Rolled_metal_products.Models
 {
-    public class Image
+    public class ImageCategory
     {
-        [Key]
-        public int Id { get; set; } // Уникальный идентификатор изображения
-        public string FileName { get; set; } // Имя файла изображения
-        public string ContentType { get; set; } // Тип содержимого изображения (например, image/jpeg)
-        public byte[] Data { get; set; } // Данные изображения в виде байтового массива
+        public ObjectId Id { get; set; }
+        public int CategoryId { get; set; } // Идентификатор категории
+        public string FileName { get; set; }
+        public string ContentType { get; set; }
+        public byte[] Data { get; set; }
+    }
+
+    public class ImageProduct
+    {
+        public ObjectId Id { get; set; }
+        public int ProductId { get; set; } // Идентификатор товара
+        public string FileName { get; set; }
+        public string ContentType { get; set; }
+        public byte[] Data { get; set; }
     }
 }

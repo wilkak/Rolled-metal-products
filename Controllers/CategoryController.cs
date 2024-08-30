@@ -14,6 +14,8 @@ using MongoDB.Driver;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using MongoDB.Bson;
+using System.Diagnostics.Metrics;
 
 
 namespace Rolled_metal_products.Controllers
@@ -24,7 +26,8 @@ namespace Rolled_metal_products.Controllers
         private readonly ICategoryRepository _catRepo;
         private readonly IProductRepository _prodRepo;
         private readonly IWebHostEnvironment _environment;
-        private readonly IMongoCollection<Image> _imagesCollection;
+        private readonly IMongoCollection<ImageCategory> _imagesCategoryCollection;
+        private readonly IMongoCollection<ImageProduct> _imagesProductCollection;
 
         public CategoryController(
             ICategoryRepository catRepo,
@@ -35,7 +38,8 @@ namespace Rolled_metal_products.Controllers
             _catRepo = catRepo;
             _prodRepo = prodRepo;
             _environment = environment;
-            _imagesCollection = mongoDatabase.GetCollection<Image>("Images");
+            _imagesCategoryCollection = mongoDatabase.GetCollection<ImageCategory>("ImagesCategory");
+            _imagesProductCollection = mongoDatabase.GetCollection<ImageProduct>("ImagesProduct");
         }
 
         // GET - INDEX
@@ -103,35 +107,35 @@ namespace Rolled_metal_products.Controllers
         // POST - CREATE
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateCategoryVM createCategoryVM)
+        public IActionResult Create(CreateCategoryVM createCategoryVM)
         {
             if (ModelState.IsValid)
             {
+                var category = createCategoryVM.Category;
+
+                category.CategoryParameters = createCategoryVM.Parameters;
+                _catRepo.Add(category);
+                _catRepo.Save();
+
                 #region Add Image
 
                 var files = HttpContext.Request.Form.Files;
                 if (files.Count > 0)
                 {
                     var file = files[0];
-                    var image = new Image
+                    var image = new ImageCategory
                     {
+                        Id = ObjectId.GenerateNewId(),
+                        CategoryId = category.Id,
                         FileName = file.FileName,
                         ContentType = file.ContentType,
-                        Data = await GetFileBytes(file)
+                        Data = GetFileBytes(file)
                     };
 
-                    await _imagesCollection.InsertOneAsync(image);
-
-                    createCategoryVM.Category.ImageId = image.Id;
+                    _imagesCategoryCollection.InsertOne(image);
                 }
 
                 #endregion
-
-                var category = createCategoryVM.Category;
-
-                category.CategoryParameters = createCategoryVM.Parameters;
-                _catRepo.Add(category);
-                _catRepo.Save();
 
                 TempData[WC.Success] = "Категория успешно создана";
 
@@ -149,11 +153,11 @@ namespace Rolled_metal_products.Controllers
             return View(createCategoryVM);
         }
 
-        private async Task<byte[]> GetFileBytes(IFormFile file)
+        private byte[] GetFileBytes(IFormFile file)
         {
             using (var memoryStream = new MemoryStream())
             {
-                await file.CopyToAsync(memoryStream);
+                file.CopyTo(memoryStream);
                 return memoryStream.ToArray();
             }
         }
@@ -176,7 +180,7 @@ namespace Rolled_metal_products.Controllers
         // POST - EDIT
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(CreateCategoryVM createCategoryVM)
+        public IActionResult Edit(CreateCategoryVM createCategoryVM)
         {
             if (ModelState.IsValid)
             {
@@ -186,27 +190,20 @@ namespace Rolled_metal_products.Controllers
                 if (files.Count > 0)
                 {
                     var file = files[0];
-                    var image = new Image
+                    var image = new ImageCategory
                     {
+                        Id = ObjectId.GenerateNewId(),
                         FileName = file.FileName,
+                        CategoryId = createCategoryVM.Category.Id,
                         ContentType = file.ContentType,
-                        Data = await GetFileBytes(file)
+                        Data = GetFileBytes(file)
                     };
 
                     // Удаляем старое изображение из MongoDB
-                    if (categoryFromDb.ImageId != null)
-                    {
-                        await _imagesCollection.DeleteOneAsync(i => i.Id == categoryFromDb.ImageId);
-                    }
+                    _imagesCategoryCollection.DeleteOne(i => i.CategoryId == categoryFromDb.Id);
 
                     // Добавляем новое изображение в MongoDB
-                    await _imagesCollection.InsertOneAsync(image);
-
-                    createCategoryVM.Category.ImageId = image.Id;
-                }
-                else
-                {
-                    createCategoryVM.Category.ImageId = categoryFromDb.ImageId;
+                    _imagesCategoryCollection.InsertOne(image);
                 }
 
                 var category = createCategoryVM.Category;
@@ -246,8 +243,32 @@ namespace Rolled_metal_products.Controllers
             return View(obj);
         }
 
+        //POST - DELETE
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeletePost(int? id)
+        {
+            var category = _catRepo.Find(id.GetValueOrDefault());
+            if (category == null)
+            {
+                return NotFound();
+            }
+            DeleteCategoryAndSubCategories(category.Id);
+            _catRepo.Save();
+
+            TempData[WC.Success] = "Категория успешно удалена!";
+            if (category.ParentId == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                return RedirectToAction("Details", new { id = category.ParentId });
+            }
+        }
+
         // DELETE SUBCATEGORIES AND PRODUCTS
-        private async Task DeleteCategoryAndSubCategories(int categoryId)
+        private void DeleteCategoryAndSubCategories(int categoryId)
         {
             var category = _catRepo.GetCategoryWithSubCategories(categoryId);
             if (category == null)
@@ -261,11 +282,8 @@ namespace Rolled_metal_products.Controllers
             var products = _prodRepo.GetAll(x => x.CategoryId == categoryId, includeProperties: "ProductParameters");
             foreach (var product in products)
             {
-                // Удаляем изображение категории из MongoDB
-                if (product.ImageId != null)
-                {
-                    await _imagesCollection.DeleteOneAsync(i => i.Id == product.ImageId);
-                }
+                // Удаляем изображения Товаров из MongoDB
+                _imagesProductCollection.DeleteOne(i => i.ProductId == product.Id);
             }
 
             // Удаляем подкатегории
@@ -273,15 +291,12 @@ namespace Rolled_metal_products.Controllers
             {
                 foreach (var subCategory in category.SubCategories.ToList())
                 {
-                    await DeleteCategoryAndSubCategories(subCategory.Id);
+                    DeleteCategoryAndSubCategories(subCategory.Id);
                 }
             }
 
             // Удаляем изображение категории из MongoDB
-            if (category.ImageId != null)
-            {
-                await _imagesCollection.DeleteOneAsync(i => i.Id == category.ImageId);
-            }
+            _imagesCategoryCollection.DeleteOne(i => i.CategoryId == category.Id);
 
             _catRepo.Remove(category);
         }

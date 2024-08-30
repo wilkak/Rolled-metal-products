@@ -64,15 +64,7 @@
                     </div>
                 </div>
                 <div class="col-12 col-md-4 p-4 order-1 order-md-2 d-flex justify-content-center">
-                    @if (Model.ImageId == null)
-                    {
-                        <img id="imagePreview" src="@WC.NoImagePath" class="custom-img" />
-                        
-                    }
-                    else
-                    {
-                        <img id="imagePreview" src="@Url.Action("GetImage", "Image", new { imgId = Model.ImageId })" class="custom-img" />
-                    }
+                    <img id="imagePreview" src="@Url.Action("GetImageCategory", "Image", new { catId = Model.Id })" class="custom-img" />
                 </div>
                 <div class="col-12 col-md-8 order-3">
                     <div class="row justify-content-end">

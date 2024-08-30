@@ -247,14 +247,7 @@
                         <div class="catalog-item d-flex align-items-center">
                             <a asp-route-parentId="@item.Id" asp-controller="Catalog" asp-action="Index">
                                 <div class="image-container">
-                                    @if (item.ImageId == null)
-                                    {
-                                        <img id="imagePreview" src="@WC.NoImagePath" class="category-image" />
-                                    }
-                                    else
-                                    {
-                                        <img id="imagePreview" src="@Url.Action("GetImage", "Image", new { imgId = @item.ImageId })" class="category-image" />
-                                    }
+                                    <img id="imagePreview" src="@Url.Action("GetImageCategory", "Image", new { catId = @item.Id })" class="category-image" />
                                 </div>
                             </a>
                             <div class="name-container d-flex align-items-center">
