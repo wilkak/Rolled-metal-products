@@ -3,22 +3,15 @@ services:
   traefik:
     image: traefik:v2.9
     command:
-      - "--api.insecure=true"
-      - "--providers.docker=true"
-      - "--entrypoints.web.address=:81"
-      - "--entrypoints.websecure.address=:444"
-      - "--certificatesresolvers.letsencrypt.acme.tlschallenge=true"
-      - "--certificatesresolvers.letsencrypt.acme.email=wilkak@yandex.ru"
-      - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
+      - "--configFile=/etc/dokploy/traefik/traefik.yml"
     ports:
-      - "81:81"
-      - "444:444"
+      - "80:80"
+      - "443:443"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      - "letsencrypt:/letsencrypt"
+      - "/etc/dokploy/traefik:/etc/dokploy/traefik"  
     networks:
       - dokploy-network
-
   app:
     container_name: RolledMetalProductsTEST
     build:
