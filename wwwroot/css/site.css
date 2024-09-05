@@ -9,14 +9,10 @@ a.navbar-brand {
 
 /* Provide sufficient contrast against white background */
 a {
-  color: #0366d6;
+    color: rgba(var(--bs-primary-rgb), var(--bs-text-opacity)) !important;
+    
 }
 
-.btn-primary {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
-}
 
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
   color: #fff;
@@ -382,8 +378,7 @@ body {
     align-items: center;
     top: 10px;
     left: 38px;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
+    background: var(--bs-primary);
     color: white;
 }
 
@@ -443,7 +438,7 @@ body {
             }
 
         .banner .container button {
-            background-color: rgba(27, 110, 194, 0.8); /* Прозрачный фон */
+            background-color: rgb(55,99,244,0.8); /* Прозрачный фон */
             color: white; /* Непрозрачный текст */
             border-radius: 15px;
             font-size: 14px;
@@ -453,7 +448,7 @@ body {
 
             .banner .container button:hover,
             .banner .container button:active {
-                background-color: rgba(27, 110, 194, 1); /* Прозрачный фон */
+                background-color: rgb(55,99,244, 1); /* Прозрачный фон */
             }
 
     .banner::before {
