@@ -137,6 +137,10 @@
         font-size: 14px;
     }
 
+    .breadcrumb-item a {
+        color: var(--bs-primary);
+    }
+
 </style>
 
 
@@ -200,10 +204,10 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a asp-controller="Home" style="color: #1b6ec2;" asp-action="Index">Главная</a>
+                        <a asp-controller="Home" asp-action="Index">Главная</a>
                     </li>
                     <li class="breadcrumb-item">
-                        <a asp-controller="Catalog" style="color: #1b6ec2;" asp-action="Index">Категории</a>
+                        <a asp-controller="Catalog" asp-action="Index">Категории</a>
                     </li>
                     @if (Model.BreadcrumbCategories.Count > 2)
                     {

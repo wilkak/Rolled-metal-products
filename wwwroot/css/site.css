@@ -8,10 +8,6 @@ a.navbar-brand {
 }
 
 /* Provide sufficient contrast against white background */
-a {
-    color: rgba(var(--bs-primary-rgb), var(--bs-text-opacity)) !important;
-    
-}
 
 .btn-primary {
     color: white !important;
