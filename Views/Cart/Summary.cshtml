@@ -114,7 +114,7 @@
                                                 }
                                                 else
                                                 {
-                                                    <small class="text-muted">Цена: @Model.ProductList[i].Price.ToString("C")</small>
+                                                    <small class="text-muted">Цена: @Model.ProductList[i].Price ₽</small>
                                                 }
 
                                             </div>
@@ -129,7 +129,7 @@
                                 {
                                     <li class="list-group-item d-flex justify-content-between" style="border:none">
                                         <span>Общая сумма</span>
-                                        <strong>@string.Format("{0:c}", orderTotal)</strong>
+                                        <strong>@orderTotal ₽</strong>
                                     </li>
                                 }
                             </ul>

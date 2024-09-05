@@ -84,7 +84,7 @@
                             <tr>
                                 <th scope="row" style="text-align:center" width="5%">@indexProduct</th>
                                 <td width="50%">@subCategory.Name</td>
-                                <td width="50%">@subCategory.Price.ToString("C")</td>
+                                <td width="50%">@subCategory.Price ₽</td>
                                 <td class="text-center">
                                     <div class="btn-group">
                                         <a class="btn btn-primary mx-2" asp-action="Edit" asp-controller="Product" asp-route-id="@subCategory.Id" data-bs-toggle="tooltip" data-bs-placement="top" title="Редактировать товар">

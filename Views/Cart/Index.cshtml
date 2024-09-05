@@ -41,7 +41,7 @@
 
                                     <div class="col-lg-5 col-md-6 mb-4 mb-lg-0">
                                         <p><strong>@Model[i].Name</strong></p>
-                                        <p>Цена: @Model[i].Price.ToString("C")</p>
+                                        <p>Цена: @Model[i].Price ₽</p>
                                         <a asp-action="Remove" asp-route-id="@Model[i].Id" class="btn btn-danger btn-sm me-1 mb-2" style="border-radius: 15px;padding: 10px 17px 10px 17px;">
                                             <i class="fas fa-trash"></i>
                                         </a>
@@ -115,7 +115,7 @@
                                     <div>
                                         <strong>Общая сумма</strong>
                                     </div>
-                                    <span><strong>@string.Format("{0:c}", orderTotal)</strong></span>
+                                    <span><strong>@orderTotal ₽</strong></span>
                                 
                             </li>
                         </ul>
