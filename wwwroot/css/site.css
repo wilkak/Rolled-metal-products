@@ -13,6 +13,10 @@ a {
     
 }
 
+.btn {
+    color: white !important;
+}
+
 
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
   color: #fff;
